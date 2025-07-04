@@ -1844,20 +1844,26 @@ const SpaceMapComponent: React.FC = () => {
         star.pulse += star.speed * 0.5; // Reduced from 0.8
       }
 
-      // Update projectiles with delta time
+      // Update projectiles with simplified delta time calculation
       const currentFrameTime = performance.now();
-      const projectileDeltaTime =
-        (currentFrameTime - lastFrameTimeRef.current) / 1000; // Convert to seconds
+      const projectileDeltaTime = Math.min(
+        (currentFrameTime - lastFrameTimeRef.current) / 1000,
+        0.033, // Cap at 30 FPS to prevent large jumps
+      );
       lastFrameTimeRef.current = currentFrameTime;
 
-      projectilesRef.current = projectilesRef.current
-        .map((proj) => ({
-          ...proj,
-          x: normalizeCoord(proj.x + proj.vx * projectileDeltaTime),
-          y: normalizeCoord(proj.y + proj.vy * projectileDeltaTime),
-          life: proj.life - projectileDeltaTime,
-        }))
-        .filter((proj) => proj.life > 0);
+      // Use for loop for better performance than map/filter
+      const projectiles = projectilesRef.current;
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const proj = projectiles[i];
+        proj.x = normalizeCoord(proj.x + proj.vx * projectileDeltaTime);
+        proj.y = normalizeCoord(proj.y + proj.vy * projectileDeltaTime);
+        proj.life -= projectileDeltaTime;
+
+        if (proj.life <= 0) {
+          projectiles.splice(i, 1);
+        }
+      }
 
       // Create shooting stars less frequently for better performance
       if (
