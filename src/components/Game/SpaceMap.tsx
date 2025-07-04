@@ -2128,11 +2128,13 @@ export const SpaceMap: React.FC = () => {
             );
             const orbitSpeed = 1;
             const initialAngle = Math.atan2(initialDy, initialDx);
-            const angleProgress = initialAngle + progress * orbitSpeed * Math.PI * 2;
+            const angleProgress =
+              initialAngle + progress * orbitSpeed * Math.PI * 2;
 
             // Calculate orbital velocity for proportional trail intensity
             const currentRadius = initialRadius * (1 - progress * 0.9);
-            const orbitalSpeed = (2 * Math.PI * currentRadius) / landingAnimationData.duration;
+            const orbitalSpeed =
+              (2 * Math.PI * currentRadius) / landingAnimationData.duration;
             const normalizedOrbitalSpeed = Math.min(
               orbitalSpeed / (SHIP_MAX_SPEED * 300),
               1,
@@ -2142,13 +2144,14 @@ export const SpaceMap: React.FC = () => {
             // Calculate trail position at the back of the ship during landing
             const trailOffset = 12;
             const currentShipAngle = angleProgress + Math.PI / 2;
-            const trailX = shipWorldX - Math.cos(currentShipAngle) * trailOffset;
-            const trailY = shipWorldY - Math.sin(currentShipAngle) * trailOffset;
+            const trailX =
+              shipWorldX - Math.cos(currentShipAngle) * trailOffset;
+            const trailY =
+              shipWorldY - Math.sin(currentShipAngle) * trailOffset;
 
             createTrailPoint(trailX, trailY, currentTime, landingIntensity);
             lastTrailTime.current = currentTime;
           }
-        }
         }
       }
 
