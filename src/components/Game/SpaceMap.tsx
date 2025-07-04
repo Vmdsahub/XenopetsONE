@@ -1464,6 +1464,11 @@ export const SpaceMap: React.FC = () => {
     let lastTime = 0;
 
     const gameLoop = (currentTime: number) => {
+      // Stop game loop immediately if we're not on world screen
+      if (currentScreen !== "world") {
+        return;
+      }
+
       const deltaTime = Math.min(currentTime - lastTime, 16.67);
 
       // Calculate FPS
