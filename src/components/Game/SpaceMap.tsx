@@ -1378,7 +1378,7 @@ export const SpaceMap: React.FC = () => {
       setLandingAnimationData({
         planet: selectedPlanet,
         startTime: performance.now(),
-        duration: 2500, // 2.5 seconds animation
+        duration: 1500, // 1.5 seconds animation - more responsive
         initialShipX: gameState.ship.x,
         initialShipY: gameState.ship.y,
       });
@@ -2184,30 +2184,29 @@ export const SpaceMap: React.FC = () => {
         const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
         if (progress >= 1) {
-          // Animation complete - set final position at planet and hide ship
-          shipWorldX = landingAnimationData.planet.x;
-          shipWorldY = landingAnimationData.planet.y;
-          shipScale = 0; // Hide the ship immediately
+          // Animation complete - immediately transition without visual artifacts
+          setIsLandingAnimationActive(false);
+          const planetData = landingAnimationData.planet;
+          setLandingAnimationData(null);
 
-          // Update the game state to keep ship at planet position
+          // Update the game state to keep ship at planet position before transition
           setGameState((prevState) => ({
             ...prevState,
             ship: {
               ...prevState.ship,
-              x: landingAnimationData.planet.x,
-              y: landingAnimationData.planet.y,
+              x: planetData.x,
+              y: planetData.y,
               vx: 0,
               vy: 0,
             },
           }));
 
-          // Use setTimeout to delay the transition, preventing the ship from appearing at center
-          setTimeout(() => {
-            setIsLandingAnimationActive(false);
-            setLandingAnimationData(null);
-            setCurrentPlanet(landingAnimationData.planet);
-            setCurrentScreen("planet");
-          }, 100); // Brief delay to ensure smooth transition
+          // Immediate transition to prevent visual glitches
+          setCurrentPlanet(planetData);
+          setCurrentScreen("planet");
+
+          // Skip rendering this frame to prevent flash
+          return;
         } else {
           // Calculate orbital animation
           const planet = landingAnimationData.planet;
@@ -2237,8 +2236,14 @@ export const SpaceMap: React.FC = () => {
           // Ship points in trajectory direction (tangent to the orbit)
           shipAngle = angleProgress + Math.PI / 2; // Tangent is perpendicular to radius
 
-          // Scale down as landing progresses, becoming completely invisible
-          shipScale = Math.max(0, 1 - progress * 1.2); // Ship becomes completely invisible
+          // Smooth scale transition with accelerated fade at the end
+          const fadeStart = 0.7; // Start fading at 70% progress
+          if (progress < fadeStart) {
+            shipScale = 1; // Keep full size for most of the animation
+          } else {
+            const fadeProgress = (progress - fadeStart) / (1 - fadeStart);
+            shipScale = Math.max(0, 1 - Math.pow(fadeProgress, 2) * 2); // Quadratic fade out
+          }
         }
       }
 
