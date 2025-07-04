@@ -2294,13 +2294,13 @@ export const SpaceMap: React.FC = () => {
       }
 
       // Immediate check using ref - overrides everything else
-      if (shouldHideShipRef.current) {
+      if (shouldHideShipRef.current || currentScreen === "planet") {
         shouldRenderShip = false;
         shipScale = 0;
       }
 
-      // Only render ship if it should be rendered and has visible scale
-      if (shouldRenderShip && shipScale > 0) {
+      // Only render ship if it should be rendered and has visible scale and NOT on planet screen
+      if (shouldRenderShip && shipScale > 0 && currentScreen !== "planet") {
         ctx.save();
         ctx.translate(shipScreenX, shipScreenY);
         ctx.rotate(shipAngle);
