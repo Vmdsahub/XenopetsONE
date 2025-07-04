@@ -1913,7 +1913,7 @@ export const SpaceMap: React.FC = () => {
 
       // Rotaç��o lenta baseada no tempo
       const rotationTime = currentTime * 0.0005; // Muito lenta
-      const dashOffset = (rotationTime * 50) % 20; // Offset dos traços para simular rotação
+      const dashOffset = (rotationTime * 50) % 20; // Offset dos tra��os para simular rotação
 
       ctx.setLineDash([10, 10]);
       ctx.lineDashOffset = -dashOffset; // Anima os traços
@@ -2123,8 +2123,11 @@ export const SpaceMap: React.FC = () => {
 
             // Calculate trail position at the back of the ship during landing
             const trailOffset = 12; // Distance from ship center to back
-            const trailX = shipWorldX - Math.cos(shipAngle) * trailOffset;
-            const trailY = shipWorldY - Math.sin(shipAngle) * trailOffset;
+            const currentShipAngle = angleProgress + Math.PI / 2; // Same as shipAngle calculation
+            const trailX =
+              shipWorldX - Math.cos(currentShipAngle) * trailOffset;
+            const trailY =
+              shipWorldY - Math.sin(currentShipAngle) * trailOffset;
 
             createTrailPoint(trailX, trailY, currentTime, landingIntensity);
             lastTrailTime.current = currentTime;
