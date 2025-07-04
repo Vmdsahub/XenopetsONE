@@ -1009,7 +1009,7 @@ export const SpaceMap: React.FC = () => {
     }
 
     // Layer 6: Close cosmic dust (parallax 2.2) - ACIMA do jogador
-    for (let i = 0; i < 800; i++) {
+    for (let i = 0; i < 1500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
