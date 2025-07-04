@@ -1316,7 +1316,7 @@ const SpaceMapComponent: React.FC = () => {
               setIsDragging(false);
               setDragOffset({ x: 0, y: 0 });
             } else if (selectedWorldId === planet.id && !isDragging) {
-              // Se já est���� selecionado mas não dragging, inicie o drag
+              // Se já est������ selecionado mas não dragging, inicie o drag
               setIsDragging(true);
               setDragOffset({ x: dx, y: dy });
             } else {
@@ -2512,7 +2512,7 @@ const SpaceMapComponent: React.FC = () => {
       />
       <canvas
         ref={canvasRef}
-        className="w-full h-full"
+        className="w-full h-full game-canvas gpu-accelerated"
         style={{
           cursor:
             user?.isAdmin && isWorldEditMode
@@ -2520,6 +2520,7 @@ const SpaceMapComponent: React.FC = () => {
                 ? "grabbing"
                 : "grab"
               : `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3' fill='%230080ff' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E") 8 8, auto`,
+          imageRendering: "optimizeSpeed",
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={(e) => {
