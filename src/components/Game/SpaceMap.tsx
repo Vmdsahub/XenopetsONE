@@ -946,8 +946,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 5: Cosmic dust foreground (parallax 1.2) - ACIMA do jogador
-    for (let i = 0; i < 400; i++) {
+    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador
+    for (let i = 0; i < 500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -955,10 +955,10 @@ export const SpaceMap: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 0.3 + Math.random() * 0.7, // Tamanhos menores para poeira cósmica
-        opacity: 0.2 + Math.random() * 0.25,
+        size: 0.5 + Math.random() * 0.9, // Tamanhos menores para poeira cósmica
+        opacity: 0.4 + Math.random() * 0.4,
         speed: Math.random() * 0.01 + 0.005, // Velocidade reduzida
-        parallax: 1.2, // Paralaxe de primeiro plano
+        parallax: 1.8, // Paralaxe de primeiro plano
         twinkle: Math.random() * 100,
         color:
           Math.random() < 0.7
