@@ -1,4 +1,11 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  memo,
+} from "react";
 import { useGameStore } from "../../store/gameStore";
 import { useShipStatePersistence } from "../../hooks/useShipStatePersistence";
 import { PlanetLandingModal } from "./PlanetLandingModal";
@@ -807,7 +814,7 @@ export const SpaceMap: React.FC = () => {
     [],
   );
 
-  // Generate dense star field with multiple parallax layers
+  // Generate optimized star field with reduced star count for better performance
   const generateRichStarField = useCallback(() => {
     const stars: Star[] = [];
     const starColors = [
@@ -833,8 +840,8 @@ export const SpaceMap: React.FC = () => {
       "#f8f8ff", // Purples
     ];
 
-    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador
-    for (let i = 0; i < 4000; i++) {
+    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador - Reduzido de 4000 para 2500
+    for (let i = 0; i < 2500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -868,8 +875,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador
-    for (let i = 0; i < 3500; i++) {
+    // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador - Reduzido de 3500 para 2000
+    for (let i = 0; i < 2000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -903,8 +910,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador
-    for (let i = 0; i < 3000; i++) {
+    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador - Reduzido de 3000 para 1800
+    for (let i = 0; i < 1800; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -938,8 +945,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 4: Close background (parallax 1.4) - ABAIXO do jogador
-    for (let i = 0; i < 2500; i++) {
+    // Layer 4: Close background (parallax 1.4) - ABAIXO do jogador - Reduzido de 2500 para 1500
+    for (let i = 0; i < 1500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -973,8 +980,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador
-    for (let i = 0; i < 2000; i++) {
+    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador - Reduzido de 2000 para 1200
+    for (let i = 0; i < 1200; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -1008,8 +1015,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 6: Close cosmic dust (parallax 2.2) - ACIMA do jogador
-    for (let i = 0; i < 1500; i++) {
+    // Layer 6: Close cosmic dust (parallax 2.2) - ACIMA do jogador - Reduzido de 1500 para 800
+    for (let i = 0; i < 800; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
