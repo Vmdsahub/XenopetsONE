@@ -225,6 +225,7 @@ export const SpaceMap: React.FC = () => {
   const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [barrierFlashTime, setBarrierFlashTime] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
   // Helper function for seamless wrapping distance calculation
@@ -1501,8 +1502,68 @@ export const SpaceMap: React.FC = () => {
           const currentFriction = mouseInWindow ? FRICTION : 0.995;
           newState.ship.vx *= currentFriction;
           newState.ship.vy *= currentFriction;
-          newState.ship.x += newState.ship.vx;
-          newState.ship.y += newState.ship.vy;
+
+          // Calculate potential new position
+          const newX = newState.ship.x + newState.ship.vx;
+          const newY = newState.ship.y + newState.ship.vy;
+
+          // Check barrier collision
+          const distanceFromCenter = Math.sqrt(
+            Math.pow(newX - CENTER_X, 2) + Math.pow(newY - CENTER_Y, 2),
+          );
+
+          if (distanceFromCenter <= BARRIER_RADIUS) {
+            // Ship can move normally within barrier
+            newState.ship.x = newX;
+            newState.ship.y = newY;
+          } else {
+            // Ship trying to move outside barrier
+            setBarrierFlashTime(currentTime);
+
+            // Calculate the direction from center to the ship's current position
+            const centerToShipX = newState.ship.x - CENTER_X;
+            const centerToShipY = newState.ship.y - CENTER_Y;
+            const centerToShipDist = Math.sqrt(
+              centerToShipX * centerToShipX + centerToShipY * centerToShipY,
+            );
+
+            if (centerToShipDist > 0) {
+              // Normalize the vector from center to ship (this is the normal to the barrier)
+              const normalX = centerToShipX / centerToShipDist;
+              const normalY = centerToShipY / centerToShipDist;
+
+              // Project the movement vector onto the normal and tangent
+              const movementX = newX - newState.ship.x;
+              const movementY = newY - newState.ship.y;
+
+              // Calculate radial component (toward/away from center)
+              const radialComponent = movementX * normalX + movementY * normalY;
+
+              // Calculate tangential component (parallel to barrier)
+              const tangentX = movementX - radialComponent * normalX;
+              const tangentY = movementY - radialComponent * normalY;
+
+              // Always allow tangential movement
+              newState.ship.x += tangentX;
+              newState.ship.y += tangentY;
+
+              // Allow radial movement only if it's toward the center (negative radial component)
+              if (radialComponent < 0) {
+                // Moving toward center - allow this movement
+                newState.ship.x += radialComponent * normalX;
+                newState.ship.y += radialComponent * normalY;
+              }
+
+              // Adjust velocity to prevent moving outward
+              const velocityDotNormal =
+                newState.ship.vx * normalX + newState.ship.vy * normalY;
+              if (velocityDotNormal > 0) {
+                // Remove outward velocity component
+                newState.ship.vx -= velocityDotNormal * normalX;
+                newState.ship.vy -= velocityDotNormal * normalY;
+              }
+            }
+          }
 
           newState.ship.x = normalizeCoord(newState.ship.x);
           newState.ship.y = normalizeCoord(newState.ship.y);
@@ -1831,9 +1892,22 @@ export const SpaceMap: React.FC = () => {
       const barrierScreenY = centerY + barrierWrappedDeltaY;
 
       ctx.save();
-      ctx.globalAlpha = 0.15; // Muito transparente
-      ctx.strokeStyle = "#888888"; // Cinza
-      ctx.lineWidth = 2;
+      // Check if barrier should flash red
+      const timeSinceFlash = currentTime - barrierFlashTime;
+      const isFlashing = timeSinceFlash < 500; // Flash for 500ms
+
+      if (isFlashing) {
+        // Red flash effect
+        const flashIntensity = Math.max(0, 1 - timeSinceFlash / 500);
+        ctx.globalAlpha = 0.3 + flashIntensity * 0.4; // More visible when flashing
+        ctx.strokeStyle = `rgba(255, 0, 0, ${0.8 + flashIntensity * 0.2})`; // Red with varying intensity
+        ctx.lineWidth = 3 + flashIntensity * 2; // Thicker line when flashing
+      } else {
+        // Normal appearance
+        ctx.globalAlpha = 0.15; // Muito transparente
+        ctx.strokeStyle = "#888888"; // Cinza
+        ctx.lineWidth = 2;
+      }
 
       // Rotaç��o lenta baseada no tempo
       const rotationTime = currentTime * 0.0005; // Muito lenta
