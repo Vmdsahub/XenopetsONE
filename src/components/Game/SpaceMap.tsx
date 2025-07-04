@@ -232,6 +232,25 @@ export const SpaceMap: React.FC = () => {
     angle: 0,
   });
 
+  // Effect to handle landing animation completion
+  useEffect(() => {
+    if (!isLandingAnimationActive && currentScreen === "planet") {
+      // Force ship to not render when on planet screen
+      setShipRenderState({
+        shouldRender: false,
+        scale: 0,
+        angle: 0,
+      });
+    } else if (!isLandingAnimationActive && currentScreen === "world") {
+      // Reset to normal rendering when back to world
+      setShipRenderState({
+        shouldRender: true,
+        scale: 1,
+        angle: gameState.ship.angle,
+      });
+    }
+  }, [isLandingAnimationActive, currentScreen, gameState.ship.angle]);
+
   // World editing state
   const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -2190,9 +2209,9 @@ export const SpaceMap: React.FC = () => {
       drawShipTrail(ctx, shipScreenX, shipScreenY, shipWorldX, shipWorldY);
 
       // Render ship (with landing animation support)
-      let shipScale = shipRenderState.scale;
-      let shipAngle = shipRenderState.angle;
-      let shouldRenderShip = shipRenderState.shouldRender;
+      let shipScale = 1;
+      let shipAngle = gameState.ship.angle;
+      let shouldRenderShip = true;
 
       // Handle landing animation
       if (isLandingAnimationActive && landingAnimationData) {
@@ -2205,13 +2224,6 @@ export const SpaceMap: React.FC = () => {
           setIsLandingAnimationActive(false);
           const planetData = landingAnimationData.planet;
           setLandingAnimationData(null);
-
-          // Update ship render state to hide the ship
-          setShipRenderState({
-            shouldRender: false,
-            scale: 0,
-            angle: shipAngle,
-          });
 
           // Update the game state to keep ship at planet position before transition
           setGameState((prevState) => ({
@@ -2228,6 +2240,9 @@ export const SpaceMap: React.FC = () => {
           // Immediate transition to prevent visual glitches
           setCurrentPlanet(planetData);
           setCurrentScreen("planet");
+
+          // Don't render this frame
+          return;
         } else {
           // Calculate orbital animation
           const planet = landingAnimationData.planet;
@@ -2265,34 +2280,14 @@ export const SpaceMap: React.FC = () => {
             const fadeProgress = (progress - fadeStart) / (1 - fadeStart);
             shipScale = Math.max(0, 1 - Math.pow(fadeProgress, 2) * 2); // Quadratic fade out
           }
-
-          // Update ship render state during animation
-          setShipRenderState({
-            shouldRender: true,
-            scale: shipScale,
-            angle: shipAngle,
-          });
         }
-      } else if (!isLandingAnimationActive && landingAnimationData) {
-        // If landing animation just ended but states haven't updated yet, ensure ship stays at planet
-        shipWorldX = landingAnimationData.planet.x;
-        shipWorldY = landingAnimationData.planet.y;
-        shouldRenderShip = false;
-        setShipRenderState((prev) => ({ ...prev, shouldRender: false }));
-      } else if (currentScreen === "planet") {
-        // If we're on planet screen, don't render the ship
-        shouldRenderShip = false;
-        setShipRenderState((prev) => ({ ...prev, shouldRender: false }));
-      } else if (!isLandingAnimationActive) {
-        // Normal ship rendering
-        shipAngle = gameState.ship.angle;
-        shipScale = 1;
-        shouldRenderShip = true;
-        setShipRenderState({
-          shouldRender: true,
-          scale: 1,
-          angle: gameState.ship.angle,
-        });
+      }
+
+      // Use persistent state for ship rendering on planet screen
+      if (currentScreen === "planet") {
+        shouldRenderShip = shipRenderState.shouldRender;
+        shipScale = shipRenderState.scale;
+        shipAngle = shipRenderState.angle;
       }
 
       // Only render ship if it should be rendered and has visible scale
@@ -2688,7 +2683,7 @@ export const SpaceMap: React.FC = () => {
         {user?.isAdmin && isWorldEditMode ? (
           <>
             <div className="text-yellow-400 font-bold mb-1">
-              ��� MODO EDIÇÃO
+              ���� MODO EDIÇÃO
             </div>
             <div>�� 1º Click: Selecionar mundo</div>
             <div>
