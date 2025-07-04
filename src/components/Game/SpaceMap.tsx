@@ -119,7 +119,7 @@ const TRAIL_POINT_DISTANCE = 6;
 const TRAIL_LIFETIME = 1200; // milliseconds
 const TRAIL_WIDTH = 12;
 
-export const SpaceMap: React.FC = () => {
+const SpaceMapComponent: React.FC = () => {
   const {
     getShipState,
     setCurrentScreen,
