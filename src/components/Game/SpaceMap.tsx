@@ -2190,7 +2190,6 @@ export const SpaceMap: React.FC = () => {
         const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
         if (progress >= 1) {
-          console.log("🚀 LANDING: Animation complete, progress:", progress);
           // Animation complete - immediately transition without visual artifacts
           setIsLandingAnimationActive(false);
           const planetData = landingAnimationData.planet;
@@ -2214,7 +2213,6 @@ export const SpaceMap: React.FC = () => {
 
           // Don't render the ship at all when animation completes
           shouldRenderShip = false;
-          console.log("🚀 LANDING: Set shouldRenderShip to false");
         } else {
           // Calculate orbital animation
           const planet = landingAnimationData.planet;
@@ -2253,23 +2251,20 @@ export const SpaceMap: React.FC = () => {
             shipScale = Math.max(0, 1 - Math.pow(fadeProgress, 2) * 2); // Quadratic fade out
           }
         }
-      }
-
-      // If landing animation just ended but states haven't updated yet, ensure ship stays at planet
-      if (!isLandingAnimationActive && landingAnimationData) {
+      } else if (!isLandingAnimationActive && landingAnimationData) {
+        // If landing animation just ended but states haven't updated yet, ensure ship stays at planet
         shipWorldX = landingAnimationData.planet.x;
         shipWorldY = landingAnimationData.planet.y;
+        shouldRenderShip = false;
+      } else if (
+        isLandingAnimationActive === false &&
+        currentScreen === "planet"
+      ) {
+        // If we're transitioning to planet screen, don't render the ship
         shouldRenderShip = false;
       }
 
       // Only render ship if it should be rendered and has visible scale
-      console.log("🚀 RENDER CHECK:", {
-        shouldRenderShip,
-        shipScale,
-        isLandingAnimationActive,
-        willRender: shouldRenderShip && shipScale > 0,
-      });
-
       if (shouldRenderShip && shipScale > 0) {
         ctx.save();
         ctx.translate(shipScreenX, shipScreenY);
