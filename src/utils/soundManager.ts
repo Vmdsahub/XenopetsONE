@@ -833,7 +833,7 @@ export const playLaserShootSound = (): Promise<void> => {
 };
 
 /**
- * Creates a spaceship landing sound using Web Audio API - clean and similar to navigation
+ * Creates a spaceship landing sound using Web Audio API - identical to navigation sound architecture
  */
 const createLandingSound = (): Promise<void> => {
   return new Promise((resolve) => {
@@ -842,8 +842,8 @@ const createLandingSound = (): Promise<void> => {
 
       const startTime = audioContext.currentTime;
 
-      // Create oscillators for a clean landing sequence sound
-      const osc1 = audioContext.createOscillator(); // Main engine
+      // Create oscillators identical to continuous movement sound
+      const osc1 = audioContext.createOscillator(); // Main engine tone
       const osc2 = audioContext.createOscillator(); // Harmonic
       const osc3 = audioContext.createOscillator(); // Sub-harmonic
 
@@ -852,76 +852,52 @@ const createLandingSound = (): Promise<void> => {
       const gain3 = audioContext.createGain();
       const masterGain = audioContext.createGain();
 
-      // Add clean filtering similar to navigation sound
-      const filter = audioContext.createBiquadFilter();
-      const filter2 = audioContext.createBiquadFilter();
+      // Add filtering identical to navigation sound
+      const filterNode = audioContext.createBiquadFilter();
+      const filterNode2 = audioContext.createBiquadFilter();
 
-      // Connect audio nodes
+      // Connect audio chain exactly like continuous movement sound
       osc1.connect(gain1);
       osc2.connect(gain2);
       osc3.connect(gain3);
 
-      gain1.connect(filter);
-      gain2.connect(filter);
-      gain3.connect(filter);
+      gain1.connect(filterNode);
+      gain2.connect(filterNode);
+      gain3.connect(filterNode);
 
-      filter.connect(filter2);
-      filter2.connect(masterGain);
+      filterNode.connect(filterNode2);
+      filterNode2.connect(masterGain);
       masterGain.connect(audioContext.destination);
 
-      // Configure filters for clean spaceship landing sound
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(800, startTime);
-      filter.frequency.linearRampToValueAtTime(600, startTime + 2.0);
+      // Configure filters identical to navigation sound
+      filterNode.type = "lowpass";
+      filterNode.frequency.setValueAtTime(800, startTime);
+      filterNode.Q.setValueAtTime(1, startTime);
 
-      filter2.type = "highpass";
-      filter2.frequency.setValueAtTime(80, startTime);
-      filter2.Q.setValueAtTime(0.5, startTime);
+      filterNode2.type = "highpass";
+      filterNode2.frequency.setValueAtTime(80, startTime);
+      filterNode2.Q.setValueAtTime(0.5, startTime);
 
-      // Configure oscillators for clean engine sound - same types as navigation
-      osc1.type = "sine"; // Main engine tone
+      // Configure oscillators identical to navigation sound
+      osc1.type = "sine"; // Smooth main tone
       osc2.type = "triangle"; // Gentle harmonic
       osc3.type = "sine"; // Sub tone
 
-      // Landing sequence frequencies - descending like an engine powering down
-      // Phase 1: Approach with higher engine tone
-      osc1.frequency.setValueAtTime(160, startTime);
-      osc1.frequency.linearRampToValueAtTime(120, startTime + 1.5);
-      osc1.frequency.linearRampToValueAtTime(100, startTime + 2.5);
+      // Use same base frequencies as navigation sound
+      osc1.frequency.setValueAtTime(140, startTime);
+      osc2.frequency.setValueAtTime(210, startTime); // Fifth above
+      osc3.frequency.setValueAtTime(70, startTime); // Octave below
 
-      // Phase 2: Harmonic follows main engine
-      osc2.frequency.setValueAtTime(240, startTime);
-      osc2.frequency.linearRampToValueAtTime(180, startTime + 1.5);
-      osc2.frequency.linearRampToValueAtTime(150, startTime + 2.5);
+      // Set individual gains identical to navigation sound
+      gain1.gain.setValueAtTime(0.04, startTime);
+      gain2.gain.setValueAtTime(0.02, startTime);
+      gain3.gain.setValueAtTime(0.015, startTime);
 
-      // Phase 3: Sub-harmonic provides depth
-      osc3.frequency.setValueAtTime(80, startTime);
-      osc3.frequency.linearRampToValueAtTime(60, startTime + 1.5);
-      osc3.frequency.linearRampToValueAtTime(50, startTime + 2.5);
-
-      // Volume envelopes for smooth landing sequence
-      // Main engine - consistent throughout landing
-      gain1.gain.setValueAtTime(0.06, startTime);
-      gain1.gain.linearRampToValueAtTime(0.08, startTime + 0.5);
-      gain1.gain.linearRampToValueAtTime(0.04, startTime + 2.0);
-      gain1.gain.exponentialRampToValueAtTime(0.001, startTime + 2.8);
-
-      // Harmonic - gentle pulses for landing feel
-      gain2.gain.setValueAtTime(0.03, startTime);
-      gain2.gain.linearRampToValueAtTime(0.04, startTime + 0.5);
-      gain2.gain.linearRampToValueAtTime(0.02, startTime + 2.0);
-      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + 2.8);
-
-      // Sub-harmonic - steady foundation
-      gain3.gain.setValueAtTime(0.02, startTime);
-      gain3.gain.linearRampToValueAtTime(0.025, startTime + 0.5);
-      gain3.gain.linearRampToValueAtTime(0.015, startTime + 2.0);
-      gain3.gain.exponentialRampToValueAtTime(0.001, startTime + 2.8);
-
-      // Master volume - gentle and clean
-      masterGain.gain.setValueAtTime(0.8, startTime);
-      masterGain.gain.setValueAtTime(0.8, startTime + 2.2);
-      masterGain.gain.linearRampToValueAtTime(0, startTime + 3.0);
+      // Landing sequence with gentle fade in and out like navigation
+      masterGain.gain.setValueAtTime(0, startTime);
+      masterGain.gain.linearRampToValueAtTime(0.25, startTime + 0.3); // Fade in
+      masterGain.gain.setValueAtTime(0.25, startTime + 2.2); // Hold
+      masterGain.gain.linearRampToValueAtTime(0, startTime + 2.8); // Fade out
 
       // Start and stop oscillators
       osc1.start(startTime);
