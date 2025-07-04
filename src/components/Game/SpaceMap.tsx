@@ -2503,7 +2503,7 @@ const SpaceMapComponent: React.FC = () => {
   ]);
 
   return (
-    <div className="w-full h-full relative bg-gradient-to-br from-slate-950 via-blue-950 to-black rounded-lg overflow-hidden shadow-2xl border border-blue-900/10">
+    <div className="w-full h-full relative bg-gradient-to-br from-slate-950 via-blue-950 to-black rounded-lg overflow-hidden shadow-2xl border border-blue-900/10 game-container gpu-accelerated">
       <PlanetLandingModal
         isOpen={showLandingModal}
         planet={selectedPlanet}
