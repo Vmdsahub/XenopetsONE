@@ -1855,9 +1855,22 @@ export const SpaceMap: React.FC = () => {
       const barrierScreenY = centerY + barrierWrappedDeltaY;
 
       ctx.save();
-      ctx.globalAlpha = 0.15; // Muito transparente
-      ctx.strokeStyle = "#888888"; // Cinza
-      ctx.lineWidth = 2;
+      // Check if barrier should flash red
+      const timeSinceFlash = currentTime - barrierFlashTime;
+      const isFlashing = timeSinceFlash < 500; // Flash for 500ms
+
+      if (isFlashing) {
+        // Red flash effect
+        const flashIntensity = Math.max(0, 1 - timeSinceFlash / 500);
+        ctx.globalAlpha = 0.3 + flashIntensity * 0.4; // More visible when flashing
+        ctx.strokeStyle = `rgba(255, 0, 0, ${0.8 + flashIntensity * 0.2})`; // Red with varying intensity
+        ctx.lineWidth = 3 + flashIntensity * 2; // Thicker line when flashing
+      } else {
+        // Normal appearance
+        ctx.globalAlpha = 0.15; // Muito transparente
+        ctx.strokeStyle = "#888888"; // Cinza
+        ctx.lineWidth = 2;
+      }
 
       // Rotaç��o lenta baseada no tempo
       const rotationTime = currentTime * 0.0005; // Muito lenta
