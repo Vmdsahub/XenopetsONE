@@ -2121,12 +2121,12 @@ export const SpaceMap: React.FC = () => {
             );
             const landingIntensity = Math.max(normalizedOrbitalSpeed, 0.4); // Minimum intensity for visibility
 
-            createTrailPoint(
-              shipWorldX,
-              shipWorldY,
-              currentTime,
-              landingIntensity,
-            );
+            // Calculate trail position at the back of the ship during landing
+            const trailOffset = 12; // Distance from ship center to back
+            const trailX = shipWorldX - Math.cos(shipAngle) * trailOffset;
+            const trailY = shipWorldY - Math.sin(shipAngle) * trailOffset;
+
+            createTrailPoint(trailX, trailY, currentTime, landingIntensity);
             lastTrailTime.current = currentTime;
           }
         }
