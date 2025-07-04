@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Rocket } from "lucide-react";
 
@@ -15,7 +15,7 @@ interface PlanetLandingModalProps {
   onCancel: () => void;
 }
 
-export const PlanetLandingModal: React.FC<PlanetLandingModalProps> = ({
+const PlanetLandingModalComponent: React.FC<PlanetLandingModalProps> = ({
   isOpen,
   planet,
   onConfirm,
@@ -99,3 +99,6 @@ export const PlanetLandingModal: React.FC<PlanetLandingModalProps> = ({
     </AnimatePresence>
   );
 };
+
+// Memoize component for performance optimization
+export const PlanetLandingModal = memo(PlanetLandingModalComponent);
