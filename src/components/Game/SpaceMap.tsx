@@ -971,7 +971,7 @@ export const SpaceMap: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 5 + 1.5, // Movimento vis��vel para poeira cósmica
+          x: Math.random() * 5 + 1.5, // Movimento visível para poeira cósmica
           y: Math.random() * 5 + 1.5,
         },
         floatPhase: {
@@ -1843,8 +1843,8 @@ export const SpaceMap: React.FC = () => {
             star.y < canvas.height + 100,
         );
 
-      // Create dark modern space background with subtle gradients
-      // Base deep space gradient - much darker
+      // Create very dark space background with deep blue tones
+      // Base deep space gradient - almost black with subtle blue
       const gradient = ctx.createRadialGradient(
         canvas.width * 0.3,
         canvas.height * 0.2,
@@ -1853,16 +1853,16 @@ export const SpaceMap: React.FC = () => {
         canvas.height * 0.8,
         Math.max(canvas.width, canvas.height) * 1.2,
       );
-      gradient.addColorStop(0, "#050510");
-      gradient.addColorStop(0.3, "#0a0a1a");
-      gradient.addColorStop(0.6, "#0f0820");
-      gradient.addColorStop(0.8, "#050a15");
+      gradient.addColorStop(0, "#020307");
+      gradient.addColorStop(0.3, "#040610");
+      gradient.addColorStop(0.6, "#030915");
+      gradient.addColorStop(0.8, "#02060c");
       gradient.addColorStop(1, "#000000");
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Add very subtle nebula effect overlays
+      // Add very subtle blue nebula effect overlays
       const nebulaGradient1 = ctx.createRadialGradient(
         canvas.width * 0.7,
         canvas.height * 0.3,
@@ -1871,9 +1871,9 @@ export const SpaceMap: React.FC = () => {
         canvas.height * 0.3,
         canvas.width * 0.4,
       );
-      nebulaGradient1.addColorStop(0, "rgba(75, 20, 150, 0.06)");
-      nebulaGradient1.addColorStop(0.5, "rgba(50, 30, 120, 0.03)");
-      nebulaGradient1.addColorStop(1, "rgba(75, 20, 150, 0)");
+      nebulaGradient1.addColorStop(0, "rgba(30, 60, 120, 0.04)");
+      nebulaGradient1.addColorStop(0.5, "rgba(20, 40, 80, 0.02)");
+      nebulaGradient1.addColorStop(1, "rgba(30, 60, 120, 0)");
 
       ctx.fillStyle = nebulaGradient1;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1886,9 +1886,9 @@ export const SpaceMap: React.FC = () => {
         canvas.height * 0.8,
         canvas.width * 0.35,
       );
-      nebulaGradient2.addColorStop(0, "rgba(20, 60, 120, 0.05)");
-      nebulaGradient2.addColorStop(0.5, "rgba(10, 80, 60, 0.02)");
-      nebulaGradient2.addColorStop(1, "rgba(20, 60, 120, 0)");
+      nebulaGradient2.addColorStop(0, "rgba(15, 40, 90, 0.03)");
+      nebulaGradient2.addColorStop(0.5, "rgba(10, 30, 60, 0.015)");
+      nebulaGradient2.addColorStop(1, "rgba(15, 40, 90, 0)");
 
       ctx.fillStyle = nebulaGradient2;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
