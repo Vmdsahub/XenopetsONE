@@ -904,7 +904,7 @@ export const SpaceMap: React.FC = () => {
     }
 
     // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador
-    for (let i = 0; i < 1500; i++) {
+    for (let i = 0; i < 3000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -2740,7 +2740,7 @@ export const SpaceMap: React.FC = () => {
           <p className="text-xs text-gray-500 mt-2">
             ✅ Alterações salvas automaticamente
             <br />
-            ESC para cancelar �� Clique fora para desselecionar
+            ESC para cancelar • Clique fora para desselecionar
           </p>
         </div>
       )}
