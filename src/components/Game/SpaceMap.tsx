@@ -891,7 +891,7 @@ export const SpaceMap: React.FC = () => {
         parallax: 1.0, // Paralaxe distinta
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.75
+          Math.random() < 0.9
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: Math.random() < 0.15 ? "bright" : "normal",
