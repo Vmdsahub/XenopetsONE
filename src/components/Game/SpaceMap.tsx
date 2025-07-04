@@ -117,6 +117,7 @@ export const SpaceMap: React.FC = () => {
     getShipState,
     setCurrentScreen,
     setCurrentPlanet,
+    currentScreen,
     isWorldEditMode,
     setWorldEditMode,
     user,
@@ -146,6 +147,7 @@ export const SpaceMap: React.FC = () => {
   const planetImagesRef = useRef<Map<string, HTMLImageElement>>(new Map());
   const shipImageRef = useRef<HTMLImageElement | null>(null);
   const movementSoundActiveRef = useRef<boolean>(false);
+  const shouldHideShipRef = useRef<boolean>(false);
 
   // Initialize state from store or use defaults
   const getInitialGameState = useCallback((): GameState => {
@@ -220,6 +222,38 @@ export const SpaceMap: React.FC = () => {
     initialShipX: number;
     initialShipY: number;
   } | null>(null);
+
+  // Ship rendering state - persists across renders
+  const [shipRenderState, setShipRenderState] = useState<{
+    shouldRender: boolean;
+    scale: number;
+    angle: number;
+  }>({
+    shouldRender: true,
+    scale: 1,
+    angle: 0,
+  });
+
+  // Effect to handle landing animation completion
+  useEffect(() => {
+    if (!isLandingAnimationActive && currentScreen === "planet") {
+      // Force ship to not render when on planet screen
+      shouldHideShipRef.current = true;
+      setShipRenderState({
+        shouldRender: false,
+        scale: 0,
+        angle: 0,
+      });
+    } else if (!isLandingAnimationActive && currentScreen === "world") {
+      // Reset to normal rendering when back to world
+      shouldHideShipRef.current = false;
+      setShipRenderState({
+        shouldRender: true,
+        scale: 1,
+        angle: gameState.ship.angle,
+      });
+    }
+  }, [isLandingAnimationActive, currentScreen, gameState.ship.angle]);
 
   // World editing state
   const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
@@ -1378,7 +1412,7 @@ export const SpaceMap: React.FC = () => {
       setLandingAnimationData({
         planet: selectedPlanet,
         startTime: performance.now(),
-        duration: 2500, // 2.5 seconds animation
+        duration: 1500, // 1.5 seconds animation - more responsive
         initialShipX: gameState.ship.x,
         initialShipY: gameState.ship.y,
       });
@@ -1431,6 +1465,11 @@ export const SpaceMap: React.FC = () => {
     let lastTime = 0;
 
     const gameLoop = (currentTime: number) => {
+      // Stop game loop immediately if we're not on world screen
+      if (currentScreen !== "world") {
+        return;
+      }
+
       const deltaTime = Math.min(currentTime - lastTime, 16.67);
 
       // Calculate FPS
@@ -2098,8 +2137,9 @@ export const SpaceMap: React.FC = () => {
         const elapsed = currentTime - landingAnimationData.startTime;
         const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
+        const planet = landingAnimationData.planet;
+
         if (progress < 1) {
-          const planet = landingAnimationData.planet;
           const initialDx = landingAnimationData.initialShipX - planet.x;
           const initialDy = landingAnimationData.initialShipY - planet.y;
           const initialRadius = Math.sqrt(
@@ -2113,6 +2153,10 @@ export const SpaceMap: React.FC = () => {
 
           shipWorldX = planet.x + Math.cos(angleProgress) * currentRadius;
           shipWorldY = planet.y + Math.sin(angleProgress) * currentRadius;
+        } else {
+          // Animation complete - keep ship at planet position
+          shipWorldX = planet.x;
+          shipWorldY = planet.y;
         }
       }
 
@@ -2176,6 +2220,7 @@ export const SpaceMap: React.FC = () => {
       // Render ship (with landing animation support)
       let shipScale = 1;
       let shipAngle = gameState.ship.angle;
+      let shouldRenderShip = true;
 
       // Handle landing animation
       if (isLandingAnimationActive && landingAnimationData) {
@@ -2184,30 +2229,29 @@ export const SpaceMap: React.FC = () => {
         const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
         if (progress >= 1) {
-          // Animation complete - set final position at planet and hide ship
-          shipWorldX = landingAnimationData.planet.x;
-          shipWorldY = landingAnimationData.planet.y;
-          shipScale = 0; // Hide the ship immediately
+          // Animation complete - immediately hide ship using ref
+          shouldHideShipRef.current = true;
 
-          // Update the game state to keep ship at planet position
+          // Animation complete - immediately transition without visual artifacts
+          setIsLandingAnimationActive(false);
+          const planetData = landingAnimationData.planet;
+          setLandingAnimationData(null);
+
+          // Update the game state to keep ship at planet position before transition
           setGameState((prevState) => ({
             ...prevState,
             ship: {
               ...prevState.ship,
-              x: landingAnimationData.planet.x,
-              y: landingAnimationData.planet.y,
+              x: planetData.x,
+              y: planetData.y,
               vx: 0,
               vy: 0,
             },
           }));
 
-          // Use setTimeout to delay the transition, preventing the ship from appearing at center
-          setTimeout(() => {
-            setIsLandingAnimationActive(false);
-            setLandingAnimationData(null);
-            setCurrentPlanet(landingAnimationData.planet);
-            setCurrentScreen("planet");
-          }, 100); // Brief delay to ensure smooth transition
+          // Immediate transition to prevent visual glitches
+          setCurrentPlanet(planetData);
+          setCurrentScreen("planet");
         } else {
           // Calculate orbital animation
           const planet = landingAnimationData.planet;
@@ -2237,51 +2281,73 @@ export const SpaceMap: React.FC = () => {
           // Ship points in trajectory direction (tangent to the orbit)
           shipAngle = angleProgress + Math.PI / 2; // Tangent is perpendicular to radius
 
-          // Scale down as landing progresses, becoming completely invisible
-          shipScale = Math.max(0, 1 - progress * 1.2); // Ship becomes completely invisible
+          // Smooth scale transition with accelerated fade at the end
+          const fadeStart = 0.7; // Start fading at 70% progress
+          if (progress < fadeStart) {
+            shipScale = 1; // Keep full size for most of the animation
+          } else {
+            const fadeProgress = (progress - fadeStart) / (1 - fadeStart);
+            shipScale = Math.max(0, 1 - Math.pow(fadeProgress, 2) * 2); // Quadratic fade out
+          }
         }
       }
 
-      ctx.save();
-      ctx.translate(shipScreenX, shipScreenY);
-      ctx.rotate(shipAngle);
-      ctx.scale(shipScale, shipScale);
-      ctx.globalAlpha = 1;
-
-      // Render ship image if loaded, otherwise fallback to original drawing
-      if (shipImageRef.current && shipImageRef.current.complete) {
-        const shipSize = 30; // Adjust size as needed
-        ctx.drawImage(
-          shipImageRef.current,
-          -shipSize / 2,
-          -shipSize / 2,
-          shipSize,
-          shipSize,
-        );
-      } else {
-        // Fallback to original ship drawing
-        ctx.fillStyle = "#ffffff";
-        ctx.strokeStyle = "#00aaff";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(15, 0);
-        ctx.lineTo(-10, -8);
-        ctx.lineTo(-6, 0);
-        ctx.lineTo(-10, 8);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = "#ff4400";
-        ctx.beginPath();
-        ctx.arc(-8, -4, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(-8, 4, 1.5, 0, Math.PI * 2);
-        ctx.fill();
+      // Use persistent state for ship rendering on planet screen
+      if (currentScreen === "planet") {
+        shouldRenderShip = shipRenderState.shouldRender;
+        shipScale = shipRenderState.scale;
+        shipAngle = shipRenderState.angle;
       }
 
-      ctx.restore();
+      // Immediate check using ref - overrides everything else
+      if (shouldHideShipRef.current || currentScreen === "planet") {
+        shouldRenderShip = false;
+        shipScale = 0;
+      }
+
+      // Only render ship if it should be rendered and has visible scale and NOT on planet screen
+      if (shouldRenderShip && shipScale > 0 && currentScreen !== "planet") {
+        ctx.save();
+        ctx.translate(shipScreenX, shipScreenY);
+        ctx.rotate(shipAngle);
+        ctx.scale(shipScale, shipScale);
+        ctx.globalAlpha = 1;
+
+        // Render ship image if loaded, otherwise fallback to original drawing
+        if (shipImageRef.current && shipImageRef.current.complete) {
+          const shipSize = 30; // Adjust size as needed
+          ctx.drawImage(
+            shipImageRef.current,
+            -shipSize / 2,
+            -shipSize / 2,
+            shipSize,
+            shipSize,
+          );
+        } else {
+          // Fallback to original ship drawing
+          ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = "#00aaff";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(15, 0);
+          ctx.lineTo(-10, -8);
+          ctx.lineTo(-6, 0);
+          ctx.lineTo(-10, 8);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = "#ff4400";
+          ctx.beginPath();
+          ctx.arc(-8, -4, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(-8, 4, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
       ctx.globalAlpha = 1;
 
       // Render radar pulses

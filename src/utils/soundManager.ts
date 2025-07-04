@@ -884,53 +884,53 @@ const createLandingSound = (): Promise<void> => {
       osc3.type = "sine"; // Sub tone
 
       // Landing sequence frequencies - start higher (approach) then descend (landing)
-      // Phase 1: High approach frequencies
+      // Phase 1: High approach frequencies - adjusted for 1.5s animation
       osc1.frequency.setValueAtTime(180, startTime); // Higher approach
-      osc1.frequency.linearRampToValueAtTime(140, startTime + 1.5); // Decelerate to normal
-      osc1.frequency.linearRampToValueAtTime(100, startTime + 2.5); // Final landing descent
+      osc1.frequency.linearRampToValueAtTime(140, startTime + 0.9); // Decelerate to normal
+      osc1.frequency.linearRampToValueAtTime(100, startTime + 1.4); // Final landing descent
 
       osc2.frequency.setValueAtTime(270, startTime); // Higher harmonic approach
-      osc2.frequency.linearRampToValueAtTime(210, startTime + 1.5); // Decelerate
-      osc2.frequency.linearRampToValueAtTime(150, startTime + 2.5); // Landing harmonic
+      osc2.frequency.linearRampToValueAtTime(210, startTime + 0.9); // Decelerate
+      osc2.frequency.linearRampToValueAtTime(150, startTime + 1.4); // Landing harmonic
 
       osc3.frequency.setValueAtTime(90, startTime); // Higher sub approach
-      osc3.frequency.linearRampToValueAtTime(70, startTime + 1.5); // Decelerate
-      osc3.frequency.linearRampToValueAtTime(50, startTime + 2.5); // Deep landing rumble
+      osc3.frequency.linearRampToValueAtTime(70, startTime + 0.9); // Decelerate
+      osc3.frequency.linearRampToValueAtTime(50, startTime + 1.4); // Deep landing rumble
 
       // Landing volume envelope - approach, decelerate, touchdown
       gain1.gain.setValueAtTime(0.06, startTime); // Strong approach
-      gain1.gain.linearRampToValueAtTime(0.04, startTime + 1.5); // Decelerate
-      gain1.gain.linearRampToValueAtTime(0.08, startTime + 2.3); // Touchdown emphasis
-      gain1.gain.exponentialRampToValueAtTime(0.001, startTime + 2.8);
+      gain1.gain.linearRampToValueAtTime(0.04, startTime + 0.9); // Decelerate
+      gain1.gain.linearRampToValueAtTime(0.08, startTime + 1.3); // Touchdown emphasis
+      gain1.gain.exponentialRampToValueAtTime(0.001, startTime + 1.5);
 
       gain2.gain.setValueAtTime(0.03, startTime); // Harmonic approach
-      gain2.gain.linearRampToValueAtTime(0.02, startTime + 1.5); // Decelerate
-      gain2.gain.linearRampToValueAtTime(0.04, startTime + 2.3); // Touchdown emphasis
-      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + 2.8);
+      gain2.gain.linearRampToValueAtTime(0.02, startTime + 0.9); // Decelerate
+      gain2.gain.linearRampToValueAtTime(0.04, startTime + 1.3); // Touchdown emphasis
+      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + 1.5);
 
       gain3.gain.setValueAtTime(0.02, startTime); // Sub approach
-      gain3.gain.linearRampToValueAtTime(0.015, startTime + 1.5); // Decelerate
-      gain3.gain.linearRampToValueAtTime(0.03, startTime + 2.3); // Deep touchdown rumble
-      gain3.gain.exponentialRampToValueAtTime(0.001, startTime + 2.8);
+      gain3.gain.linearRampToValueAtTime(0.015, startTime + 0.9); // Decelerate
+      gain3.gain.linearRampToValueAtTime(0.03, startTime + 1.3); // Deep touchdown rumble
+      gain3.gain.exponentialRampToValueAtTime(0.001, startTime + 1.5);
 
       // Master volume - approach, landing sequence, touchdown
       masterGain.gain.setValueAtTime(0, startTime);
-      masterGain.gain.linearRampToValueAtTime(0.3, startTime + 0.3); // Strong approach
-      masterGain.gain.linearRampToValueAtTime(0.2, startTime + 1.5); // Decelerate
-      masterGain.gain.linearRampToValueAtTime(0.35, startTime + 2.3); // Touchdown emphasis
-      masterGain.gain.linearRampToValueAtTime(0, startTime + 2.8); // Settle down
+      masterGain.gain.linearRampToValueAtTime(0.3, startTime + 0.2); // Strong approach
+      masterGain.gain.linearRampToValueAtTime(0.2, startTime + 0.9); // Decelerate
+      masterGain.gain.linearRampToValueAtTime(0.35, startTime + 1.3); // Touchdown emphasis
+      masterGain.gain.linearRampToValueAtTime(0, startTime + 1.5); // Settle down
 
       // Start and stop oscillators
       osc1.start(startTime);
-      osc1.stop(startTime + 3.0);
+      osc1.stop(startTime + 1.6);
 
       osc2.start(startTime);
-      osc2.stop(startTime + 3.0);
+      osc2.stop(startTime + 1.6);
 
       osc3.start(startTime);
-      osc3.stop(startTime + 3.0);
+      osc3.stop(startTime + 1.6);
 
-      setTimeout(() => resolve(), 3200);
+      setTimeout(() => resolve(), 1700);
     } catch (error) {
       console.warn("Landing sound failed:", error);
       resolve();
