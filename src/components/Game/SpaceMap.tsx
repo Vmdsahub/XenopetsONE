@@ -974,7 +974,7 @@ export const SpaceMap: React.FC = () => {
     }
 
     // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 2000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
