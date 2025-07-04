@@ -2176,6 +2176,7 @@ export const SpaceMap: React.FC = () => {
       // Render ship (with landing animation support)
       let shipScale = 1;
       let shipAngle = gameState.ship.angle;
+      let shouldRenderShip = true;
 
       // Handle landing animation
       if (isLandingAnimationActive && landingAnimationData) {
@@ -2205,8 +2206,8 @@ export const SpaceMap: React.FC = () => {
           setCurrentPlanet(planetData);
           setCurrentScreen("planet");
 
-          // Don't render the ship - it's landing
-          shipScale = 0;
+          // Don't render the ship at all when animation completes
+          shouldRenderShip = false;
         } else {
           // Calculate orbital animation
           const planet = landingAnimationData.planet;
@@ -2247,8 +2248,8 @@ export const SpaceMap: React.FC = () => {
         }
       }
 
-      // Only render ship if it has visible scale
-      if (shipScale > 0) {
+      // Only render ship if it should be rendered and has visible scale
+      if (shouldRenderShip && shipScale > 0) {
         ctx.save();
         ctx.translate(shipScreenX, shipScreenY);
         ctx.rotate(shipAngle);
