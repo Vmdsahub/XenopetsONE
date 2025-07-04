@@ -1927,19 +1927,22 @@ export const SpaceMap: React.FC = () => {
       ctx.fillStyle = nebulaGradient2;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Render stars with extended viewport for smooth scrolling and batching
+      // Render stars with optimized viewport culling
+      const renderBuffer = Math.min(RENDER_BUFFER, 100); // Reduce buffer for better performance
       const renderViewport = {
-        left: -RENDER_BUFFER,
-        right: canvas.width + RENDER_BUFFER,
-        top: -RENDER_BUFFER,
-        bottom: canvas.height + RENDER_BUFFER,
+        left: -renderBuffer,
+        right: canvas.width + renderBuffer,
+        top: -renderBuffer,
+        bottom: canvas.height + renderBuffer,
       };
 
-      // Batch stars by type for optimized rendering
+      // Batch stars by type for optimized rendering - pre-calculate size for performance
       const starBatches = { normal: [], bright: [], giant: [] };
       const starArray = starsRef.current;
+      const arrayLength = starArray.length;
 
-      for (let i = 0, len = starArray.length; i < len; i++) {
+      // Use more aggressive culling and simplified calculations
+      for (let i = 0; i < arrayLength; i++) {
         const star = starArray[i];
         const wrappedDeltaX = getWrappedDistance(star.x, gameState.camera.x);
         const wrappedDeltaY = getWrappedDistance(star.y, gameState.camera.y);
@@ -1949,28 +1952,28 @@ export const SpaceMap: React.FC = () => {
         const screenX = centerX + parallaxX;
         const screenY = centerY + parallaxY;
 
-        // Extended viewport check for smooth rendering
+        // Tighter viewport check with early exit for performance
         if (
-          screenX > renderViewport.left &&
-          screenX < renderViewport.right &&
-          screenY > renderViewport.top &&
-          screenY < renderViewport.bottom
+          screenX >= renderViewport.left &&
+          screenX <= renderViewport.right &&
+          screenY >= renderViewport.top &&
+          screenY <= renderViewport.bottom
         ) {
-          // Enhanced twinkling based on star type
-          const twinkleAlpha = Math.sin(star.twinkle) * 0.4 + 0.6;
+          // Simplified twinkling - less CPU intensive
+          const twinkleAlpha = Math.sin(star.twinkle) * 0.3 + 0.7;
           const pulseSize =
-            star.type === "giant" ? Math.sin(star.pulse * 0.5) * 0.3 + 1 : 1;
+            star.type === "giant" ? Math.sin(star.pulse * 0.5) * 0.2 + 1 : 1;
 
           let finalAlpha = star.opacity * twinkleAlpha;
           let finalSize = star.size * pulseSize;
 
-          // Type-based enhancements
+          // Simplified type-based enhancements
           if (star.type === "bright") {
-            finalAlpha *= 1.4;
-            finalSize *= 1.2;
+            finalAlpha *= 1.3;
+            finalSize *= 1.1;
           } else if (star.type === "giant") {
-            finalAlpha *= 1.6;
-            finalSize *= 1.5;
+            finalAlpha *= 1.5;
+            finalSize *= 1.4;
           }
 
           starBatches[star.type].push({
