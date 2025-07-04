@@ -755,27 +755,54 @@ export const SpaceMap: React.FC = () => {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
       };
 
-      // Main star core - pure light point
+      // Enhanced glow effect for all stars
+      const glowRadius = size * 3;
+      const glowIntensity =
+        type === "giant" ? 0.8 : type === "bright" ? 0.6 : 0.4;
+
+      // Outer glow
       ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
+      const outerGradient = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
+      outerGradient.addColorStop(
+        0,
+        hexToRgba(color, intensity * glowIntensity),
+      );
+      outerGradient.addColorStop(0.4, hexToRgba(color, intensity * 0.3));
+      outerGradient.addColorStop(0.8, hexToRgba(color, intensity * 0.1));
+      outerGradient.addColorStop(1, hexToRgba(color, 0));
+      ctx.fillStyle = outerGradient;
+      ctx.fill();
+
+      // Inner bright glow
+      const innerGlowRadius = size * 1.5;
+      ctx.beginPath();
+      ctx.arc(x, y, innerGlowRadius, 0, Math.PI * 2);
+      const innerGradient = ctx.createRadialGradient(
+        x,
+        y,
+        0,
+        x,
+        y,
+        innerGlowRadius,
+      );
+      innerGradient.addColorStop(0, hexToRgba(color, intensity * 0.9));
+      innerGradient.addColorStop(0.6, hexToRgba(color, intensity * 0.5));
+      innerGradient.addColorStop(1, hexToRgba(color, 0));
+      ctx.fillStyle = innerGradient;
+      ctx.fill();
+
+      // Bright core - pure light point
+      ctx.beginPath();
+      ctx.arc(x, y, size * 0.8, 0, Math.PI * 2);
       ctx.fillStyle = color;
       ctx.fill();
 
-      // Subtle glow effect only for larger stars
-      if (size > 1.0) {
-        const glowRadius = size * 2;
-        const glowIntensity =
-          type === "giant" ? 0.6 : type === "bright" ? 0.4 : 0.3;
-
-        ctx.beginPath();
-        ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
-        gradient.addColorStop(0, hexToRgba(color, intensity * glowIntensity));
-        gradient.addColorStop(0.8, hexToRgba(color, intensity * 0.1));
-        gradient.addColorStop(1, hexToRgba(color, 0));
-        ctx.fillStyle = gradient;
-        ctx.fill();
-      }
+      // Ultra-bright center
+      ctx.beginPath();
+      ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
     },
     [],
   );
