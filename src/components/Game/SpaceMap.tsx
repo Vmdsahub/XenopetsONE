@@ -1489,31 +1489,10 @@ export const SpaceMap: React.FC = () => {
           newState.ship.angle = Math.atan2(dy, dx);
 
           if (mouseInWindow && distance > 10) {
-            // Check if the target destination is within the barrier
-            const targetDistanceFromCenter = Math.sqrt(
-              Math.pow(worldMouseX - CENTER_X, 2) +
-                Math.pow(worldMouseY - CENTER_Y, 2),
-            );
-
-            // Only apply movement if target is within barrier, or if ship is outside and moving inward
-            const shipDistanceFromCenter = Math.sqrt(
-              Math.pow(newState.ship.x - CENTER_X, 2) +
-                Math.pow(newState.ship.y - CENTER_Y, 2),
-            );
-
-            if (
-              targetDistanceFromCenter <= BARRIER_RADIUS ||
-              (shipDistanceFromCenter > BARRIER_RADIUS &&
-                targetDistanceFromCenter < shipDistanceFromCenter)
-            ) {
-              const speedMultiplier = Math.min(distance / 300, 1);
-              const targetSpeed = SHIP_MAX_SPEED * speedMultiplier;
-              newState.ship.vx += (dx / distance) * targetSpeed * 0.04;
-              newState.ship.vy += (dy / distance) * targetSpeed * 0.04;
-            } else {
-              // Player is trying to move outside the barrier - trigger flash
-              setBarrierFlashTime(currentTime);
-            }
+            const speedMultiplier = Math.min(distance / 300, 1);
+            const targetSpeed = SHIP_MAX_SPEED * speedMultiplier;
+            newState.ship.vx += (dx / distance) * targetSpeed * 0.04;
+            newState.ship.vy += (dy / distance) * targetSpeed * 0.04;
           }
         }
 
