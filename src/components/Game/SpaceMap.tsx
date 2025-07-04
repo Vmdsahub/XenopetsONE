@@ -2809,3 +2809,6 @@ const SpaceMapComponent: React.FC = () => {
     </div>
   );
 };
+
+// Memoize component for performance optimization
+export const SpaceMap = memo(SpaceMapComponent);
