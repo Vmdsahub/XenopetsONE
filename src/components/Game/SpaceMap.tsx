@@ -2098,8 +2098,9 @@ export const SpaceMap: React.FC = () => {
         const elapsed = currentTime - landingAnimationData.startTime;
         const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
+        const planet = landingAnimationData.planet;
+
         if (progress < 1) {
-          const planet = landingAnimationData.planet;
           const initialDx = landingAnimationData.initialShipX - planet.x;
           const initialDy = landingAnimationData.initialShipY - planet.y;
           const initialRadius = Math.sqrt(
@@ -2113,6 +2114,10 @@ export const SpaceMap: React.FC = () => {
 
           shipWorldX = planet.x + Math.cos(angleProgress) * currentRadius;
           shipWorldY = planet.y + Math.sin(angleProgress) * currentRadius;
+        } else {
+          // Animation complete - keep ship at planet position
+          shipWorldX = planet.x;
+          shipWorldY = planet.y;
         }
       }
 
@@ -2246,6 +2251,13 @@ export const SpaceMap: React.FC = () => {
             shipScale = Math.max(0, 1 - Math.pow(fadeProgress, 2) * 2); // Quadratic fade out
           }
         }
+      }
+
+      // If landing animation just ended but states haven't updated yet, ensure ship stays at planet
+      if (!isLandingAnimationActive && landingAnimationData) {
+        shipWorldX = landingAnimationData.planet.x;
+        shipWorldY = landingAnimationData.planet.y;
+        shouldRenderShip = false;
       }
 
       // Only render ship if it should be rendered and has visible scale
