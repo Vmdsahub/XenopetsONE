@@ -2109,29 +2109,46 @@ export const SpaceMap: React.FC = () => {
 
           shipWorldX = planet.x + Math.cos(angleProgress) * currentRadius;
           shipWorldY = planet.y + Math.sin(angleProgress) * currentRadius;
+        }
+      }
 
-          // Create trail points during landing animation with proportional intensity
-          if (currentTime - lastTrailTime.current > 35) {
+      // Create trail points during landing animation (moved outside the progress check)
+      if (isLandingAnimationActive && landingAnimationData) {
+        const currentTime = performance.now();
+        if (currentTime - lastTrailTime.current > 35) {
+          const elapsed = currentTime - landingAnimationData.startTime;
+          const progress = Math.min(elapsed / landingAnimationData.duration, 1);
+
+          if (progress < 1) {
+            const planet = landingAnimationData.planet;
+            const initialDx = landingAnimationData.initialShipX - planet.x;
+            const initialDy = landingAnimationData.initialShipY - planet.y;
+            const initialRadius = Math.sqrt(
+              initialDx * initialDx + initialDy * initialDy,
+            );
+            const orbitSpeed = 1;
+            const initialAngle = Math.atan2(initialDy, initialDx);
+            const angleProgress = initialAngle + progress * orbitSpeed * Math.PI * 2;
+
             // Calculate orbital velocity for proportional trail intensity
-            const orbitalSpeed =
-              (2 * Math.PI * currentRadius) / landingAnimationData.duration;
+            const currentRadius = initialRadius * (1 - progress * 0.9);
+            const orbitalSpeed = (2 * Math.PI * currentRadius) / landingAnimationData.duration;
             const normalizedOrbitalSpeed = Math.min(
               orbitalSpeed / (SHIP_MAX_SPEED * 300),
               1,
             );
-            const landingIntensity = Math.max(normalizedOrbitalSpeed, 0.4); // Minimum intensity for visibility
+            const landingIntensity = Math.max(normalizedOrbitalSpeed, 0.4);
 
             // Calculate trail position at the back of the ship during landing
-            const trailOffset = 12; // Distance from ship center to back
-            const currentShipAngle = angleProgress + Math.PI / 2; // Same as shipAngle calculation
-            const trailX =
-              shipWorldX - Math.cos(currentShipAngle) * trailOffset;
-            const trailY =
-              shipWorldY - Math.sin(currentShipAngle) * trailOffset;
+            const trailOffset = 12;
+            const currentShipAngle = angleProgress + Math.PI / 2;
+            const trailX = shipWorldX - Math.cos(currentShipAngle) * trailOffset;
+            const trailY = shipWorldY - Math.sin(currentShipAngle) * trailOffset;
 
             createTrailPoint(trailX, trailY, currentTime, landingIntensity);
             lastTrailTime.current = currentTime;
           }
+        }
         }
       }
 
