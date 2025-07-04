@@ -1517,7 +1517,7 @@ export const SpaceMap: React.FC = () => {
             newState.ship.x = newX;
             newState.ship.y = newY;
           } else {
-            // Ship trying to move outside barrier - allow sliding along the barrier
+            // Ship trying to move outside barrier
             setBarrierFlashTime(currentTime);
 
             // Calculate the direction from center to the ship's current position
@@ -1532,23 +1532,33 @@ export const SpaceMap: React.FC = () => {
               const normalX = centerToShipX / centerToShipDist;
               const normalY = centerToShipY / centerToShipDist;
 
-              // Project the movement vector onto the tangent (perpendicular to normal)
+              // Project the movement vector onto the normal and tangent
               const movementX = newX - newState.ship.x;
               const movementY = newY - newState.ship.y;
 
-              // Calculate the tangential component (parallel to barrier)
-              const dotProduct = movementX * normalX + movementY * normalY;
-              const tangentX = movementX - dotProduct * normalX;
-              const tangentY = movementY - dotProduct * normalY;
+              // Calculate radial component (toward/away from center)
+              const radialComponent = movementX * normalX + movementY * normalY;
 
-              // Allow movement along the tangent direction only
+              // Calculate tangential component (parallel to barrier)
+              const tangentX = movementX - radialComponent * normalX;
+              const tangentY = movementY - radialComponent * normalY;
+
+              // Always allow tangential movement
               newState.ship.x += tangentX;
               newState.ship.y += tangentY;
 
-              // Also adjust velocity to slide along the barrier
+              // Allow radial movement only if it's toward the center (negative radial component)
+              if (radialComponent < 0) {
+                // Moving toward center - allow this movement
+                newState.ship.x += radialComponent * normalX;
+                newState.ship.y += radialComponent * normalY;
+              }
+
+              // Adjust velocity to prevent moving outward
               const velocityDotNormal =
                 newState.ship.vx * normalX + newState.ship.vy * normalY;
               if (velocityDotNormal > 0) {
+                // Remove outward velocity component
                 newState.ship.vx -= velocityDotNormal * normalX;
                 newState.ship.vy -= velocityDotNormal * normalY;
               }
