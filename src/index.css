@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import performance optimizations */
+@import "./styles/performance.css";
+
+/* Performance optimizations for overall app */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeSpeed;
+}
+
+/* Canvas specific optimizations */
+canvas {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+  image-rendering: optimizeSpeed;
+}
+
 /* Galaxy map animations */
 @keyframes twinkle {
   0% {
