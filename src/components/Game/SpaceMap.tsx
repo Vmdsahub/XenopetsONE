@@ -869,7 +869,7 @@ export const SpaceMap: React.FC = () => {
     }
 
     // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 1800; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
