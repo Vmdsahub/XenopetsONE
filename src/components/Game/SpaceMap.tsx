@@ -146,6 +146,7 @@ export const SpaceMap: React.FC = () => {
   const planetImagesRef = useRef<Map<string, HTMLImageElement>>(new Map());
   const shipImageRef = useRef<HTMLImageElement | null>(null);
   const movementSoundActiveRef = useRef<boolean>(false);
+  const shouldHideShipRef = useRef<boolean>(false);
 
   // Initialize state from store or use defaults
   const getInitialGameState = useCallback((): GameState => {
@@ -236,6 +237,7 @@ export const SpaceMap: React.FC = () => {
   useEffect(() => {
     if (!isLandingAnimationActive && currentScreen === "planet") {
       // Force ship to not render when on planet screen
+      shouldHideShipRef.current = true;
       setShipRenderState({
         shouldRender: false,
         scale: 0,
@@ -243,6 +245,7 @@ export const SpaceMap: React.FC = () => {
       });
     } else if (!isLandingAnimationActive && currentScreen === "world") {
       // Reset to normal rendering when back to world
+      shouldHideShipRef.current = false;
       setShipRenderState({
         shouldRender: true,
         scale: 1,
@@ -2220,6 +2223,9 @@ export const SpaceMap: React.FC = () => {
         const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
         if (progress >= 1) {
+          // Animation complete - immediately hide ship using ref
+          shouldHideShipRef.current = true;
+
           // Animation complete - immediately transition without visual artifacts
           setIsLandingAnimationActive(false);
           const planetData = landingAnimationData.planet;
@@ -2240,9 +2246,6 @@ export const SpaceMap: React.FC = () => {
           // Immediate transition to prevent visual glitches
           setCurrentPlanet(planetData);
           setCurrentScreen("planet");
-
-          // Don't render this frame
-          return;
         } else {
           // Calculate orbital animation
           const planet = landingAnimationData.planet;
@@ -2288,6 +2291,12 @@ export const SpaceMap: React.FC = () => {
         shouldRenderShip = shipRenderState.shouldRender;
         shipScale = shipRenderState.scale;
         shipAngle = shipRenderState.angle;
+      }
+
+      // Immediate check using ref - overrides everything else
+      if (shouldHideShipRef.current) {
+        shouldRenderShip = false;
+        shipScale = 0;
       }
 
       // Only render ship if it should be rendered and has visible scale
@@ -2683,7 +2692,7 @@ export const SpaceMap: React.FC = () => {
         {user?.isAdmin && isWorldEditMode ? (
           <>
             <div className="text-yellow-400 font-bold mb-1">
-              ���� MODO EDIÇÃO
+              ��� MODO EDIÇÃO
             </div>
             <div>�� 1º Click: Selecionar mundo</div>
             <div>
