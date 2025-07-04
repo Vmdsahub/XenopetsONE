@@ -2221,7 +2221,7 @@ export const SpaceMap: React.FC = () => {
 
       // Render ship image if loaded, otherwise fallback to original drawing
       if (shipImageRef.current && shipImageRef.current.complete) {
-        const shipSize = 24; // Adjust size as needed
+        const shipSize = 30; // Adjust size as needed
         ctx.drawImage(
           shipImageRef.current,
           -shipSize / 2,
@@ -2603,7 +2603,7 @@ export const SpaceMap: React.FC = () => {
         {user?.isAdmin && isWorldEditMode ? (
           <>
             <div className="text-yellow-400 font-bold mb-1">
-              ���� MODO EDIÇÃO
+              ��� MODO EDIÇÃO
             </div>
             <div>�� 1º Click: Selecionar mundo</div>
             <div>
