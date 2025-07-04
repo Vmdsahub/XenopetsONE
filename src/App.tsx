@@ -19,8 +19,8 @@ import { useAuthStore } from "./store/authStore";
 import { useGameStore } from "./store/gameStore";
 import { preloadAllSounds } from "./utils/soundManager";
 
-// Componente para pré-carregar recursos de áudio
-const AudioPreloader: React.FC = () => {
+// Componente para pré-carregar recursos de áudio - memoizado para performance
+const AudioPreloader: React.FC = memo(() => {
   useEffect(() => {
     // Pré-carrega todos os sons do jogo usando o SoundManager
     preloadAllSounds()
@@ -31,7 +31,7 @@ const AudioPreloader: React.FC = () => {
   }, []);
 
   return null; // Componente não renderiza nada
-};
+});
 
 function App() {
   const { isAuthenticated, user: authUser, initializeAuth } = useAuthStore();
