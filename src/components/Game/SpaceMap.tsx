@@ -1578,22 +1578,26 @@ export const SpaceMap: React.FC = () => {
           gameState.ship.vy * gameState.ship.vy,
       );
 
-      // Continuous movement sound control
+      // Continuous movement sound control - stop during landing animation
       const velocityThreshold = 0.05;
-      const isShipMoving = currentShipVelocity > velocityThreshold;
+      const isShipMoving =
+        currentShipVelocity > velocityThreshold && !isLandingAnimationActive;
 
       if (isShipMoving && !movementSoundActiveRef.current) {
         // Start continuous movement sound
         startContinuousMovementSound();
         movementSoundActiveRef.current = true;
-      } else if (!isShipMoving && movementSoundActiveRef.current) {
+      } else if (
+        (!isShipMoving || isLandingAnimationActive) &&
+        movementSoundActiveRef.current
+      ) {
         // Stop continuous movement sound
         stopContinuousMovementSound();
         movementSoundActiveRef.current = false;
       }
 
-      // Update sound parameters in real-time when moving
-      if (movementSoundActiveRef.current) {
+      // Update sound parameters in real-time when moving (only if not landing)
+      if (movementSoundActiveRef.current && !isLandingAnimationActive) {
         updateContinuousMovementSound(currentShipVelocity, SHIP_MAX_SPEED);
       }
 
