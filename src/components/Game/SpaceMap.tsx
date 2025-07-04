@@ -1517,15 +1517,30 @@ export const SpaceMap: React.FC = () => {
             newState.ship.x = newX;
             newState.ship.y = newY;
           } else {
-            // Ship hit the barrier - trigger flash and stop movement
+            // Ship hit the barrier - trigger flash and push back gently
             setBarrierFlashTime(currentTime);
 
-            // Stop movement by setting velocity to zero
-            newState.ship.vx *= 0.1; // Reduce velocity drastically
-            newState.ship.vy *= 0.1;
+            // Calculate direction from center to ship
+            const dirX =
+              (newState.ship.x - CENTER_X) /
+              Math.sqrt(
+                Math.pow(newState.ship.x - CENTER_X, 2) +
+                  Math.pow(newState.ship.y - CENTER_Y, 2),
+              );
+            const dirY =
+              (newState.ship.y - CENTER_Y) /
+              Math.sqrt(
+                Math.pow(newState.ship.x - CENTER_X, 2) +
+                  Math.pow(newState.ship.y - CENTER_Y, 2),
+              );
 
-            // Keep ship at current position (don't update x,y)
-            // The ship stays at its current position when hitting the barrier
+            // Position ship just inside the barrier
+            newState.ship.x = CENTER_X + dirX * (BARRIER_RADIUS - 5);
+            newState.ship.y = CENTER_Y + dirY * (BARRIER_RADIUS - 5);
+
+            // Reduce velocity but don't stop completely
+            newState.ship.vx *= 0.3;
+            newState.ship.vy *= 0.3;
           }
 
           newState.ship.x = normalizeCoord(newState.ship.x);
