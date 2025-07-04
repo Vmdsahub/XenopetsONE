@@ -1517,10 +1517,10 @@ export const SpaceMap: React.FC = () => {
             newState.ship.x = newX;
             newState.ship.y = newY;
           } else {
-            // Ship trying to move outside barrier - stop the movement but don't reposition
+            // Ship trying to move outside barrier - allow sliding along the barrier
             setBarrierFlashTime(currentTime);
 
-            // Stop velocity in the direction that would take us outside
+            // Calculate the direction from center to the ship's current position
             const centerToShipX = newState.ship.x - CENTER_X;
             const centerToShipY = newState.ship.y - CENTER_Y;
             const centerToShipDist = Math.sqrt(
@@ -1528,22 +1528,31 @@ export const SpaceMap: React.FC = () => {
             );
 
             if (centerToShipDist > 0) {
+              // Normalize the vector from center to ship (this is the normal to the barrier)
               const normalX = centerToShipX / centerToShipDist;
               const normalY = centerToShipY / centerToShipDist;
 
-              // Project velocity onto the normal (outward direction)
+              // Project the movement vector onto the tangent (perpendicular to normal)
+              const movementX = newX - newState.ship.x;
+              const movementY = newY - newState.ship.y;
+
+              // Calculate the tangential component (parallel to barrier)
+              const dotProduct = movementX * normalX + movementY * normalY;
+              const tangentX = movementX - dotProduct * normalX;
+              const tangentY = movementY - dotProduct * normalY;
+
+              // Allow movement along the tangent direction only
+              newState.ship.x += tangentX;
+              newState.ship.y += tangentY;
+
+              // Also adjust velocity to slide along the barrier
               const velocityDotNormal =
                 newState.ship.vx * normalX + newState.ship.vy * normalY;
-
-              // Only remove the outward component of velocity
               if (velocityDotNormal > 0) {
                 newState.ship.vx -= velocityDotNormal * normalX;
                 newState.ship.vy -= velocityDotNormal * normalY;
               }
             }
-
-            // Keep ship at current position instead of updating
-            // newState.ship.x and newState.ship.y remain unchanged
           }
 
           newState.ship.x = normalizeCoord(newState.ship.x);
