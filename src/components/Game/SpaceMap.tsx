@@ -1859,12 +1859,12 @@ const SpaceMapComponent: React.FC = () => {
         }))
         .filter((proj) => proj.life > 0);
 
-      // Create shooting stars periodically
+      // Create shooting stars less frequently for better performance
       if (
         currentTime - lastShootingStarTime.current >
-        8000 + Math.random() * 12000
+        15000 + Math.random() * 20000
       ) {
-        // Every 8-20 seconds
+        // Every 15-35 seconds - less frequent for better performance
         createShootingStar(canvas);
         lastShootingStarTime.current = currentTime;
       }
