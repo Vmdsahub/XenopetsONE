@@ -1502,8 +1502,31 @@ export const SpaceMap: React.FC = () => {
           const currentFriction = mouseInWindow ? FRICTION : 0.995;
           newState.ship.vx *= currentFriction;
           newState.ship.vy *= currentFriction;
-          newState.ship.x += newState.ship.vx;
-          newState.ship.y += newState.ship.vy;
+
+          // Calculate potential new position
+          const newX = newState.ship.x + newState.ship.vx;
+          const newY = newState.ship.y + newState.ship.vy;
+
+          // Check barrier collision
+          const distanceFromCenter = Math.sqrt(
+            Math.pow(newX - CENTER_X, 2) + Math.pow(newY - CENTER_Y, 2),
+          );
+
+          if (distanceFromCenter <= BARRIER_RADIUS) {
+            // Ship can move normally within barrier
+            newState.ship.x = newX;
+            newState.ship.y = newY;
+          } else {
+            // Ship hit the barrier - trigger flash and stop movement
+            setBarrierFlashTime(currentTime);
+
+            // Stop movement by setting velocity to zero
+            newState.ship.vx *= 0.1; // Reduce velocity drastically
+            newState.ship.vy *= 0.1;
+
+            // Keep ship at current position (don't update x,y)
+            // The ship stays at its current position when hitting the barrier
+          }
 
           newState.ship.x = normalizeCoord(newState.ship.x);
           newState.ship.y = normalizeCoord(newState.ship.y);
