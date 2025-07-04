@@ -1843,8 +1843,8 @@ export const SpaceMap: React.FC = () => {
             star.y < canvas.height + 100,
         );
 
-      // Create modern space background with gradients and nebula effects
-      // Base deep space gradient
+      // Create dark modern space background with subtle gradients
+      // Base deep space gradient - much darker
       const gradient = ctx.createRadialGradient(
         canvas.width * 0.3,
         canvas.height * 0.2,
@@ -1853,16 +1853,16 @@ export const SpaceMap: React.FC = () => {
         canvas.height * 0.8,
         Math.max(canvas.width, canvas.height) * 1.2,
       );
-      gradient.addColorStop(0, "#0f0f23");
-      gradient.addColorStop(0.3, "#1a1a3a");
-      gradient.addColorStop(0.6, "#2d1b69");
-      gradient.addColorStop(0.8, "#0d1421");
+      gradient.addColorStop(0, "#050510");
+      gradient.addColorStop(0.3, "#0a0a1a");
+      gradient.addColorStop(0.6, "#0f0820");
+      gradient.addColorStop(0.8, "#050a15");
       gradient.addColorStop(1, "#000000");
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Add nebula effect overlays
+      // Add very subtle nebula effect overlays
       const nebulaGradient1 = ctx.createRadialGradient(
         canvas.width * 0.7,
         canvas.height * 0.3,
@@ -1871,9 +1871,9 @@ export const SpaceMap: React.FC = () => {
         canvas.height * 0.3,
         canvas.width * 0.4,
       );
-      nebulaGradient1.addColorStop(0, "rgba(147, 51, 234, 0.15)");
-      nebulaGradient1.addColorStop(0.5, "rgba(79, 70, 229, 0.08)");
-      nebulaGradient1.addColorStop(1, "rgba(147, 51, 234, 0)");
+      nebulaGradient1.addColorStop(0, "rgba(75, 20, 150, 0.06)");
+      nebulaGradient1.addColorStop(0.5, "rgba(50, 30, 120, 0.03)");
+      nebulaGradient1.addColorStop(1, "rgba(75, 20, 150, 0)");
 
       ctx.fillStyle = nebulaGradient1;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1886,25 +1886,11 @@ export const SpaceMap: React.FC = () => {
         canvas.height * 0.8,
         canvas.width * 0.35,
       );
-      nebulaGradient2.addColorStop(0, "rgba(59, 130, 246, 0.12)");
-      nebulaGradient2.addColorStop(0.5, "rgba(16, 185, 129, 0.06)");
-      nebulaGradient2.addColorStop(1, "rgba(59, 130, 246, 0)");
+      nebulaGradient2.addColorStop(0, "rgba(20, 60, 120, 0.05)");
+      nebulaGradient2.addColorStop(0.5, "rgba(10, 80, 60, 0.02)");
+      nebulaGradient2.addColorStop(1, "rgba(20, 60, 120, 0)");
 
       ctx.fillStyle = nebulaGradient2;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Add subtle cosmic dust effect
-      const dustGradient = ctx.createLinearGradient(
-        0,
-        0,
-        canvas.width,
-        canvas.height,
-      );
-      dustGradient.addColorStop(0, "rgba(255, 255, 255, 0.02)");
-      dustGradient.addColorStop(0.5, "rgba(147, 51, 234, 0.03)");
-      dustGradient.addColorStop(1, "rgba(59, 130, 246, 0.02)");
-
-      ctx.fillStyle = dustGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Render stars with extended viewport for smooth scrolling and batching
