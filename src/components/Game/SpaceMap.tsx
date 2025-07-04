@@ -1815,14 +1815,23 @@ export const SpaceMap: React.FC = () => {
         }))
         .filter((pulse) => pulse.life > 0 && pulse.radius <= pulse.maxRadius);
 
-      // Update stars with floating motion
+      // Update stars with floating motion - optimized with batching
       const stars = starsRef.current;
-      const time = currentTime * 0.002; // Increased time for visible movement
-      for (let i = 0, len = stars.length; i < len; i++) {
+      const time = currentTime * 0.002;
+      const starsLength = stars.length;
+
+      // Update only a portion of stars each frame to spread CPU load
+      const frameSkip = Math.max(1, Math.floor(starsLength / 2000)); // Update in batches
+      const batchSize = Math.floor(starsLength / frameSkip);
+      const startIndex =
+        (Math.floor(currentTime / 16.67) % frameSkip) * batchSize;
+      const endIndex = Math.min(startIndex + batchSize, starsLength);
+
+      for (let i = startIndex; i < endIndex; i++) {
         const star = stars[i];
 
-        // Floating motion using sine/cosine waves for cosmic dust effect
-        const floatTime = time * (0.5 + star.speed * 5); // More visible speed variation
+        // Simplified floating motion - reduce calculations
+        const floatTime = time * (0.5 + star.speed * 3); // Reduced complexity
         const floatX =
           Math.sin(floatTime + star.floatPhase.x) * star.floatAmplitude.x;
         const floatY =
@@ -1831,8 +1840,8 @@ export const SpaceMap: React.FC = () => {
         star.x = normalizeCoord(star.baseX + floatX);
         star.y = normalizeCoord(star.baseY + floatY);
 
-        star.twinkle += star.speed;
-        star.pulse += star.speed * 0.8;
+        star.twinkle += star.speed * 0.6; // Reduced from 1.0
+        star.pulse += star.speed * 0.5; // Reduced from 0.8
       }
 
       // Update projectiles with delta time
