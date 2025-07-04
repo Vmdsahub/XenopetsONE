@@ -1602,12 +1602,14 @@ export const SpaceMap: React.FC = () => {
         currentShipVelocity > 0.1 &&
         currentTime - lastTrailTime.current > 35
       ) {
-        createTrailPoint(
-          gameState.ship.x,
-          gameState.ship.y,
-          currentTime,
-          currentShipVelocity,
-        );
+        // Calculate trail position at the back of the ship
+        const trailOffset = 12; // Distance from ship center to back
+        const trailX =
+          gameState.ship.x - Math.cos(gameState.ship.angle) * trailOffset;
+        const trailY =
+          gameState.ship.y - Math.sin(gameState.ship.angle) * trailOffset;
+
+        createTrailPoint(trailX, trailY, currentTime, currentShipVelocity);
         lastTrailTime.current = currentTime;
       }
 
