@@ -1506,19 +1506,19 @@ const SpaceMapComponent: React.FC = () => {
 
       const deltaTime = Math.min(currentTime - lastTime, 16.67);
 
-      // Calculate FPS
+      // Calculate FPS less frequently for better performance
       if (fpsRef.current.lastTime > 0) {
         const frameTime = currentTime - fpsRef.current.lastTime;
         fpsRef.current.frameTimes.push(frameTime);
 
-        // Keep only last 60 frames for average
-        if (fpsRef.current.frameTimes.length > 60) {
+        // Keep only last 30 frames for average (reduced from 60)
+        if (fpsRef.current.frameTimes.length > 30) {
           fpsRef.current.frameTimes.shift();
         }
 
-        // Update FPS every 30 frames
+        // Update FPS every 60 frames (less frequent)
         fpsRef.current.frameCount++;
-        if (fpsRef.current.frameCount >= 30) {
+        if (fpsRef.current.frameCount >= 60) {
           const avgFrameTime =
             fpsRef.current.frameTimes.reduce((a, b) => a + b, 0) /
             fpsRef.current.frameTimes.length;
