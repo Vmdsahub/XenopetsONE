@@ -971,7 +971,7 @@ export const SpaceMap: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 5 + 1.5, // Movimento visível para poeira cósmica
+          x: Math.random() * 5 + 1.5, // Movimento vis��vel para poeira cósmica
           y: Math.random() * 5 + 1.5,
         },
         floatPhase: {
@@ -2457,7 +2457,7 @@ export const SpaceMap: React.FC = () => {
   ]);
 
   return (
-    <div className="w-full h-full relative bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-900 rounded-lg overflow-hidden shadow-2xl border border-indigo-900/30">
+    <div className="w-full h-full relative bg-gradient-to-br from-gray-950 via-slate-950 to-black rounded-lg overflow-hidden shadow-2xl border border-gray-800/20">
       <PlanetLandingModal
         isOpen={showLandingModal}
         planet={selectedPlanet}
