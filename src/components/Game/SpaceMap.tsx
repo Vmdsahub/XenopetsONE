@@ -1843,8 +1843,68 @@ export const SpaceMap: React.FC = () => {
             star.y < canvas.height + 100,
         );
 
-      // Clear canvas with solid black background
-      ctx.fillStyle = "#000000";
+      // Create modern space background with gradients and nebula effects
+      // Base deep space gradient
+      const gradient = ctx.createRadialGradient(
+        canvas.width * 0.3,
+        canvas.height * 0.2,
+        0,
+        canvas.width * 0.7,
+        canvas.height * 0.8,
+        Math.max(canvas.width, canvas.height) * 1.2,
+      );
+      gradient.addColorStop(0, "#0f0f23");
+      gradient.addColorStop(0.3, "#1a1a3a");
+      gradient.addColorStop(0.6, "#2d1b69");
+      gradient.addColorStop(0.8, "#0d1421");
+      gradient.addColorStop(1, "#000000");
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add nebula effect overlays
+      const nebulaGradient1 = ctx.createRadialGradient(
+        canvas.width * 0.7,
+        canvas.height * 0.3,
+        0,
+        canvas.width * 0.7,
+        canvas.height * 0.3,
+        canvas.width * 0.4,
+      );
+      nebulaGradient1.addColorStop(0, "rgba(147, 51, 234, 0.15)");
+      nebulaGradient1.addColorStop(0.5, "rgba(79, 70, 229, 0.08)");
+      nebulaGradient1.addColorStop(1, "rgba(147, 51, 234, 0)");
+
+      ctx.fillStyle = nebulaGradient1;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const nebulaGradient2 = ctx.createRadialGradient(
+        canvas.width * 0.2,
+        canvas.height * 0.8,
+        0,
+        canvas.width * 0.2,
+        canvas.height * 0.8,
+        canvas.width * 0.35,
+      );
+      nebulaGradient2.addColorStop(0, "rgba(59, 130, 246, 0.12)");
+      nebulaGradient2.addColorStop(0.5, "rgba(16, 185, 129, 0.06)");
+      nebulaGradient2.addColorStop(1, "rgba(59, 130, 246, 0)");
+
+      ctx.fillStyle = nebulaGradient2;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add subtle cosmic dust effect
+      const dustGradient = ctx.createLinearGradient(
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+      );
+      dustGradient.addColorStop(0, "rgba(255, 255, 255, 0.02)");
+      dustGradient.addColorStop(0.5, "rgba(147, 51, 234, 0.03)");
+      dustGradient.addColorStop(1, "rgba(59, 130, 246, 0.02)");
+
+      ctx.fillStyle = dustGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Render stars with extended viewport for smooth scrolling and batching
