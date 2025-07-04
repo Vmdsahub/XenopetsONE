@@ -1578,22 +1578,26 @@ export const SpaceMap: React.FC = () => {
           gameState.ship.vy * gameState.ship.vy,
       );
 
-      // Continuous movement sound control
+      // Continuous movement sound control - stop during landing animation
       const velocityThreshold = 0.05;
-      const isShipMoving = currentShipVelocity > velocityThreshold;
+      const isShipMoving =
+        currentShipVelocity > velocityThreshold && !isLandingAnimationActive;
 
       if (isShipMoving && !movementSoundActiveRef.current) {
         // Start continuous movement sound
         startContinuousMovementSound();
         movementSoundActiveRef.current = true;
-      } else if (!isShipMoving && movementSoundActiveRef.current) {
+      } else if (
+        (!isShipMoving || isLandingAnimationActive) &&
+        movementSoundActiveRef.current
+      ) {
         // Stop continuous movement sound
         stopContinuousMovementSound();
         movementSoundActiveRef.current = false;
       }
 
-      // Update sound parameters in real-time when moving
-      if (movementSoundActiveRef.current) {
+      // Update sound parameters in real-time when moving (only if not landing)
+      if (movementSoundActiveRef.current && !isLandingAnimationActive) {
         updateContinuousMovementSound(currentShipVelocity, SHIP_MAX_SPEED);
       }
 
@@ -1602,12 +1606,14 @@ export const SpaceMap: React.FC = () => {
         currentShipVelocity > 0.1 &&
         currentTime - lastTrailTime.current > 35
       ) {
-        createTrailPoint(
-          gameState.ship.x,
-          gameState.ship.y,
-          currentTime,
-          currentShipVelocity,
-        );
+        // Calculate trail position at the back of the ship
+        const trailOffset = 12; // Distance from ship center to back
+        const trailX =
+          gameState.ship.x - Math.cos(gameState.ship.angle) * trailOffset;
+        const trailY =
+          gameState.ship.y - Math.sin(gameState.ship.angle) * trailOffset;
+
+        createTrailPoint(trailX, trailY, currentTime, currentShipVelocity);
         lastTrailTime.current = currentTime;
       }
 
@@ -1911,7 +1917,7 @@ export const SpaceMap: React.FC = () => {
 
       // Rotaç��o lenta baseada no tempo
       const rotationTime = currentTime * 0.0005; // Muito lenta
-      const dashOffset = (rotationTime * 50) % 20; // Offset dos traços para simular rotação
+      const dashOffset = (rotationTime * 50) % 20; // Offset dos tra��os para simular rotação
 
       ctx.setLineDash([10, 10]);
       ctx.lineDashOffset = -dashOffset; // Anima os traços
@@ -2107,24 +2113,47 @@ export const SpaceMap: React.FC = () => {
 
           shipWorldX = planet.x + Math.cos(angleProgress) * currentRadius;
           shipWorldY = planet.y + Math.sin(angleProgress) * currentRadius;
+        }
+      }
 
-          // Create trail points during landing animation with proportional intensity
-          if (currentTime - lastTrailTime.current > 35) {
+      // Create trail points during landing animation (moved outside the progress check)
+      if (isLandingAnimationActive && landingAnimationData) {
+        const currentTime = performance.now();
+        if (currentTime - lastTrailTime.current > 35) {
+          const elapsed = currentTime - landingAnimationData.startTime;
+          const progress = Math.min(elapsed / landingAnimationData.duration, 1);
+
+          if (progress < 1) {
+            const planet = landingAnimationData.planet;
+            const initialDx = landingAnimationData.initialShipX - planet.x;
+            const initialDy = landingAnimationData.initialShipY - planet.y;
+            const initialRadius = Math.sqrt(
+              initialDx * initialDx + initialDy * initialDy,
+            );
+            const orbitSpeed = 1;
+            const initialAngle = Math.atan2(initialDy, initialDx);
+            const angleProgress =
+              initialAngle + progress * orbitSpeed * Math.PI * 2;
+
             // Calculate orbital velocity for proportional trail intensity
+            const currentRadius = initialRadius * (1 - progress * 0.9);
             const orbitalSpeed =
               (2 * Math.PI * currentRadius) / landingAnimationData.duration;
             const normalizedOrbitalSpeed = Math.min(
               orbitalSpeed / (SHIP_MAX_SPEED * 300),
               1,
             );
-            const landingIntensity = Math.max(normalizedOrbitalSpeed, 0.4); // Minimum intensity for visibility
+            const landingIntensity = Math.max(normalizedOrbitalSpeed, 0.4);
 
-            createTrailPoint(
-              shipWorldX,
-              shipWorldY,
-              currentTime,
-              landingIntensity,
-            );
+            // Calculate trail position at the back of the ship during landing
+            const trailOffset = 12;
+            const currentShipAngle = angleProgress + Math.PI / 2;
+            const trailX =
+              shipWorldX - Math.cos(currentShipAngle) * trailOffset;
+            const trailY =
+              shipWorldY - Math.sin(currentShipAngle) * trailOffset;
+
+            createTrailPoint(trailX, trailY, currentTime, landingIntensity);
             lastTrailTime.current = currentTime;
           }
         }
@@ -2221,7 +2250,7 @@ export const SpaceMap: React.FC = () => {
 
       // Render ship image if loaded, otherwise fallback to original drawing
       if (shipImageRef.current && shipImageRef.current.complete) {
-        const shipSize = 40; // Adjust size as needed
+        const shipSize = 30; // Adjust size as needed
         ctx.drawImage(
           shipImageRef.current,
           -shipSize / 2,
