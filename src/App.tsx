@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthScreen } from "./components/Auth/AuthScreen";
 
@@ -108,7 +108,7 @@ function App() {
     return <AuthScreen />;
   }
 
-  const renderScreen = () => {
+  const renderScreen = useMemo(() => {
     switch (currentScreen) {
       case "pet":
         return <PetScreen />;
@@ -144,7 +144,7 @@ function App() {
       default:
         return <PetScreen />;
     }
-  };
+  }, [currentScreen, gameUser?.isAdmin]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -175,7 +175,7 @@ function App() {
             variants={pageVariants}
             transition={pageTransition}
           >
-            {renderScreen()}
+            {renderScreen}
           </motion.div>
         </AnimatePresence>
       </main>
