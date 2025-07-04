@@ -2471,7 +2471,7 @@ export const SpaceMap: React.FC = () => {
   ]);
 
   return (
-    <div className="w-full h-full relative bg-gray-900 rounded-lg overflow-hidden">
+    <div className="w-full h-full relative bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-900 rounded-lg overflow-hidden shadow-2xl border border-indigo-900/30">
       <PlanetLandingModal
         isOpen={showLandingModal}
         planet={selectedPlanet}
