@@ -225,6 +225,7 @@ export const SpaceMap: React.FC = () => {
   const [selectedWorldId, setSelectedWorldId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [barrierFlashTime, setBarrierFlashTime] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
   // Helper function for seamless wrapping distance calculation
