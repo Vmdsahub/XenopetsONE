@@ -1875,22 +1875,25 @@ const SpaceMapComponent: React.FC = () => {
         lastShootingStarTime.current = currentTime;
       }
 
-      // Update shooting stars
-      shootingStarsRef.current = shootingStarsRef.current
-        .map((star) => ({
-          ...star,
-          x: star.x + star.vx,
-          y: star.y + star.vy,
-          life: star.life - 1,
-        }))
-        .filter(
-          (star) =>
-            star.life > 0 &&
-            star.x > -100 &&
-            star.x < canvas.width + 100 &&
-            star.y > -100 &&
-            star.y < canvas.height + 100,
-        );
+      // Update shooting stars with optimized loop
+      const shootingStars = shootingStarsRef.current;
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const star = shootingStars[i];
+        star.x += star.vx;
+        star.y += star.vy;
+        star.life -= 1;
+
+        // Remove if dead or outside extended viewport
+        if (
+          star.life <= 0 ||
+          star.x < -150 ||
+          star.x > canvas.width + 150 ||
+          star.y < -150 ||
+          star.y > canvas.height + 150
+        ) {
+          shootingStars.splice(i, 1);
+        }
+      }
 
       // Create very dark space background with deep blue tones
       // Base deep space gradient - almost black with subtle blue
