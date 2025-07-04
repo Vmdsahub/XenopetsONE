@@ -117,6 +117,7 @@ export const SpaceMap: React.FC = () => {
     getShipState,
     setCurrentScreen,
     setCurrentPlanet,
+    currentScreen,
     isWorldEditMode,
     setWorldEditMode,
     user,
