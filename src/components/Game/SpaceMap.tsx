@@ -841,8 +841,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 2: Mid background (parallax 0.3) - ABAIXO do jogador
-    for (let i = 0; i < 700; i++) {
+    // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador
+    for (let i = 0; i < 1000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -850,10 +850,10 @@ export const SpaceMap: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 0.6 + Math.random() * 0.8,
-        opacity: 0.3 + Math.random() * 0.35,
+        size: 0.8 + Math.random() * 1.0,
+        opacity: 0.5 + Math.random() * 0.4,
         speed: Math.random() * 0.018 + 0.007,
-        parallax: 0.3, // Paralaxe distinta
+        parallax: 0.6, // Paralaxe distinta
         twinkle: Math.random() * 100,
         color:
           Math.random() < 0.8
