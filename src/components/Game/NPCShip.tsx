@@ -356,6 +356,86 @@ export const useNPCShip = ({
     [],
   );
 
+  // Draw NPC ship trail
+  const drawShipTrail = useCallback(
+    (
+      ctx: CanvasRenderingContext2D,
+      cameraX: number,
+      cameraY: number,
+      canvasWidth: number,
+      canvasHeight: number,
+    ) => {
+      if (trailPointsRef.current.length < 2) return;
+
+      const centerX = canvasWidth / 2;
+      const centerY = canvasHeight / 2;
+
+      // Draw each segment of the trail
+      for (let i = 0; i < trailPointsRef.current.length - 1; i++) {
+        const current = trailPointsRef.current[i];
+        const next = trailPointsRef.current[i + 1];
+
+        const currentWrappedDeltaX = getWrappedDistanceRef.current(
+          current.x,
+          cameraX,
+        );
+        const currentWrappedDeltaY = getWrappedDistanceRef.current(
+          current.y,
+          cameraY,
+        );
+        const currentScreenX = centerX + currentWrappedDeltaX;
+        const currentScreenY = centerY + currentWrappedDeltaY;
+
+        const nextWrappedDeltaX = getWrappedDistanceRef.current(
+          next.x,
+          cameraX,
+        );
+        const nextWrappedDeltaY = getWrappedDistanceRef.current(
+          next.y,
+          cameraY,
+        );
+        const nextScreenX = centerX + nextWrappedDeltaX;
+        const nextScreenY = centerY + nextWrappedDeltaY;
+
+        const currentLifeRatio = current.life / current.maxLife;
+        const nextLifeRatio = next.life / next.maxLife;
+        const avgIntensity = (current.intensity + next.intensity) / 2;
+
+        ctx.save();
+
+        // Main trail with glow effect
+        ctx.shadowColor = "#00aaff";
+        ctx.shadowBlur = 8 * avgIntensity;
+        ctx.strokeStyle = `rgba(0, 170, 255, ${0.6 * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity})`;
+        ctx.lineWidth =
+          TRAIL_WIDTH * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity;
+        ctx.lineCap = "round";
+
+        ctx.beginPath();
+        ctx.moveTo(currentScreenX, currentScreenY);
+        ctx.lineTo(nextScreenX, nextScreenY);
+        ctx.stroke();
+
+        // Inner bright core
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity})`;
+        ctx.lineWidth =
+          TRAIL_WIDTH *
+          0.3 *
+          ((currentLifeRatio + nextLifeRatio) / 2) *
+          avgIntensity;
+
+        ctx.beginPath();
+        ctx.moveTo(currentScreenX, currentScreenY);
+        ctx.lineTo(nextScreenX, nextScreenY);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    },
+    [],
+  );
+
   // Render ship on canvas
   const renderShip = useCallback(
     (
@@ -387,6 +467,9 @@ export const useNPCShip = ({
       ) {
         return;
       }
+
+      // Draw trail first (behind ship)
+      drawShipTrail(ctx, cameraX, cameraY, canvasWidth, canvasHeight);
 
       ctx.save();
 
