@@ -1065,6 +1065,81 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
+    // Layer 7: Micro stars (parallax 0.8) - Additional density layer
+    for (let i = 0; i < 2500; i++) {
+      const baseX = Math.random() * WORLD_SIZE;
+      const baseY = Math.random() * WORLD_SIZE;
+      stars.push({
+        x: baseX,
+        y: baseY,
+        baseX,
+        baseY,
+        size: 0.3 + Math.random() * 0.5, // Very small stars
+        opacity: 0.3 + Math.random() * 0.4,
+        speed: Math.random() * 0.012 + 0.004,
+        parallax: 0.8, // Between layers 1 and 2
+        twinkle: Math.random() * 100,
+        color:
+          Math.random() < 0.95
+            ? "#ffffff"
+            : starColors[Math.floor(Math.random() * starColors.length)],
+        type: "normal",
+        drift: {
+          x: 0,
+          y: 0,
+        },
+        pulse: Math.random() * 100,
+        floatAmplitude: {
+          x: Math.random() * 6 + 2,
+          y: Math.random() * 6 + 2,
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+      });
+    }
+
+    // Layer 8: Bright accent stars (parallax 1.2) - Brighter stars for contrast
+    for (let i = 0; i < 800; i++) {
+      const baseX = Math.random() * WORLD_SIZE;
+      const baseY = Math.random() * WORLD_SIZE;
+      stars.push({
+        x: baseX,
+        y: baseY,
+        baseX,
+        baseY,
+        size: 1.5 + Math.random() * 2.0, // Larger bright stars
+        opacity: 0.7 + Math.random() * 0.3,
+        speed: Math.random() * 0.02 + 0.01,
+        parallax: 1.2,
+        twinkle: Math.random() * 100,
+        color:
+          Math.random() < 0.7
+            ? "#ffffff"
+            : starColors[Math.floor(Math.random() * starColors.length)],
+        type:
+          Math.random() < 0.4
+            ? "bright"
+            : Math.random() < 0.8
+              ? "normal"
+              : "giant",
+        drift: {
+          x: 0,
+          y: 0,
+        },
+        pulse: Math.random() * 100,
+        floatAmplitude: {
+          x: Math.random() * 7 + 2.5,
+          y: Math.random() * 7 + 2.5,
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+      });
+    }
+
     starsRef.current = stars;
   }, []);
 
