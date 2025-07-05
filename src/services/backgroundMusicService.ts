@@ -164,6 +164,18 @@ class BackgroundMusicService {
     this.lastMusicContext = "world"; // Initialize with world context
     this.setCurrentScreen("world"); // Start with world music
     this.checkForRealMusic();
+
+    // Try to auto-start music after initialization
+    setTimeout(() => {
+      if (!this.isPlaying) {
+        console.log("🎵 Tentando iniciar música automaticamente...");
+        this.play().catch(() => {
+          console.log(
+            "⚠️ Música automática falhou - aguardando interação do usuário",
+          );
+        });
+      }
+    }, 1000);
   }
 
   // Track the last music context to avoid restarting music unnecessarily
