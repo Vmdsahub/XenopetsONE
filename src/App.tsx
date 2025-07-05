@@ -126,7 +126,7 @@ function App() {
               <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">
                 Mapa Galáctico
               </h1>
-              <div className="w-full aspect-square max-h-[calc(100vh-100px)] sm:max-h-[calc(100vh-120px)] md:max-h-[calc(100vh-140px)] lg:max-h-[calc(100vh-160px)] relative">
+              <div className="w-full h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)] md:h-[calc(100vh-220px)] lg:h-[calc(100vh-240px)] relative">
                 <SpaceMap />
               </div>
             </div>
