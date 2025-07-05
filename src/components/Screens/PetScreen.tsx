@@ -139,7 +139,7 @@ export const PetScreen: React.FC = () => {
 
   // Show the active pet
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto pb-12">
       <PetPortrait pet={activePet!} />
     </div>
   );
