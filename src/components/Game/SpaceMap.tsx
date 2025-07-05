@@ -113,10 +113,10 @@ const PROJECTILE_LIFETIME = 4.0; // seconds
 // Pre-render buffer size
 const RENDER_BUFFER = 200;
 
-// Trail constants
-const TRAIL_MAX_POINTS = 25;
+// Trail constants - adjusted for uncapped FPS
+const TRAIL_MAX_POINTS = 40; // Mais pontos para FPS alto
 const TRAIL_POINT_DISTANCE = 6;
-const TRAIL_LIFETIME = 1200; // milliseconds
+const TRAIL_LIFETIME = 800; // milliseconds - reduzido para evitar acúmulo com FPS alto
 const TRAIL_WIDTH = 12;
 
 const SpaceMapComponent: React.FC = () => {
@@ -587,10 +587,13 @@ const SpaceMapComponent: React.FC = () => {
     [],
   );
 
-  // Update trail points function
+  // Update trail points function - fixed for uncapped FPS
   const updateTrailPoints = useCallback((deltaTime: number) => {
+    // Limit deltaTime to prevent trail points from dying too fast with high FPS
+    const cappedDeltaTime = Math.min(deltaTime, 50); // Cap at 50ms max per frame
+
     trailPointsRef.current.forEach((point) => {
-      point.life -= deltaTime;
+      point.life -= cappedDeltaTime;
     });
 
     // Remove dead trail points
