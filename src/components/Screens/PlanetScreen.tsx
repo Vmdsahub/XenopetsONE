@@ -207,9 +207,12 @@ export const PlanetScreen: React.FC = () => {
           />
 
           {/* Render interactive points */}
-          {interactivePoints.map((point) => (
+          {interactivePoints.map((point, index) => (
             <div
-              key={point.id}
+              key={
+                point.id ||
+                `point-${index}-${point.x_percent}-${point.y_percent}`
+              }
               className={`absolute transform -translate-x-1/2 -translate-y-1/2 ${
                 user?.isAdmin && isAdminMode
                   ? point.is_active
