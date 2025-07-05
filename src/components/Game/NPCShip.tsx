@@ -60,6 +60,7 @@ export const useNPCShip = ({
   planets,
   getWrappedDistance,
   normalizeCoord,
+  isPaused = false,
 }: UseNPCShipProps) => {
   const shipStateRef = useRef<NPCShipState>({
     x: CENTER_X + 200,
