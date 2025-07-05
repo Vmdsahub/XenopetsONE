@@ -10,7 +10,7 @@ interface Planet {
 }
 
 export const PlanetScreen: React.FC = () => {
-  const { currentPlanet } = useGameStore();
+  const { currentPlanet, setCurrentScreen } = useGameStore();
 
   if (!currentPlanet) {
     return null;
@@ -36,6 +36,17 @@ export const PlanetScreen: React.FC = () => {
             alt={`Superfície de ${currentPlanet.name}`}
             className="w-full h-full object-cover"
           />
+        </div>
+
+        <div className="flex justify-center mt-4">
+          <motion.button
+            onClick={() => setCurrentScreen("world")}
+            className="p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <ArrowLeft className="w-6 h-6 text-gray-600" />
+          </motion.button>
         </div>
       </div>
     </div>
