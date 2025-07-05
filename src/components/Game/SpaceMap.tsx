@@ -2277,10 +2277,11 @@ const SpaceMapComponent: React.FC = () => {
         }
       }
 
-      // Create trail points during landing animation (moved outside the progress check)
+      // Create trail points during landing animation com frequência controlada
       if (isLandingAnimationActive && landingAnimationData) {
         const currentTime = performance.now();
-        if (currentTime - lastTrailTime.current > 35) {
+        const landingTrailInterval = Math.max(16, 1000 / 60); // Máximo 60 FPS durante landing
+        if (currentTime - lastTrailTime.current > landingTrailInterval) {
           const elapsed = currentTime - landingAnimationData.startTime;
           const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
