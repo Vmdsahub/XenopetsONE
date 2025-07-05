@@ -8,6 +8,14 @@ interface Planet {
   interactionRadius: number;
 }
 
+interface TrailPoint {
+  x: number;
+  y: number;
+  life: number;
+  maxLife: number;
+  intensity: number;
+}
+
 interface NPCShipState {
   x: number;
   y: number;
@@ -19,6 +27,8 @@ interface NPCShipState {
   circleAngle: number;
   circleRadius: number;
   lastModeChange: number;
+  lastDirectionChange: number;
+  wanderAngle: number;
 }
 
 export interface NPCShipData {
