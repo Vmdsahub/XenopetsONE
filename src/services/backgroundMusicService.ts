@@ -161,6 +161,7 @@ class BackgroundMusicService {
     this.originalTracksByScreen = JSON.parse(
       JSON.stringify(this.tracksByScreen),
     );
+    this.lastMusicContext = "world"; // Initialize with world context
     this.setCurrentScreen("world"); // Start with world music
     this.checkForRealMusic();
   }
