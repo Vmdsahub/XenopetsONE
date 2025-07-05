@@ -105,7 +105,7 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
 
       // Start music for the first time
       backgroundMusicService.setCurrentScreen(currentScreen, planetId);
-      play().catch((error) => {
+      backgroundMusicService.play().catch((error) => {
         console.warn(
           "Falha ao iniciar música no primeiro acesso ao mundo:",
           error,
@@ -122,13 +122,7 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
       backgroundMusicService.setCurrentScreen(currentScreen, planetId);
       updateState();
     }
-  }, [
-    currentScreen,
-    currentPlanet?.id,
-    hasStartedMusicOnce,
-    play,
-    updateState,
-  ]);
+  }, [currentScreen, currentPlanet?.id, hasStartedMusicOnce, updateState]);
 
   // Cleanup quando componente desmonta
   useEffect(() => {
