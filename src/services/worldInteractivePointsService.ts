@@ -102,14 +102,20 @@ class WorldInteractivePointsService {
     updates: UpdateInteractivePointData,
   ): Promise<WorldInteractivePoint | null> {
     try {
-      const { data, error } = await supabase
+      const { error: updateError } = await supabase
         .from("world_interactive_points")
         .update(updates)
-        .eq("id", pointId)
+        .eq("id", pointId);
+
+      if (updateError) throw updateError;
+
+      const { data, error: selectError } = await supabase
+        .from("world_interactive_points")
         .select("*")
+        .eq("id", pointId)
         .single();
 
-      if (error) throw error;
+      if (selectError) throw selectError;
       return data;
     } catch (error) {
       console.error("Error updating interactive point:", error);
