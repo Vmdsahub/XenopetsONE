@@ -228,7 +228,6 @@ class BackgroundMusicService {
 
     // Update tracks
     this.tracks = newTracks;
-    this.lastMusicContext = currentMusicContext;
 
     // If music is playing (not paused) and we switched to a DIFFERENT music context, change to new music
     if (
@@ -257,6 +256,9 @@ class BackgroundMusicService {
         `📱 Tela mudou (${previousScreen} → ${screen}) mas música não está tocando`,
       );
     }
+
+    // Update last music context after all logic
+    this.lastMusicContext = currentMusicContext;
   }
 
   /**
