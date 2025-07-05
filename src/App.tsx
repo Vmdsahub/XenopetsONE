@@ -159,13 +159,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 gpu-accelerated">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 gpu-accelerated force-gpu-layer">
       {/* Componente de pré-carregamento de áudios */}
       <AudioPreloader />
 
       <TopBar />
 
-      <main className="pt-20 pb-24 px-4 min-h-screen composite-layer">
+      <main className="pt-20 pb-24 px-4 min-h-screen composite-layer force-gpu-layer">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScreen}
@@ -174,7 +174,11 @@ function App() {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="smooth-animation"
+            className="smooth-animation force-gpu-layer"
+            style={{
+              transform: "translate3d(0, 0, 0)",
+              willChange: "transform, opacity",
+            }}
           >
             {renderScreen}
           </motion.div>
