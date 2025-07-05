@@ -186,10 +186,12 @@ export const TopBar: React.FC = () => {
         </div>
       </div>
 
-      {/* Monthly Calendar Check-in */}
+      {/* Monthly Calendar Check-in - positioned below icon */}
       <AnimatePresence>
         {showCheckin && (
-          <MonthlyCalendar onClose={() => setShowCheckin(false)} />
+          <div className="absolute top-full right-4 mt-2 z-50">
+            <MonthlyCalendar onClose={() => setShowCheckin(false)} />
+          </div>
         )}
       </AnimatePresence>
 
