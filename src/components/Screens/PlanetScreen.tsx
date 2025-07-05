@@ -210,7 +210,7 @@ export const PlanetScreen: React.FC = () => {
           </h1>
           {user?.isAdmin && (
             <button
-              onClick={() => setIsAdminMode(!isAdminMode)}
+              onClick={handleAdminModeToggle}
               className={`p-2 rounded-lg text-sm font-medium transition-colors ${
                 isAdminMode
                   ? "bg-red-500 text-white hover:bg-red-600"
