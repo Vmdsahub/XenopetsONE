@@ -273,7 +273,13 @@ export const useNPCShip = ({
       // Update trail points
       updateTrailPoints(deltaTime);
     },
-    [findNearestPlanet, isInsideBarrier, createTrailPoint, updateTrailPoints],
+    [
+      isPaused,
+      findNearestPlanet,
+      isInsideBarrier,
+      createTrailPoint,
+      updateTrailPoints,
+    ],
   );
 
   // Get ship data for rendering
