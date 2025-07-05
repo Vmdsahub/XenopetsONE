@@ -7,33 +7,51 @@ interface NPCModalProps {
 }
 
 const DIALOGUE_TEXT =
-  "Olá, viajante! Sou um explorador errante deste vasto cosmos. Há muito tempo navego por estas águas estelares, observando os mistérios que se desenrolam entre os planetas. Você parece ter uma energia especial... Talvez possamos trocar algumas palavras sobre suas aventuras?";
+  "Boa tarde, ou será noite? Meu nome é Bahrun, eu viajo entre os planetas próximos procurando suprimentos para ajudar os novatos, por um custo é claro...";
+
+// Alien characters for translation effect
+const ALIEN_CHARS = "◊◈◇◆☾☽⟡⟢⧿⧾⬟⬠⬢⬣⬡⬠⧨⧩⟐⟑ξζηθικλμνοπρστυφχψω";
+
+const generateAlienChar = () => {
+  return ALIEN_CHARS[Math.floor(Math.random() * ALIEN_CHARS.length)];
+};
 
 export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const [currentAlienChar, setCurrentAlienChar] = useState("");
+  const [isShowingAlien, setIsShowingAlien] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Typewriter effect
+  // Typewriter effect with alien translation
   useEffect(() => {
     if (!isOpen) {
       setDisplayedText("");
       setCurrentIndex(0);
       setIsTypingComplete(false);
+      setCurrentAlienChar("");
+      setIsShowingAlien(false);
       if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+        clearTimeout(intervalRef.current);
       }
       return;
     }
 
     if (currentIndex < DIALOGUE_TEXT.length) {
+      // First show alien character
+      setIsShowingAlien(true);
+      setCurrentAlienChar(generateAlienChar());
+
+      // After showing alien char, replace with real character
       intervalRef.current = setTimeout(() => {
+        setIsShowingAlien(false);
         setDisplayedText((prev) => prev + DIALOGUE_TEXT[currentIndex]);
         setCurrentIndex((prev) => prev + 1);
-      }, 30); // 30ms per character for smooth typing
+      }, 40); // Show alien char for 40ms, then continue quickly
     } else {
       setIsTypingComplete(true);
+      setIsShowingAlien(false);
     }
 
     return () => {
@@ -42,18 +60,6 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
       }
     };
   }, [isOpen, currentIndex]);
-
-  // Skip typewriter effect on click
-  const handleSkipTyping = () => {
-    if (!isTypingComplete) {
-      setDisplayedText(DIALOGUE_TEXT);
-      setCurrentIndex(DIALOGUE_TEXT.length);
-      setIsTypingComplete(true);
-      if (intervalRef.current) {
-        clearTimeout(intervalRef.current);
-      }
-    }
-  };
 
   // Handle ESC key
   useEffect(() => {
@@ -114,9 +120,9 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             {/* NPC Image */}
             <div className="flex justify-center p-6 pb-4">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2Ff3204b51264f46c7b764e817db763ddb%2F23e86f6660a946409dcb3d1263f31bde?format=webp&width=800"
-                alt="Explorador Errante"
-                className="w-40 h-40 object-contain rounded-2xl bg-gray-50 p-3"
+                src="https://cdn.builder.io/api/v1/image/assets%2F542e75b77d74474ca612f291b2642c2c%2F9db05452f51a4f1e813928729ddf09b2?format=webp&width=800"
+                alt="Bahrun"
+                className="w-96 h-48 object-cover rounded-3xl"
                 style={{ imageRendering: "crisp-edges" }}
               />
             </div>
@@ -126,38 +132,21 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
               {/* Character name */}
               <div className="text-center">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                  Explorador Errante
+                  Bahrun
                 </h2>
                 <div className="w-32 h-0.5 bg-gray-200 mx-auto rounded-full"></div>
               </div>
 
               {/* Dialogue box */}
-              <div
-                className="bg-gray-50 border border-gray-200 rounded-xl p-4 cursor-pointer min-h-[140px] relative"
-                onClick={handleSkipTyping}
-              >
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 min-h-[140px] relative">
                 <div className="text-gray-700 leading-relaxed text-base">
                   {displayedText}
-                  {!isTypingComplete && (
-                    <motion.span
-                      animate={{ opacity: [1, 0] }}
-                      transition={{
-                        duration: 0.8,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                      className="text-gray-500 ml-1"
-                    >
-                      |
-                    </motion.span>
+                  {isShowingAlien && (
+                    <span className="text-gray-900 font-bold">
+                      {currentAlienChar}
+                    </span>
                   )}
                 </div>
-
-                {!isTypingComplete && (
-                  <div className="absolute bottom-2 right-2 text-xs text-gray-500 opacity-70">
-                    Clique para pular
-                  </div>
-                )}
               </div>
 
               {/* Blank field for future implementation */}
