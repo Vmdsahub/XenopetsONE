@@ -293,8 +293,28 @@ export const useNPCShip = ({
       // Normalize coordinates
       ship.x = normalizeCoordRef.current(ship.x);
       ship.y = normalizeCoordRef.current(ship.y);
+
+      // Create trail points for moving ship
+      const currentShipVelocity = Math.sqrt(
+        ship.vx * ship.vx + ship.vy * ship.vy,
+      );
+      if (
+        currentShipVelocity > 0.05 &&
+        currentTime - lastTrailTime.current > 40
+      ) {
+        // Calculate trail position at the back of the ship
+        const trailOffset = 10;
+        const trailX = ship.x - Math.cos(ship.angle) * trailOffset;
+        const trailY = ship.y - Math.sin(ship.angle) * trailOffset;
+
+        createTrailPoint(trailX, trailY, currentTime, currentShipVelocity);
+        lastTrailTime.current = currentTime;
+      }
+
+      // Update trail points
+      updateTrailPoints(deltaTime);
     },
-    [findNearestPlanet, isInsideBarrier],
+    [findNearestPlanet, isInsideBarrier, createTrailPoint, updateTrailPoints],
   );
 
   // Get ship data for rendering
