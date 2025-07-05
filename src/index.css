@@ -1,9 +1,9 @@
+/* Import performance optimizations */
+@import "./styles/performance.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import performance optimizations */
-@import "./styles/performance.css";
 
 /* Performance optimizations for overall app */
 * {
