@@ -2124,9 +2124,9 @@ const SpaceMapComponent: React.FC = () => {
         canvas.height * 0.1,
         canvas.width * 0.3,
       );
-      nebulaGradient4.addColorStop(0, "rgba(200, 120, 60, 0.06)");
-      nebulaGradient4.addColorStop(0.4, "rgba(160, 90, 40, 0.04)");
-      nebulaGradient4.addColorStop(0.7, "rgba(120, 60, 20, 0.02)");
+      nebulaGradient4.addColorStop(0, "rgba(200, 120, 60, 0.03)");
+      nebulaGradient4.addColorStop(0.4, "rgba(160, 90, 40, 0.02)");
+      nebulaGradient4.addColorStop(0.7, "rgba(120, 60, 20, 0.01)");
       nebulaGradient4.addColorStop(1, "rgba(200, 120, 60, 0)");
 
       ctx.fillStyle = nebulaGradient4;
@@ -2242,7 +2242,7 @@ const SpaceMapComponent: React.FC = () => {
         ctx.lineWidth = 2;
       }
 
-      // Rotaç��o lenta baseada no tempo
+      // Rotaç���o lenta baseada no tempo
       const rotationTime = currentTime * 0.0005; // Muito lenta
       const dashOffset = (rotationTime * 50) % 20; // Offset dos tra��os para simular rotação
 
