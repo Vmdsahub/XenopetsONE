@@ -258,7 +258,12 @@ export const PlanetScreen: React.FC = () => {
           </div>
         )}
 
-        <div className="w-full h-[calc(100vh-280px)] sm:h-[calc(100vh-300px)] md:h-[calc(100vh-320px)] lg:h-[calc(100vh-340px)] relative rounded-2xl overflow-hidden">
+        <div
+          className="w-full h-[calc(100vh-280px)] sm:h-[calc(100vh-300px)] md:h-[calc(100vh-320px)] lg:h-[calc(100vh-340px)] relative rounded-2xl overflow-hidden"
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           <motion.img
             ref={imageRef}
             initial={{ opacity: 0, scale: 0.9 }}
@@ -270,35 +275,52 @@ export const PlanetScreen: React.FC = () => {
             onClick={handleImageClick}
           />
 
-          {/* Render interactive points */}
+          {/* Render interactive rectangles */}
           {interactivePoints.map((point, index) => (
             <div
               key={
                 point.id ||
                 `point-${index}-${point.x_percent}-${point.y_percent}`
               }
-              className={`absolute transform -translate-x-1/2 -translate-y-1/2 ${
+              className={`absolute ${
                 user?.isAdmin && isAdminMode
                   ? point.is_active
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-red-500 hover:bg-red-600"
+                    ? "bg-green-500 bg-opacity-60 border-2 border-green-600 hover:bg-opacity-80"
+                    : "bg-red-500 bg-opacity-60 border-2 border-red-600 hover:bg-opacity-80"
                   : "bg-transparent hover:bg-blue-500 hover:bg-opacity-20"
               } ${
-                user?.isAdmin && isAdminMode
-                  ? "w-4 h-4 rounded-full border-2 border-white shadow-lg cursor-pointer"
-                  : "w-8 h-8 rounded-full cursor-pointer"
+                user?.isAdmin && isAdminMode ? "cursor-move" : "cursor-pointer"
               }`}
               style={{
                 left: `${point.x_percent}%`,
                 top: `${point.y_percent}%`,
+                width: `${point.width_percent || 10}%`,
+                height: `${point.height_percent || 10}%`,
               }}
-              onClick={(e) => handlePointClick(point, e)}
+              onMouseDown={(e) =>
+                user?.isAdmin && isAdminMode
+                  ? handleMouseDown(point, e)
+                  : handlePointClick(point, e)
+              }
+              onDoubleClick={(e) =>
+                user?.isAdmin && isAdminMode && handlePointClick(point, e)
+              }
               title={
                 user?.isAdmin && isAdminMode
                   ? `${point.title} (${point.is_active ? "Ativo" : "Inativo"})`
                   : point.title
               }
-            />
+            >
+              {user?.isAdmin && isAdminMode && (
+                <>
+                  {/* Resize handles */}
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-white border border-gray-400 cursor-se-resize" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-white border border-gray-400 cursor-ne-resize" />
+                  <div className="absolute -top-1 -left-1 w-3 h-3 bg-white border border-gray-400 cursor-nw-resize" />
+                  <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white border border-gray-400 cursor-sw-resize" />
+                </>
+              )}
+            </div>
           ))}
         </div>
 
