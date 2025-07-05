@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import {
   Play,
   Pause,
@@ -9,99 +9,41 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "../../store/gameStore";
-
-interface Track {
-  id: string;
-  name: string;
-  coverImage: string;
-  audioFile: string;
-}
+import { useBackgroundMusic } from "../../hooks/useBackgroundMusic";
 
 interface MusicMiniModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// Mock data for tracks by screen
-const getTracksForScreen = (screen: string): Track[] => {
-  switch (screen) {
-    case "world":
-      return [
-        {
-          id: "galaxy-1",
-          name: "Cosmic Voyage",
-          coverImage:
-            "https://cdn.builder.io/api/v1/image/assets%2Ff481900009a94cda953c032479392a30%2F3e6c6cb85c6a4d2ba05acb245bfbc214?format=webp&width=400",
-          audioFile: "/sounds/galaxy-music-1.mp3",
-        },
-        {
-          id: "galaxy-2",
-          name: "Stellar Dreams",
-          coverImage:
-            "https://cdn.builder.io/api/v1/image/assets%2Ff481900009a94cda953c032479392a30%2F3e6c6cb85c6a4d2ba05acb245bfbc214?format=webp&width=400",
-          audioFile: "/sounds/galaxy-music-2.mp3",
-        },
-      ];
-    case "pet":
-      return [
-        {
-          id: "pet-1",
-          name: "Pet Paradise",
-          coverImage:
-            "https://cdn.builder.io/api/v1/image/assets%2Ff481900009a94cda953c032479392a30%2F3e6c6cb85c6a4d2ba05acb245bfbc214?format=webp&width=400",
-          audioFile: "/sounds/pet-music-1.mp3",
-        },
-      ];
-    default:
-      return [
-        {
-          id: "default-1",
-          name: "Xenopets Theme",
-          coverImage:
-            "https://cdn.builder.io/api/v1/image/assets%2Ff481900009a94cda953c032479392a30%2F3e6c6cb85c6a4d2ba05acb245bfbc214?format=webp&width=400",
-          audioFile: "/sounds/default-music-1.mp3",
-        },
-      ];
-  }
-};
-
 export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
   isOpen,
   onClose,
 }) => {
   const { currentScreen } = useGameStore();
-  const tracks = getTracksForScreen(currentScreen);
+  const { isPlaying, currentTrack, volume, play, pause, setVolume } =
+    useBackgroundMusic();
 
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(50);
-  const [isMuted, setIsMuted] = useState(false);
-
-  const currentTrack = tracks[currentTrackIndex] || tracks[0];
-
-  const handlePlayPause = useCallback(() => {
-    setIsPlaying(!isPlaying);
-    // TODO: Implement actual audio play/pause logic
-  }, [isPlaying]);
-
-  const handleVolumeChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newVolume = parseInt(e.target.value);
-      setVolume(newVolume);
-      if (newVolume === 0) {
-        setIsMuted(true);
-      } else if (isMuted) {
-        setIsMuted(false);
+  const handlePlayPause = async () => {
+    try {
+      if (isPlaying) {
+        await pause();
+      } else {
+        await play();
       }
-      // TODO: Implement actual volume control
-    },
-    [isMuted],
-  );
+    } catch (error) {
+      console.warn("Erro ao controlar música:", error);
+    }
+  };
 
-  const handleMuteToggle = useCallback(() => {
-    setIsMuted(!isMuted);
-    // TODO: Implement actual mute logic
-  }, [isMuted]);
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value) / 100; // Convert to 0-1 range
+    setVolume(newVolume);
+  };
+
+  const handleMuteToggle = () => {
+    setVolume(volume > 0 ? 0 : 0.3);
+  };
 
   const getScreenTitle = () => {
     switch (currentScreen) {
@@ -119,6 +61,10 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
         return "Xenopets";
     }
   };
+
+  // Default cover image for all tracks
+  const defaultCoverImage =
+    "https://cdn.builder.io/api/v1/image/assets%2Ff481900009a94cda953c032479392a30%2F3e6c6cb85c6a4d2ba05acb245bfbc214?format=webp&width=400";
 
   if (!isOpen) return null;
 
@@ -158,8 +104,8 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
           <div className="flex items-center gap-4 mb-4">
             <div className="relative w-20 h-20 rounded-xl overflow-hidden shadow-md flex-shrink-0">
               <img
-                src={currentTrack?.coverImage}
-                alt={currentTrack?.name}
+                src={defaultCoverImage}
+                alt={currentTrack?.name || "Trilha Sonora"}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -169,7 +115,7 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
             <div className="flex-1 min-w-0">
               <div className="mb-2">
                 <h4 className="font-medium text-gray-900 text-sm truncate">
-                  {currentTrack?.name}
+                  {currentTrack?.name || "Nenhuma música"}
                 </h4>
                 <p className="text-xs text-gray-600">{getScreenTitle()}</p>
               </div>
@@ -195,7 +141,7 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
                     onClick={handleMuteToggle}
                     className="p-1 hover:bg-gray-100 rounded-full transition-colors"
                   >
-                    {isMuted || volume === 0 ? (
+                    {volume === 0 ? (
                       <VolumeX className="w-4 h-4 text-gray-600" />
                     ) : (
                       <Volume2 className="w-4 h-4 text-gray-600" />
@@ -207,37 +153,22 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
                       type="range"
                       min="0"
                       max="100"
-                      value={isMuted ? 0 : volume}
+                      value={volume * 100} // Convert from 0-1 to 0-100
                       onChange={handleVolumeChange}
                       className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                       style={{
-                        background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${isMuted ? 0 : volume}%, #e5e7eb ${isMuted ? 0 : volume}%, #e5e7eb 100%)`,
+                        background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${volume * 100}%, #e5e7eb ${volume * 100}%, #e5e7eb 100%)`,
                       }}
                     />
                   </div>
 
                   <span className="text-xs text-gray-500 w-6 text-right">
-                    {isMuted ? 0 : volume}
+                    {Math.round(volume * 100)}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Track indicators if multiple tracks */}
-          {tracks.length > 1 && (
-            <div className="flex justify-center gap-1">
-              {tracks.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTrackIndex(index)}
-                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                    index === currentTrackIndex ? "bg-blue-500" : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
         </motion.div>
       </motion.div>
     </AnimatePresence>
