@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Bell, X, Check, Trash2, Calendar } from "lucide-react";
+import { Bell, X, Check, Trash2, Calendar, Music } from "lucide-react";
 import { useGameStore } from "../../store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { MonthlyCalendar } from "../CheckIn/MonthlyCalendar";
+import { MusicPlayer } from "../Audio/MusicPlayer";
 
 export const TopBar: React.FC = () => {
   const {
