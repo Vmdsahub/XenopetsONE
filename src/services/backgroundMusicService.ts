@@ -200,6 +200,11 @@ class BackgroundMusicService {
           name: "Cosmic Exploration",
           path: "synthetic",
         },
+        {
+          id: "synthetic-world-3",
+          name: "Stellar Navigation",
+          path: "synthetic",
+        },
       ],
       planet: [
         {
@@ -208,9 +213,36 @@ class BackgroundMusicService {
           path: "synthetic",
         },
         { id: "synthetic-planet-2", name: "Surface Winds", path: "synthetic" },
+        {
+          id: "synthetic-planet-3",
+          name: "Underground Echoes",
+          path: "synthetic",
+        },
       ],
       pet: [
         { id: "synthetic-pet-1", name: "Gentle Companion", path: "synthetic" },
+        { id: "synthetic-pet-2", name: "Peaceful Bond", path: "synthetic" },
+      ],
+      store: [
+        {
+          id: "synthetic-store-1",
+          name: "Marketplace Bustle",
+          path: "synthetic",
+        },
+      ],
+      inventory: [
+        {
+          id: "synthetic-inventory-1",
+          name: "Quiet Organization",
+          path: "synthetic",
+        },
+      ],
+      profile: [
+        {
+          id: "synthetic-profile-1",
+          name: "Personal Space",
+          path: "synthetic",
+        },
       ],
     };
 
