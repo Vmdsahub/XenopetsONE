@@ -1968,54 +1968,93 @@ const SpaceMapComponent: React.FC = () => {
         }
       }
 
-      // Create very dark space background with deep blue tones
-      // Base deep space gradient - almost black with subtle blue
+      // Create rich deep space background with multiple color layers
+      // Base deep space gradient - richer colors with more depth
       const gradient = ctx.createRadialGradient(
         canvas.width * 0.3,
         canvas.height * 0.2,
         0,
         canvas.width * 0.7,
         canvas.height * 0.8,
-        Math.max(canvas.width, canvas.height) * 1.2,
+        Math.max(canvas.width, canvas.height) * 1.5,
       );
-      gradient.addColorStop(0, "#020307");
-      gradient.addColorStop(0.3, "#040610");
-      gradient.addColorStop(0.6, "#030915");
-      gradient.addColorStop(0.8, "#02060c");
-      gradient.addColorStop(1, "#000000");
+      gradient.addColorStop(0, "#0a0a2e"); // Deep blue-purple center
+      gradient.addColorStop(0.2, "#16213e"); // Rich navy
+      gradient.addColorStop(0.4, "#0f1626"); // Dark blue
+      gradient.addColorStop(0.6, "#0e1020"); // Very dark blue
+      gradient.addColorStop(0.8, "#050a18"); // Almost black blue
+      gradient.addColorStop(1, "#000000"); // Pure black edges
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Add very subtle blue nebula effect overlays
+      // Add multiple nebula layers for depth
+      // Purple-pink nebula (distant)
       const nebulaGradient1 = ctx.createRadialGradient(
-        canvas.width * 0.7,
-        canvas.height * 0.3,
+        canvas.width * 0.8,
+        canvas.height * 0.2,
         0,
-        canvas.width * 0.7,
-        canvas.height * 0.3,
-        canvas.width * 0.4,
+        canvas.width * 0.8,
+        canvas.height * 0.2,
+        canvas.width * 0.6,
       );
-      nebulaGradient1.addColorStop(0, "rgba(30, 60, 120, 0.04)");
-      nebulaGradient1.addColorStop(0.5, "rgba(20, 40, 80, 0.02)");
-      nebulaGradient1.addColorStop(1, "rgba(30, 60, 120, 0)");
+      nebulaGradient1.addColorStop(0, "rgba(120, 60, 150, 0.12)");
+      nebulaGradient1.addColorStop(0.3, "rgba(80, 40, 120, 0.08)");
+      nebulaGradient1.addColorStop(0.6, "rgba(60, 30, 90, 0.04)");
+      nebulaGradient1.addColorStop(1, "rgba(120, 60, 150, 0)");
 
       ctx.fillStyle = nebulaGradient1;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Blue-cyan nebula (mid distance)
       const nebulaGradient2 = ctx.createRadialGradient(
-        canvas.width * 0.2,
-        canvas.height * 0.8,
+        canvas.width * 0.15,
+        canvas.height * 0.7,
         0,
-        canvas.width * 0.2,
-        canvas.height * 0.8,
-        canvas.width * 0.35,
+        canvas.width * 0.15,
+        canvas.height * 0.7,
+        canvas.width * 0.5,
       );
-      nebulaGradient2.addColorStop(0, "rgba(15, 40, 90, 0.03)");
-      nebulaGradient2.addColorStop(0.5, "rgba(10, 30, 60, 0.015)");
-      nebulaGradient2.addColorStop(1, "rgba(15, 40, 90, 0)");
+      nebulaGradient2.addColorStop(0, "rgba(60, 120, 180, 0.1)");
+      nebulaGradient2.addColorStop(0.4, "rgba(40, 90, 140, 0.06)");
+      nebulaGradient2.addColorStop(0.7, "rgba(20, 60, 100, 0.03)");
+      nebulaGradient2.addColorStop(1, "rgba(60, 120, 180, 0)");
 
       ctx.fillStyle = nebulaGradient2;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Green-teal nebula (closer)
+      const nebulaGradient3 = ctx.createRadialGradient(
+        canvas.width * 0.6,
+        canvas.height * 0.8,
+        0,
+        canvas.width * 0.6,
+        canvas.height * 0.8,
+        canvas.width * 0.4,
+      );
+      nebulaGradient3.addColorStop(0, "rgba(60, 150, 120, 0.08)");
+      nebulaGradient3.addColorStop(0.3, "rgba(40, 120, 90, 0.05)");
+      nebulaGradient3.addColorStop(0.6, "rgba(20, 80, 60, 0.025)");
+      nebulaGradient3.addColorStop(1, "rgba(60, 150, 120, 0)");
+
+      ctx.fillStyle = nebulaGradient3;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Warm orange nebula (accent)
+      const nebulaGradient4 = ctx.createRadialGradient(
+        canvas.width * 0.4,
+        canvas.height * 0.1,
+        0,
+        canvas.width * 0.4,
+        canvas.height * 0.1,
+        canvas.width * 0.3,
+      );
+      nebulaGradient4.addColorStop(0, "rgba(200, 120, 60, 0.06)");
+      nebulaGradient4.addColorStop(0.4, "rgba(160, 90, 40, 0.04)");
+      nebulaGradient4.addColorStop(0.7, "rgba(120, 60, 20, 0.02)");
+      nebulaGradient4.addColorStop(1, "rgba(200, 120, 60, 0)");
+
+      ctx.fillStyle = nebulaGradient4;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Render stars with optimized viewport culling
