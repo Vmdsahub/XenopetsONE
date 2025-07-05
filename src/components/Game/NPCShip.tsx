@@ -48,7 +48,7 @@ const CENTER_Y = WORLD_SIZE / 2;
 const BARRIER_RADIUS = 600;
 const NPC_SPEED = 0.09; // Reduced speed by 70% for much slower movement
 const NPC_CIRCLE_SPEED = 0.003; // Proportionally reduced circling speed
-export const NPC_SIZE = 38; // Increased ship size more
+export const NPC_SIZE = 42; // Increased ship size even more
 
 // Trail constants for NPC ships - reduced trail
 const TRAIL_MAX_POINTS = 8;
