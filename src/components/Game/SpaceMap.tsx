@@ -1950,42 +1950,45 @@ const SpaceMapComponent: React.FC = () => {
         const starsLength = stars.length;
 
         for (let i = 0; i < starsLength; i++) {
-        const star = stars[i];
+          const star = stars[i];
 
-        // Natural floating motion with multiple sine waves for organic movement
-        const baseSpeed = 0.8 + star.speed * 0.4; // More consistent speed range
-        const primaryTime = time * baseSpeed;
-        const secondaryTime = time * baseSpeed * 1.618; // Golden ratio for natural variation
+          // Natural floating motion with multiple sine waves for organic movement
+          const baseSpeed = 0.8 + star.speed * 0.4; // More consistent speed range
+          const primaryTime = time * baseSpeed;
+          const secondaryTime = time * baseSpeed * 1.618; // Golden ratio for natural variation
 
-        // Layer multiple sine waves for more organic movement
-        const floatX =
-          Math.sin(primaryTime + star.floatPhase.x) *
-            star.floatAmplitude.x *
-            0.6 +
-          Math.sin(secondaryTime * 0.7 + star.floatPhase.x * 1.3) *
-            star.floatAmplitude.x *
-            0.3 +
-          Math.sin(primaryTime * 0.3 + star.floatPhase.x * 0.8) *
-            star.floatAmplitude.x *
-            0.1;
+          // Layer multiple sine waves for more organic movement
+          const floatX =
+            Math.sin(primaryTime + star.floatPhase.x) *
+              star.floatAmplitude.x *
+              0.6 +
+            Math.sin(secondaryTime * 0.7 + star.floatPhase.x * 1.3) *
+              star.floatAmplitude.x *
+              0.3 +
+            Math.sin(primaryTime * 0.3 + star.floatPhase.x * 0.8) *
+              star.floatAmplitude.x *
+              0.1;
 
-        const floatY =
-          Math.cos(primaryTime * 0.8 + star.floatPhase.y) *
-            star.floatAmplitude.y *
-            0.6 +
-          Math.cos(secondaryTime * 0.6 + star.floatPhase.y * 1.2) *
-            star.floatAmplitude.y *
-            0.3 +
-          Math.cos(primaryTime * 0.4 + star.floatPhase.y * 0.9) *
-            star.floatAmplitude.y *
-            0.1;
+          const floatY =
+            Math.cos(primaryTime * 0.8 + star.floatPhase.y) *
+              star.floatAmplitude.y *
+              0.6 +
+            Math.cos(secondaryTime * 0.6 + star.floatPhase.y * 1.2) *
+              star.floatAmplitude.y *
+              0.3 +
+            Math.cos(primaryTime * 0.4 + star.floatPhase.y * 0.9) *
+              star.floatAmplitude.y *
+              0.1;
 
-        star.x = normalizeCoord(star.baseX + floatX);
-        star.y = normalizeCoord(star.baseY + floatY);
+          star.x = normalizeCoord(star.baseX + floatX);
+          star.y = normalizeCoord(star.baseY + floatY);
 
-        // Smoother twinkle and pulse updates
-        star.twinkle += star.speed * 0.4;
-        star.pulse += star.speed * 0.3;
+          // Smoother twinkle and pulse updates
+          star.twinkle += star.speed * 0.4;
+          star.pulse += star.speed * 0.3;
+        }
+
+        lastStarUpdateTime.current = currentTime;
       }
 
       // Update planet floating positions
