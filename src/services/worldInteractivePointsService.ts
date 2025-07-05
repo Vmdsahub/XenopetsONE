@@ -5,6 +5,8 @@ export interface WorldInteractivePoint {
   world_id: string;
   x_percent: number;
   y_percent: number;
+  width_percent: number;
+  height_percent: number;
   title: string;
   description?: string;
   action_type: "dialog" | "shop" | "minigame" | "quest" | "teleport";
