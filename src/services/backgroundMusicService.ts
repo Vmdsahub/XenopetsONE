@@ -366,14 +366,28 @@ class BackgroundMusicService {
         },
       ],
       pet: [
-        { id: "synthetic-pet-1", name: "Gentle Companion", path: "synthetic" },
-        { id: "synthetic-pet-2", name: "Peaceful Bond", path: "synthetic" },
+        {
+          id: "synthetic-pet-1",
+          name: "Gentle Companion",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/3487734/pexels-photo-3487734.jpeg",
+        },
+        {
+          id: "synthetic-pet-2",
+          name: "Peaceful Bond",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/3487734/pexels-photo-3487734.jpeg",
+        },
       ],
       store: [
         {
           id: "synthetic-store-1",
           name: "Marketplace Bustle",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/13768940/pexels-photo-13768940.jpeg",
         },
       ],
       inventory: [
