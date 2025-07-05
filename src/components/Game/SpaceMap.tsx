@@ -1379,7 +1379,7 @@ const SpaceMapComponent: React.FC = () => {
         // Save to database with throttling
         clearTimeout((window as any).worldDragTimeout);
         (window as any).worldDragTimeout = setTimeout(() => {
-          console.log("���� Saving world drag position:", {
+          console.log("����� Saving world drag position:", {
             selectedWorldId,
             worldX,
             worldY,
@@ -2043,6 +2043,9 @@ const SpaceMapComponent: React.FC = () => {
           projectiles.splice(i, 1);
         }
       }
+
+      // Update NPC ship
+      npcShip.updateShip(projectileDeltaTime * 1000); // Convert to milliseconds
 
       // Create shooting stars less frequently for better performance
       if (
