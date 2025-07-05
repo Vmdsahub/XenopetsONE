@@ -2611,6 +2611,11 @@ const SpaceMapComponent: React.FC = () => {
         // Render ship image if loaded, otherwise fallback to original drawing
         if (shipImageRef.current && shipImageRef.current.complete) {
           const shipSize = 30; // Adjust size as needed
+
+          // Enable antialiasing for smooth ship rendering
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
+
           ctx.drawImage(
             shipImageRef.current,
             -shipSize / 2,
