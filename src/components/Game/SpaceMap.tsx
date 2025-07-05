@@ -995,8 +995,8 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
-    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador - Reduzido de 2000 para 1200
-    for (let i = 0; i < 1200; i++) {
+    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador - Aumentado para mais poeira cósmica
+    for (let i = 0; i < 2000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
