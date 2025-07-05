@@ -1513,7 +1513,7 @@ const SpaceMapComponent: React.FC = () => {
         return;
       }
 
-      const deltaTime = Math.min(currentTime - lastTime, 16.67);
+      const deltaTime = currentTime - lastTime; // FPS desbloqueado - sem limitação
 
       // Calculate FPS less frequently for better performance
       if (fpsRef.current.lastTime > 0) {
