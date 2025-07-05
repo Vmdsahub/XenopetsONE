@@ -23,9 +23,7 @@ interface NPCShipState {
   vx: number;
   vy: number;
   targetPlanet: Planet | null;
-  mode: "exploring" | "circling" | "moving_to_planet";
-  circleAngle: number;
-  circleRadius: number;
+  mode: "exploring";
   lastModeChange: number;
   lastDirectionChange: number;
   wanderAngle: number;
