@@ -53,23 +53,29 @@ export const PetScreen: React.FC = () => {
   // If user is hatching an egg, show the hatching screen
   if (isHatchingInProgress && selectedEggForHatching) {
     return (
-      <EggHatchingView
-        eggData={selectedEggForHatching}
-        onHatchComplete={handleHatchComplete}
-      />
+      <div className="pb-24">
+        <EggHatchingView
+          eggData={selectedEggForHatching}
+          onHatchComplete={handleHatchComplete}
+        />
+      </div>
     );
   }
 
   // If no pets exist, show egg selection screen
   if (!activePet && pets.length === 0) {
-    return <EggSelectionScreen onEggSelected={handleEggSelected} />;
+    return (
+      <div className="pb-24">
+        <EggSelectionScreen onEggSelected={handleEggSelected} />
+      </div>
+    );
   }
 
   // Show no active pet message if pets exist but none is active
   if (!activePet && pets.length > 0) {
     return (
       <motion.div
-        className="max-w-md mx-auto pb-12"
+        className="max-w-md mx-auto pb-24"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -139,7 +145,7 @@ export const PetScreen: React.FC = () => {
 
   // Show the active pet
   return (
-    <div className="max-w-md mx-auto pb-12">
+    <div className="max-w-md mx-auto pb-24">
       <PetPortrait pet={activePet!} />
     </div>
   );

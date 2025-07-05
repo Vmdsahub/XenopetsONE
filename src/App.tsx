@@ -121,12 +121,12 @@ function App() {
         return <PetScreen />;
       case "world":
         return (
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-3xl shadow-xl p-4 min-h-[80vh]">
+          <div className="max-w-2xl mx-auto pb-24">
+            <div className="bg-white rounded-3xl shadow-xl p-4">
               <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">
                 Mapa Galáctico
               </h1>
-              <div className="w-full h-[70vh] relative">
+              <div className="w-full aspect-square max-h-[calc(100vh-280px)] relative">
                 <SpaceMap />
               </div>
             </div>
@@ -178,7 +178,7 @@ function App() {
 
         <TopBar />
 
-        <main className="pt-20 pb-32 px-4 min-h-screen composite-layer force-gpu-layer">
+        <main className="pt-20 pb-8 px-4 min-h-screen composite-layer force-gpu-layer">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentScreen}
