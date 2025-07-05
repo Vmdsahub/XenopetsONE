@@ -124,6 +124,11 @@ class BackgroundMusicService {
     // If music is playing and we switched screens, change to new music
     if (this.isPlaying && previousScreen !== screen && this.tracks.length > 0) {
       console.log("🔄 Trocando música automaticamente para nova tela");
+
+      // Stop current music first
+      this.stopCurrentTrack();
+
+      // Start new music for the new screen
       this.currentTrackIndex = 0; // Start from first track of new screen
       this.playTrack(0).catch(console.warn);
     }
