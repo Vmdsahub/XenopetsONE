@@ -229,6 +229,7 @@ const SpaceMapComponent: React.FC = () => {
   // Modal state
   const [showLandingModal, setShowLandingModal] = useState(false);
   const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null);
+  const [showNPCModal, setShowNPCModal] = useState(false);
 
   // Landing animation state
   const [isLandingAnimationActive, setIsLandingAnimationActive] =
