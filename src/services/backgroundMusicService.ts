@@ -307,6 +307,8 @@ class BackgroundMusicService {
           id: "synthetic-planet-1",
           name: "Generic Planet",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
         },
       ],
       "planet-1": [
@@ -551,7 +553,7 @@ class BackgroundMusicService {
     // Frequências base para cada faixa (acordes diferentes)
     const chordConfigs = [
       [220, 261.63, 329.63], // Am chord - Lá menor
-      [174.61, 220, 261.63], // Fm chord - F�� menor
+      [174.61, 220, 261.63], // Fm chord - F���� menor
       [146.83, 185, 233.08], // Dm chord - Ré menor
     ];
 
