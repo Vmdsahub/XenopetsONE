@@ -6,6 +6,7 @@ export interface MusicTrack {
   id: string;
   name: string;
   path: string;
+  coverImage: string;
   duration?: number;
 }
 
@@ -228,7 +229,7 @@ class BackgroundMusicService {
       });
 
       if (canLoad) {
-        console.log("🎵 Usando arquivos de música reais");
+        console.log("🎵 Usando arquivos de m��sica reais");
         this.isUsingSynthetic = false;
       } else {
         this.setupSyntheticMusic();
