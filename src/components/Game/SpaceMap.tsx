@@ -1941,33 +1941,48 @@ const SpaceMapComponent: React.FC = () => {
         }))
         .filter((pulse) => pulse.life > 0 && pulse.radius <= pulse.maxRadius);
 
-      // Update stars with floating motion - optimized with batching
+      // Update stars with smooth floating motion - all stars updated for consistency
       const stars = starsRef.current;
-      const time = currentTime * 0.002;
+      const time = currentTime * 0.0008; // Slower, more natural timing
       const starsLength = stars.length;
 
-      // Update only a portion of stars each frame to spread CPU load
-      const frameSkip = Math.max(1, Math.floor(starsLength / 2000)); // Update in batches
-      const batchSize = Math.floor(starsLength / frameSkip);
-      const startIndex =
-        (Math.floor(currentTime / 16.67) % frameSkip) * batchSize;
-      const endIndex = Math.min(startIndex + batchSize, starsLength);
-
-      for (let i = startIndex; i < endIndex; i++) {
+      for (let i = 0; i < starsLength; i++) {
         const star = stars[i];
 
-        // Simplified floating motion - reduce calculations
-        const floatTime = time * (0.5 + star.speed * 3); // Reduced complexity
+        // Natural floating motion with multiple sine waves for organic movement
+        const baseSpeed = 0.8 + star.speed * 0.4; // More consistent speed range
+        const primaryTime = time * baseSpeed;
+        const secondaryTime = time * baseSpeed * 1.618; // Golden ratio for natural variation
+
+        // Layer multiple sine waves for more organic movement
         const floatX =
-          Math.sin(floatTime + star.floatPhase.x) * star.floatAmplitude.x;
+          Math.sin(primaryTime + star.floatPhase.x) *
+            star.floatAmplitude.x *
+            0.6 +
+          Math.sin(secondaryTime * 0.7 + star.floatPhase.x * 1.3) *
+            star.floatAmplitude.x *
+            0.3 +
+          Math.sin(primaryTime * 0.3 + star.floatPhase.x * 0.8) *
+            star.floatAmplitude.x *
+            0.1;
+
         const floatY =
-          Math.cos(floatTime * 0.7 + star.floatPhase.y) * star.floatAmplitude.y;
+          Math.cos(primaryTime * 0.8 + star.floatPhase.y) *
+            star.floatAmplitude.y *
+            0.6 +
+          Math.cos(secondaryTime * 0.6 + star.floatPhase.y * 1.2) *
+            star.floatAmplitude.y *
+            0.3 +
+          Math.cos(primaryTime * 0.4 + star.floatPhase.y * 0.9) *
+            star.floatAmplitude.y *
+            0.1;
 
         star.x = normalizeCoord(star.baseX + floatX);
         star.y = normalizeCoord(star.baseY + floatY);
 
-        star.twinkle += star.speed * 0.6; // Reduced from 1.0
-        star.pulse += star.speed * 0.5; // Reduced from 0.8
+        // Smoother twinkle and pulse updates
+        star.twinkle += star.speed * 0.4;
+        star.pulse += star.speed * 0.3;
       }
 
       // Update planet floating positions
