@@ -13,7 +13,13 @@ const navigationItems = [
     icon: Package,
     color: "text-orange-500",
   },
-  { id: "music", label: "Música", icon: Music, color: "text-blue-500", isAction: true },
+  {
+    id: "music",
+    label: "Música",
+    icon: Music,
+    color: "text-blue-500",
+    isAction: true,
+  },
   { id: "profile", label: "Perfil", icon: User, color: "text-purple-500" },
 ];
 
@@ -44,50 +50,58 @@ export const BottomNavigation: React.FC = () => {
           className={`flex justify-around max-w-md mx-auto px-2 py-2 ${user?.isAdmin ? "grid grid-cols-6" : "grid grid-cols-5"}`}
         >
           {items.map(({ id, label, icon: Icon, color, isAction }) => {
-            const isActive = currentScreen === id || (id === "music" && showMusicModal);
+            const isActive =
+              currentScreen === id || (id === "music" && showMusicModal);
 
-          return (
-            <motion.button
-              key={id}
-              onClick={() => setCurrentScreen(id)}
-              className={`flex flex-col items-center py-2 px-2 rounded-xl transition-all duration-200 ${
-                isActive ? "bg-gray-100" : "hover:bg-gray-50"
-              } ${id === "admin" ? "relative" : ""}`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.div
-                className={`p-1 rounded-lg ${isActive ? color : "text-gray-400"} ${
-                  id === "admin" && isActive ? "bg-red-50" : ""
-                }`}
-                animate={{
-                  scale: isActive ? 1.1 : 1,
-                  rotate: isActive ? [0, -10, 10, 0] : 0,
-                }}
-                transition={{ duration: 0.3 }}
+            return (
+              <motion.button
+                key={id}
+                onClick={() => handleItemClick(id, isAction)}
+                className={`flex flex-col items-center py-2 px-2 rounded-xl transition-all duration-200 ${
+                  isActive ? "bg-gray-100" : "hover:bg-gray-50"
+                } ${id === "admin" ? "relative" : ""}`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <Icon className="w-6 h-6" />
-              </motion.div>
-              <span
-                className={`text-xs font-medium mt-1 transition-colors ${
-                  isActive ? "text-gray-900" : "text-gray-500"
-                }`}
-              >
-                {label}
-              </span>
-              {isActive && (
                 <motion.div
-                  className={`w-1 h-1 rounded-full mt-1 ${
-                    id === "admin" ? "bg-red-500" : "bg-blue-500"
+                  className={`p-1 rounded-lg ${isActive ? color : "text-gray-400"} ${
+                    id === "admin" && isActive ? "bg-red-50" : ""
                   }`}
-                  layoutId="activeIndicator"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
-              )}
-            </motion.button>
-          );
-        })}
+                  animate={{
+                    scale: isActive ? 1.1 : 1,
+                    rotate: isActive ? [0, -10, 10, 0] : 0,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Icon className="w-6 h-6" />
+                </motion.div>
+                <span
+                  className={`text-xs font-medium mt-1 transition-colors ${
+                    isActive ? "text-gray-900" : "text-gray-500"
+                  }`}
+                >
+                  {label}
+                </span>
+                {isActive && !isAction && (
+                  <motion.div
+                    className={`w-1 h-1 rounded-full mt-1 ${
+                      id === "admin" ? "bg-red-500" : "bg-blue-500"
+                    }`}
+                    layoutId="activeIndicator"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
-    </div>
+
+      {/* Music Mini Modal */}
+      <MusicMiniModal
+        isOpen={showMusicModal}
+        onClose={() => setShowMusicModal(false)}
+      />
+    </>
   );
 };
