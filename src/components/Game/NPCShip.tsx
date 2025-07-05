@@ -73,7 +73,13 @@ export const useNPCShip = ({
     circleAngle: 0,
     circleRadius: 150,
     lastModeChange: Date.now(),
+    lastDirectionChange: Date.now(),
+    wanderAngle: Math.random() * Math.PI * 2,
   });
+
+  // Trail system for NPC ship
+  const trailPointsRef = useRef<TrailPoint[]>([]);
+  const lastTrailTime = useRef<number>(0);
 
   // Store dependencies in refs to avoid recreating callbacks
   const planetsRef = useRef(planets);
