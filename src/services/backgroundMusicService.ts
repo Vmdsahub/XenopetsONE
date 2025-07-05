@@ -161,9 +161,16 @@ class BackgroundMusicService {
     this.originalTracksByScreen = JSON.parse(
       JSON.stringify(this.tracksByScreen),
     );
+    this.lastMusicContext = "world"; // Initialize with world context
     this.setCurrentScreen("world"); // Start with world music
     this.checkForRealMusic();
+
+    // Auto-start removed to avoid conflicts with manual controls
+    // Music will be started by the App component when user authenticates
   }
+
+  // Track the last music context to avoid restarting music unnecessarily
+  private lastMusicContext: string = "";
 
   /**
    * Changes music based on current screen/world
@@ -190,20 +197,41 @@ class BackgroundMusicService {
       );
     }
 
+    // Create a unique context identifier for this music selection
+    const currentMusicContext = `${musicKey}`;
+
     // Get tracks for the new screen, fallback to world tracks
-    this.tracks =
+    const newTracks =
       this.tracksByScreen[musicKey] || this.tracksByScreen.world || [];
 
     console.log(
-      `🎵 Mudando para tela: ${screen}${planetId ? ` (planeta: ${planetId})` : ""}, ${this.tracks.length} faixas disponíveis`,
+      `🎵 Mudando para tela: ${screen}${planetId ? ` (planeta: ${planetId})` : ""}, ${newTracks.length} faixas disponíveis`,
     );
     console.log(
-      `🎼 Faixas disponíveis: ${this.tracks.map((t) => t.name).join(", ")}`,
+      `🎼 Faixas disponíveis: ${newTracks.map((t) => t.name).join(", ")}`,
     );
 
-    // If music is playing and we switched screens, change to new music
-    if (this.isPlaying && previousScreen !== screen && this.tracks.length > 0) {
-      console.log(`🔄 Trocando música: ${previousScreen} → ${screen}`);
+    // Check if we're returning to the same music context (same playlist)
+    const isSameMusicContext = this.lastMusicContext === currentMusicContext;
+
+    if (isSameMusicContext && (this.isPlaying || this.isPaused)) {
+      console.log(
+        `🎵 Retornando ao mesmo contexto musical (${currentMusicContext}): mantendo estado atual (${this.isPaused ? "pausado" : "tocando"})`,
+      );
+      // Don't restart music - just update tracks reference but preserve current state (playing or paused)
+      this.tracks = newTracks;
+      return;
+    }
+
+    // Update tracks
+    this.tracks = newTracks;
+    this.lastMusicContext = currentMusicContext;
+
+    // If music is playing (not paused) and we switched to a DIFFERENT music context, change to new music
+    if (this.getIsPlaying() && !isSameMusicContext && this.tracks.length > 0) {
+      console.log(
+        `🔄 Contexto musical mudou: ${this.lastMusicContext} → ${currentMusicContext}`,
+      );
       console.log(
         `🎵 Música anterior: ${this.currentTrack ? "tocando" : "nenhuma"}`,
       );
@@ -469,8 +497,23 @@ class BackgroundMusicService {
 
       if (errorMessage.includes("user didn't interact")) {
         console.warn(
-          "⚠️ Música bloqueada: precisa de interação do usuário primeiro",
+          "⚠️ Música bloqueada pelo navegador: tentando música sintética",
         );
+        // Tenta usar música sintética se arquivos reais forem bloqueados
+        if (!this.isUsingSynthetic) {
+          this.setupSyntheticMusic();
+          try {
+            await this.playTrack(this.currentTrackIndex);
+            this.isPlaying = true;
+            console.log("✅ Música sintética iniciada automaticamente");
+            return;
+          } catch (syntheticError) {
+            console.warn(
+              "❌ Falha na música sintética também:",
+              syntheticError,
+            );
+          }
+        }
         return;
       }
 

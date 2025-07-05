@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, memo } from "react";
+import React, { useEffect, useMemo, memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthScreen } from "./components/Auth/AuthScreen";
 
@@ -18,6 +18,7 @@ import { PlanetScreen } from "./components/Screens/PlanetScreen";
 import { useAuthStore } from "./store/authStore";
 import { useGameStore } from "./store/gameStore";
 import { preloadAllSounds } from "./utils/soundManager";
+import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 
 // Componente para pré-carregar recursos de áudio - memoizado para performance
 const AudioPreloader: React.FC = memo(() => {
@@ -44,6 +45,10 @@ function App() {
     subscribeToRealtimeUpdates,
     unsubscribeFromRealtimeUpdates,
   } = useGameStore();
+
+  // Initialize background music
+  const { play: playMusic, isPlaying } = useBackgroundMusic();
+  const [hasAutoStarted, setHasAutoStarted] = useState(false);
 
   // Initialize authentication on app start
   useEffect(() => {
@@ -93,6 +98,18 @@ function App() {
     authUser?.accountScore,
     authUser?.daysPlayed,
   ]);
+
+  // Auto-start music when user is authenticated (only once)
+  useEffect(() => {
+    if (isAuthenticated && !hasAutoStarted) {
+      console.log("🎵 Iniciando música automaticamente após autenticação");
+      setHasAutoStarted(true);
+      playMusic().catch((error) => {
+        console.warn("Falha ao iniciar música automaticamente:", error);
+        // Se falhar, tentará novamente na próxima interação do usuário
+      });
+    }
+  }, [isAuthenticated, hasAutoStarted, playMusic]);
 
   // Cleanup subscriptions on unmount
   useEffect(() => {
