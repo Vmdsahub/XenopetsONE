@@ -143,7 +143,7 @@ function App() {
       default:
         return <PetScreen />;
     }
-  }, [currentScreen, gameUser?.isAdmin]);
+  }, [isAuthenticated, currentScreen, gameUser?.isAdmin]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
