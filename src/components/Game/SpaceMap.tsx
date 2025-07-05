@@ -297,12 +297,16 @@ const SpaceMapComponent: React.FC = () => {
     return ((coord % WORLD_SIZE) + WORLD_SIZE) % WORLD_SIZE;
   }, []);
 
-  // Initialize NPC Ship
-  const npcShip = useNPCShip({
-    planets: planetsRef.current,
-    getWrappedDistance,
-    normalizeCoord,
-  });
+  // Initialize NPC Ship with memoized dependencies
+  const npcShip = useMemo(
+    () =>
+      useNPCShip({
+        planets: planetsRef.current,
+        getWrappedDistance,
+        normalizeCoord,
+      }),
+    [getWrappedDistance, normalizeCoord],
+  );
 
   // Função de tiro que pode ser reutilizada
   const shootProjectile = useCallback(() => {
