@@ -2196,40 +2196,22 @@ const SpaceMapComponent: React.FC = () => {
             const drawX = screenX - imageSize / 2;
             const drawY = screenY - imageSize / 2;
 
-            // Add subtle glow effect for floating planets
-            ctx.shadowColor = `${planet.color}40`; // Semi-transparent planet color
-            ctx.shadowBlur = 8;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-
-            // Draw the planet image with antialiasing
+            // Draw the planet image with antialiasing (no glow)
             ctx.drawImage(img, drawX, drawY, imageSize, imageSize);
 
-            // Reset shadow and smoothing
-            ctx.shadowColor = "transparent";
-            ctx.shadowBlur = 0;
+            // Reset smoothing
             ctx.imageSmoothingEnabled = false; // Reset for other elements
             ctx.restore();
           } else {
-            // Fallback to colored circle with antialiasing
-            ctx.save();
+            // Fallback to colored circle (no glow)
             ctx.globalAlpha = 1;
-
-            // Add subtle glow for floating planets
-            ctx.shadowColor = `${planet.color}60`;
-            ctx.shadowBlur = 12;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-
             ctx.fillStyle = planet.color;
             ctx.beginPath();
             ctx.arc(screenX, screenY, planet.size, 0, Math.PI * 2);
             ctx.fill();
 
-            // Planet highlight with smooth edges
-            ctx.shadowColor = "#ffffff40";
-            ctx.shadowBlur = 6;
-            ctx.globalAlpha = 0.4;
+            // Planet highlight
+            ctx.globalAlpha = 0.3;
             ctx.fillStyle = "#ffffff";
             ctx.beginPath();
             ctx.arc(
@@ -2240,8 +2222,7 @@ const SpaceMapComponent: React.FC = () => {
               Math.PI * 2,
             );
             ctx.fill();
-
-            ctx.restore();
+            ctx.globalAlpha = 1;
           }
         }
       });
