@@ -98,6 +98,17 @@ function App() {
     authUser?.daysPlayed,
   ]);
 
+  // Auto-start music when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && !isPlaying) {
+      console.log("🎵 Iniciando música automaticamente após autenticação");
+      playMusic().catch((error) => {
+        console.warn("Falha ao iniciar música automaticamente:", error);
+        // Se falhar, tentará novamente na próxima interação do usuário
+      });
+    }
+  }, [isAuthenticated, isPlaying, playMusic]);
+
   // Cleanup subscriptions on unmount
   useEffect(() => {
     return () => {
