@@ -1488,13 +1488,22 @@ const SpaceMapComponent: React.FC = () => {
     }
   }, []);
 
-  // Optimized game loop with pre-rendering considerations
+  // Optimized game loop with maximum GPU acceleration
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    // Get 2D context with GPU-optimized settings
+    const ctx = canvas.getContext("2d", {
+      alpha: false, // Disable alpha channel for better performance
+      desynchronized: true, // Allow asynchronous rendering for better GPU usage
+      willReadFrequently: false, // Optimize for GPU rendering, not CPU reading
+    });
     if (!ctx) return;
+
+    // Set GPU-optimized context properties
+    ctx.imageSmoothingEnabled = false; // Disable smoothing for pixel-perfect rendering
+    ctx.globalCompositeOperation = "source-over"; // Default, most GPU-optimized blend mode
 
     let lastTime = 0;
 
