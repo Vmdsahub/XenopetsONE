@@ -60,6 +60,18 @@ export const useNPCShip = ({
     lastModeChange: Date.now(),
   });
 
+  // Store dependencies in refs to avoid recreating callbacks
+  const planetsRef = useRef(planets);
+  const getWrappedDistanceRef = useRef(getWrappedDistance);
+  const normalizeCoordRef = useRef(normalizeCoord);
+
+  // Update refs when dependencies change
+  useEffect(() => {
+    planetsRef.current = planets;
+    getWrappedDistanceRef.current = getWrappedDistance;
+    normalizeCoordRef.current = normalizeCoord;
+  }, [planets, getWrappedDistance, normalizeCoord]);
+
   const shipImageRef = useRef<HTMLImageElement | null>(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
