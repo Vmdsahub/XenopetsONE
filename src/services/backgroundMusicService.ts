@@ -6,65 +6,149 @@ export interface MusicTrack {
   id: string;
   name: string;
   path: string;
+  coverImage: string;
   duration?: number;
 }
 
 class BackgroundMusicService {
-  private tracks: MusicTrack[] = [
-    {
-      id: "galaxy-1",
-      name: "Silent Starscape",
-      path: "/sounds/galaxy-music-1.mp3",
-    },
-    {
-      id: "galaxy-2",
-      name: "Silent Starscape",
-      path: "/sounds/galaxy-music-2.mp3",
-    },
-    {
-      id: "galaxy-3",
-      name: "Whispers of the Stars",
-      path: "/sounds/galaxy-music-3.mp3",
-    },
-    {
-      id: "galaxy-4",
-      name: "Wanderers Among the Stars",
-      path: "/sounds/galaxy-music-4.mp3",
-    },
-    {
-      id: "galaxy-5",
-      name: "Across the Silent Stars",
-      path: "/sounds/galaxy-music-5.mp3",
-    },
-    {
-      id: "galaxy-6",
-      name: "Galactic Whisper",
-      path: "/sounds/galaxy-music-6.mp3",
-    },
-    {
-      id: "galaxy-7",
-      name: "Galactic Whisper",
-      path: "/sounds/galaxy-music-7.mp3",
-    },
-    {
-      id: "galaxy-8",
-      name: "Silent Horizons",
-      path: "/sounds/galaxy-music-8.mp3",
-    },
-    {
-      id: "galaxy-9",
-      name: "Echoes in the Void",
-      path: "/sounds/galaxy-music-9.mp3",
-    },
-  ];
+  // Music tracks organized by screen/world
+  private tracksByScreen: Record<string, MusicTrack[]> = {
+    world: [
+      {
+        id: "galaxy-1",
+        name: "Silent Starscape",
+        path: "/sounds/galaxy-music-1.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+      },
+      {
+        id: "galaxy-2",
+        name: "Cosmic Journey",
+        path: "/sounds/galaxy-music-2.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+      },
+      {
+        id: "galaxy-3",
+        name: "Whispers of the Stars",
+        path: "/sounds/galaxy-music-3.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+      },
+    ],
+    // Generic planet fallback
+    planet: [
+      {
+        id: "galaxy-4",
+        name: "Planetary Exploration",
+        path: "/sounds/galaxy-music-4.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+      },
+    ],
+    // Specific planets with unique music
+    "planet-1": [
+      {
+        id: "galaxy-4",
+        name: "Desert World",
+        path: "/sounds/galaxy-music-4.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/3694341/pexels-photo-3694341.jpeg",
+      },
+    ],
+    "planet-2": [
+      {
+        id: "galaxy-5",
+        name: "Ocean World",
+        path: "/sounds/galaxy-music-5.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/47480/pexels-photo-47480.jpeg",
+      },
+    ],
+    "planet-3": [
+      {
+        id: "galaxy-6",
+        name: "Crystal World",
+        path: "/sounds/galaxy-music-6.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/13300951/pexels-photo-13300951.jpeg",
+      },
+    ],
+    "planet-4": [
+      {
+        id: "galaxy-7",
+        name: "Forest World",
+        path: "/sounds/galaxy-music-7.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/32840777/pexels-photo-32840777.jpeg",
+      },
+    ],
+    "planet-5": [
+      {
+        id: "galaxy-8",
+        name: "Ice World",
+        path: "/sounds/galaxy-music-8.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/32861718/pexels-photo-32861718.jpeg",
+      },
+    ],
+    "planet-6": [
+      {
+        id: "galaxy-9",
+        name: "Volcanic World",
+        path: "/sounds/galaxy-music-9.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/12391921/pexels-photo-12391921.jpeg",
+      },
+    ],
+    pet: [
+      {
+        id: "galaxy-1",
+        name: "Gentle Companion",
+        path: "/sounds/galaxy-music-1.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/3487734/pexels-photo-3487734.jpeg",
+      },
+    ],
+    store: [
+      {
+        id: "galaxy-2",
+        name: "Commerce Hub",
+        path: "/sounds/galaxy-music-2.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/13768940/pexels-photo-13768940.jpeg",
+      },
+    ],
+    inventory: [
+      {
+        id: "galaxy-3",
+        name: "Inventory Theme",
+        path: "/sounds/galaxy-music-3.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+      },
+    ],
+    profile: [
+      {
+        id: "galaxy-1",
+        name: "Personal Space",
+        path: "/sounds/galaxy-music-1.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+      },
+    ],
+  };
 
-  private originalTracks: MusicTrack[];
+  private tracks: MusicTrack[] = [];
+  private originalTracksByScreen: Record<string, MusicTrack[]>;
+  private currentScreen: string = "world";
 
   private currentTrack: HTMLAudioElement | null = null;
   private currentTrackIndex: number = 0;
   private isPlaying: boolean = false;
   private isPaused: boolean = false;
   private volume: number = 0.3;
+  private trackEndHandler: (() => void) | null = null;
 
   // Synthetic music properties
   private syntheticAudioContext: AudioContext | null = null;
@@ -74,8 +158,69 @@ class BackgroundMusicService {
 
   constructor() {
     console.log("🎵 Inicializando BackgroundMusicService...");
-    this.originalTracks = [...this.tracks];
+    this.originalTracksByScreen = JSON.parse(
+      JSON.stringify(this.tracksByScreen),
+    );
+    this.setCurrentScreen("world"); // Start with world music
     this.checkForRealMusic();
+  }
+
+  /**
+   * Changes music based on current screen/world
+   */
+  setCurrentScreen(screen: string, planetId?: string): void {
+    const previousScreen = this.currentScreen;
+    this.currentScreen = screen;
+
+    // Screens that should NOT change music (keep current music playing)
+    const nonMusicScreens = ["inventory", "pet", "profile", "store"];
+
+    if (nonMusicScreens.includes(screen)) {
+      console.log(`📱 Tela ${screen}: mantendo música atual tocando`);
+      return; // Don't change music for these screens
+    }
+
+    // Determine the music key to use
+    let musicKey = screen;
+    if (screen === "planet" && planetId) {
+      // Try to use planet-specific music first, then fallback to generic planet
+      musicKey = this.tracksByScreen[planetId] ? planetId : "planet";
+      console.log(
+        `🪐 Planeta específico: ${planetId}, usando música: ${musicKey}`,
+      );
+    }
+
+    // Get tracks for the new screen, fallback to world tracks
+    this.tracks =
+      this.tracksByScreen[musicKey] || this.tracksByScreen.world || [];
+
+    console.log(
+      `🎵 Mudando para tela: ${screen}${planetId ? ` (planeta: ${planetId})` : ""}, ${this.tracks.length} faixas disponíveis`,
+    );
+    console.log(
+      `🎼 Faixas disponíveis: ${this.tracks.map((t) => t.name).join(", ")}`,
+    );
+
+    // If music is playing and we switched screens, change to new music
+    if (this.isPlaying && previousScreen !== screen && this.tracks.length > 0) {
+      console.log(`🔄 Trocando música: ${previousScreen} → ${screen}`);
+      console.log(
+        `🎵 Música anterior: ${this.currentTrack ? "tocando" : "nenhuma"}`,
+      );
+
+      // Stop current music first
+      this.stopCurrentTrack();
+      console.log("⏹️ Música anterior parada");
+
+      // Start new music for the new screen
+      this.currentTrackIndex = 0; // Start from first track of new screen
+      console.log(`▶️ Iniciando nova música: ${this.tracks[0]?.name}`);
+      this.playTrack(0).catch(console.warn);
+    } else if (!this.isPlaying && previousScreen !== screen) {
+      console.log(
+        `📱 Tela mudou (${previousScreen} → ${screen}) mas música não está tocando`,
+      );
+    }
   }
 
   /**
@@ -139,11 +284,145 @@ class BackgroundMusicService {
    */
   private setupSyntheticMusic(): void {
     this.isUsingSynthetic = true;
-    this.tracks = [
-      { id: "synthetic-1", name: "Nebula Drift", path: "synthetic" },
-      { id: "synthetic-2", name: "Cosmic Winds", path: "synthetic" },
-      { id: "synthetic-3", name: "Deep Void", path: "synthetic" },
-    ];
+
+    // Setup synthetic tracks by screen
+    this.tracksByScreen = {
+      world: [
+        {
+          id: "synthetic-world-1",
+          name: "Galactic Drift",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+        },
+        {
+          id: "synthetic-world-2",
+          name: "Cosmic Exploration",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+        },
+        {
+          id: "synthetic-world-3",
+          name: "Stellar Navigation",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+        },
+      ],
+      planet: [
+        {
+          id: "synthetic-planet-1",
+          name: "Generic Planet",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+        },
+      ],
+      "planet-1": [
+        {
+          id: "synthetic-planet-1",
+          name: "Desert World Ambience",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/3694341/pexels-photo-3694341.jpeg",
+        },
+      ],
+      "planet-2": [
+        {
+          id: "synthetic-planet-2",
+          name: "Ocean World Waves",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/47480/pexels-photo-47480.jpeg",
+        },
+      ],
+      "planet-3": [
+        {
+          id: "synthetic-planet-3",
+          name: "Crystal World Resonance",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/13300951/pexels-photo-13300951.jpeg",
+        },
+      ],
+      "planet-4": [
+        {
+          id: "synthetic-planet-4",
+          name: "Forest World Whispers",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/32840777/pexels-photo-32840777.jpeg",
+        },
+      ],
+      "planet-5": [
+        {
+          id: "synthetic-planet-5",
+          name: "Ice World Winds",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/32861718/pexels-photo-32861718.jpeg",
+        },
+      ],
+      "planet-6": [
+        {
+          id: "synthetic-planet-6",
+          name: "Volcanic World Rumbles",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/12391921/pexels-photo-12391921.jpeg",
+        },
+      ],
+      pet: [
+        {
+          id: "synthetic-pet-1",
+          name: "Gentle Companion",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/3487734/pexels-photo-3487734.jpeg",
+        },
+        {
+          id: "synthetic-pet-2",
+          name: "Peaceful Bond",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/3487734/pexels-photo-3487734.jpeg",
+        },
+      ],
+      store: [
+        {
+          id: "synthetic-store-1",
+          name: "Marketplace Bustle",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/13768940/pexels-photo-13768940.jpeg",
+        },
+      ],
+      inventory: [
+        {
+          id: "synthetic-inventory-1",
+          name: "Quiet Organization",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+        },
+      ],
+      profile: [
+        {
+          id: "synthetic-profile-1",
+          name: "Personal Space",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+        },
+      ],
+    };
+
+    // Update current tracks based on current screen
+    this.tracks =
+      this.tracksByScreen[this.currentScreen] ||
+      this.tracksByScreen.world ||
+      [];
 
     try {
       this.syntheticAudioContext = new (window.AudioContext ||
@@ -183,7 +462,7 @@ class BackgroundMusicService {
       }
 
       this.isPlaying = true;
-      console.log("✅ Música iniciada com sucesso");
+      console.log("✅ M��sica iniciada com sucesso");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -242,6 +521,24 @@ class BackgroundMusicService {
   }
 
   /**
+   * Para apenas a faixa atual sem resetar o estado de playing
+   * Usado para trocar de música entre telas
+   */
+  private stopCurrentTrack(): void {
+    if (this.isUsingSynthetic) {
+      this.stopSyntheticTrack();
+    } else {
+      if (this.currentTrack && this.trackEndHandler) {
+        this.currentTrack.pause();
+        this.currentTrack.currentTime = 0;
+        this.currentTrack.removeEventListener("ended", this.trackEndHandler);
+        this.currentTrack = null;
+        this.trackEndHandler = null;
+      }
+    }
+  }
+
+  /**
    * Reproduz uma faixa específica
    */
   private async playTrack(index: number): Promise<void> {
@@ -259,9 +556,10 @@ class BackgroundMusicService {
     audio.loop = false;
 
     // Configura evento para próxima faixa
-    audio.addEventListener("ended", () => {
+    this.trackEndHandler = () => {
       this.nextTrack();
-    });
+    };
+    audio.addEventListener("ended", this.trackEndHandler);
 
     try {
       await audio.play();
@@ -293,7 +591,7 @@ class BackgroundMusicService {
     // Frequências base para cada faixa (acordes diferentes)
     const chordConfigs = [
       [220, 261.63, 329.63], // Am chord - Lá menor
-      [174.61, 220, 261.63], // Fm chord - Fá menor
+      [174.61, 220, 261.63], // Fm chord - F�� menor
       [146.83, 185, 233.08], // Dm chord - Ré menor
     ];
 
@@ -479,6 +777,13 @@ class BackgroundMusicService {
    */
   getIsPaused(): boolean {
     return this.isPaused;
+  }
+
+  /**
+   * Obtém a tela atual
+   */
+  getCurrentScreen(): string {
+    return this.currentScreen;
   }
 }
 

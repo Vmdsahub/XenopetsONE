@@ -3,6 +3,7 @@ import {
   backgroundMusicService,
   MusicTrack,
 } from "../services/backgroundMusicService";
+import { useGameStore } from "../store/gameStore";
 
 export interface UseBackgroundMusicReturn {
   isPlaying: boolean;
@@ -22,6 +23,7 @@ export interface UseBackgroundMusicReturn {
  * Hook para controlar a música de fundo da navegação galáctica
  */
 export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
+  const { currentScreen, currentPlanet } = useGameStore();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
@@ -82,6 +84,24 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
       clearInterval(interval);
     };
   }, [updateState]);
+
+  // Monitor screen changes and switch music automatically
+  useEffect(() => {
+    const currentServiceScreen = backgroundMusicService.getCurrentScreen();
+    const planetId = currentPlanet?.id;
+
+    console.log(
+      `🎮 Hook detectou mudança: tela = ${currentScreen}, planeta = ${planetId}, serviço = ${currentServiceScreen}`,
+    );
+
+    if (currentScreen && currentScreen !== currentServiceScreen) {
+      console.log(
+        `🎵 Hook: Tela mudou de ${currentServiceScreen} para ${currentScreen}${planetId ? ` (planeta: ${planetId})` : ""}`,
+      );
+      backgroundMusicService.setCurrentScreen(currentScreen, planetId);
+      updateState();
+    }
+  }, [currentScreen, currentPlanet?.id]);
 
   // Cleanup quando componente desmonta
   useEffect(() => {
