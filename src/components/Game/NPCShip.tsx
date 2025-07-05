@@ -40,6 +40,7 @@ interface UseNPCShipProps {
   planets: Planet[];
   getWrappedDistance: (coord: number, cameraCoord: number) => number;
   normalizeCoord: (coord: number) => number;
+  isPaused?: boolean;
 }
 
 const WORLD_SIZE = 15000;
