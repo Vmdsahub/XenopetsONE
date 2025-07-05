@@ -28,7 +28,9 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
   const [isPaused, setIsPaused] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
   const [volume, setVolumeState] = useState(0.3);
-  const [hasStartedMusicOnce, setHasStartedMusicOnce] = useState(false);
+  const [hasStartedMusicOnce, setHasStartedMusicOnce] = useState(() => {
+    return localStorage.getItem("xenopets_music_started") === "true";
+  });
 
   // Atualiza o estado baseado no serviço
   const updateState = useCallback(() => {
