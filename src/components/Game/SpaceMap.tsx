@@ -880,8 +880,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 12 + 4, // Movimento visível para camada distante
-          y: Math.random() * 12 + 4,
+          x: Math.random() * 3 + 1, // Movimento mais sutil para camada distante
+          y: Math.random() * 3 + 1,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2, // Fase inicial aleatória
