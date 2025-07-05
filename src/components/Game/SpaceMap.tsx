@@ -855,8 +855,8 @@ const SpaceMapComponent: React.FC = () => {
       "#f8f8ff", // Purples
     ];
 
-    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador - Reduzido de 4000 para 2500
-    for (let i = 0; i < 2500; i++) {
+    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador - Aumentado para mais estrelas
+    for (let i = 0; i < 4000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
