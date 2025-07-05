@@ -19,6 +19,7 @@ import { useAuthStore } from "./store/authStore";
 import { useGameStore } from "./store/gameStore";
 import { preloadAllSounds } from "./utils/soundManager";
 import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
+import { MusicProvider } from "./contexts/MusicContext";
 
 // Componente para pré-carregar recursos de áudio - memoizado para performance
 const AudioPreloader: React.FC = memo(() => {
