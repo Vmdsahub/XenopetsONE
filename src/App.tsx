@@ -48,6 +48,7 @@ function App() {
 
   // Initialize background music
   const { play: playMusic, isPlaying } = useBackgroundMusic();
+  const [hasAutoStarted, setHasAutoStarted] = useState(false);
 
   // Initialize authentication on app start
   useEffect(() => {
