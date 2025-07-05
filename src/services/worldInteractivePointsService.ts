@@ -106,7 +106,7 @@ class WorldInteractivePointsService {
         .from("world_interactive_points")
         .update(updates)
         .eq("id", pointId)
-        .select()
+        .select("*")
         .single();
 
       if (error) throw error;
