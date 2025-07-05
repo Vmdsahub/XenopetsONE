@@ -13,11 +13,19 @@ const navigationItems = [
     icon: Package,
     color: "text-orange-500",
   },
+  {
+    id: "music",
+    label: "Música",
+    icon: Music,
+    color: "text-blue-500",
+    isAction: true,
+  },
   { id: "profile", label: "Perfil", icon: User, color: "text-purple-500" },
 ];
 
 export const BottomNavigation: React.FC = () => {
   const { currentScreen, setCurrentScreen, user } = useGameStore();
+  const [showMusicModal, setShowMusicModal] = useState(false);
 
   // Add admin navigation for admin users
   const items = user?.isAdmin
