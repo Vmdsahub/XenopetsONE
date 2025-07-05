@@ -29,54 +29,83 @@ class BackgroundMusicService {
         path: "/sounds/galaxy-music-3.mp3",
       },
     ],
+    // Generic planet fallback
     planet: [
       {
         id: "galaxy-4",
-        name: "Wanderers Among the Stars",
+        name: "Planetary Exploration",
         path: "/sounds/galaxy-music-4.mp3",
       },
+    ],
+    // Specific planets with unique music
+    "planet-1": [
+      {
+        id: "galaxy-4",
+        name: "Desert World",
+        path: "/sounds/galaxy-music-4.mp3",
+      },
+    ],
+    "planet-2": [
       {
         id: "galaxy-5",
-        name: "Across the Silent Stars",
+        name: "Ocean World",
         path: "/sounds/galaxy-music-5.mp3",
       },
+    ],
+    "planet-3": [
       {
         id: "galaxy-6",
-        name: "Planetary Exploration",
+        name: "Crystal World",
         path: "/sounds/galaxy-music-6.mp3",
+      },
+    ],
+    "planet-4": [
+      {
+        id: "galaxy-7",
+        name: "Forest World",
+        path: "/sounds/galaxy-music-7.mp3",
+      },
+    ],
+    "planet-5": [
+      {
+        id: "galaxy-8",
+        name: "Ice World",
+        path: "/sounds/galaxy-music-8.mp3",
+      },
+    ],
+    "planet-6": [
+      {
+        id: "galaxy-9",
+        name: "Volcanic World",
+        path: "/sounds/galaxy-music-9.mp3",
       },
     ],
     pet: [
       {
-        id: "galaxy-7",
+        id: "galaxy-1",
         name: "Gentle Companion",
-        path: "/sounds/galaxy-music-7.mp3",
-      },
-      {
-        id: "galaxy-8",
-        name: "Pet Paradise",
-        path: "/sounds/galaxy-music-8.mp3",
+        path: "/sounds/galaxy-music-1.mp3",
       },
     ],
     store: [
       {
-        id: "galaxy-9",
+        id: "galaxy-2",
         name: "Commerce Hub",
-        path: "/sounds/galaxy-music-9.mp3",
+        path: "/sounds/galaxy-music-2.mp3",
       },
     ],
     inventory: [
       {
-        id: "galaxy-1",
-        name: "Silent Starscape",
-        path: "/sounds/galaxy-music-1.mp3",
+        id: "galaxy-3",
+        name: "Inventory Theme",
+        path: "/sounds/galaxy-music-3.mp3",
       },
     ],
     profile: [
       {
-        id: "galaxy-2",
-        name: "Cosmic Journey",
-        path: "/sounds/galaxy-music-2.mp3",
+        id: "galaxy-1",
+        name: "Personal Space",
+        path: "/sounds/galaxy-music-1.mp3",
       },
     ],
   };
