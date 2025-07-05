@@ -566,7 +566,10 @@ const SpaceMapComponent: React.FC = () => {
   // Create trail point function
   const createTrailPoint = useCallback(
     (x: number, y: number, currentTime: number, shipVelocity: number) => {
-      const intensity = Math.min(shipVelocity / SHIP_MAX_SPEED, 1);
+      const intensity = Math.max(
+        0.3,
+        Math.min(shipVelocity / SHIP_MAX_SPEED, 1),
+      ); // Intensidade mínima de 0.3
 
       trailPointsRef.current.push({
         x,
@@ -1683,10 +1686,10 @@ const SpaceMapComponent: React.FC = () => {
         updateContinuousMovementSound(currentShipVelocity, SHIP_MAX_SPEED);
       }
 
-      // Only create trail points if ship is moving and enough time has passed
+      // Create trail points if ship is moving (threshold muito baixo para sempre mostrar rastro)
       if (
-        currentShipVelocity > 0.1 &&
-        currentTime - lastTrailTime.current > 35
+        currentShipVelocity > 0.01 &&
+        currentTime - lastTrailTime.current > 20
       ) {
         // Calculate trail position at the back of the ship
         const trailOffset = 12; // Distance from ship center to back
