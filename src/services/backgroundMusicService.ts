@@ -83,8 +83,34 @@ class BackgroundMusicService {
 
   constructor() {
     console.log("🎵 Inicializando BackgroundMusicService...");
-    this.originalTracks = [...this.tracks];
+    this.originalTracksByScreen = JSON.parse(
+      JSON.stringify(this.tracksByScreen),
+    );
+    this.setCurrentScreen("world"); // Start with world music
     this.checkForRealMusic();
+  }
+
+  /**
+   * Changes music based on current screen/world
+   */
+  setCurrentScreen(screen: string): void {
+    const previousScreen = this.currentScreen;
+    this.currentScreen = screen;
+
+    // Get tracks for the new screen, fallback to world tracks
+    this.tracks =
+      this.tracksByScreen[screen] || this.tracksByScreen.world || [];
+
+    console.log(
+      `🎵 Mudando para tela: ${screen}, ${this.tracks.length} faixas disponíveis`,
+    );
+
+    // If music is playing and we switched screens, change to new music
+    if (this.isPlaying && previousScreen !== screen && this.tracks.length > 0) {
+      console.log("🔄 Trocando música automaticamente para nova tela");
+      this.currentTrackIndex = 0; // Start from first track of new screen
+      this.playTrack(0).catch(console.warn);
+    }
   }
 
   /**
