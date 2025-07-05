@@ -3,6 +3,7 @@ import {
   backgroundMusicService,
   MusicTrack,
 } from "../services/backgroundMusicService";
+import { useGameStore } from "../store/gameStore";
 
 export interface UseBackgroundMusicReturn {
   isPlaying: boolean;
