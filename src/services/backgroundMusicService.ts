@@ -90,6 +90,7 @@ class BackgroundMusicService {
   private isPlaying: boolean = false;
   private isPaused: boolean = false;
   private volume: number = 0.3;
+  private trackEndHandler: (() => void) | null = null;
 
   // Synthetic music properties
   private syntheticAudioContext: AudioContext | null = null;
@@ -176,7 +177,7 @@ class BackgroundMusicService {
       });
 
       if (canLoad) {
-        console.log("🎵 Usando arquivos de música reais");
+        console.log("���� Usando arquivos de música reais");
         this.isUsingSynthetic = false;
       } else {
         this.setupSyntheticMusic();
