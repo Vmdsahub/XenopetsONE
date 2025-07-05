@@ -510,5 +510,6 @@ export const useNPCShip = ({
     getShipData,
     renderShip,
     isClickOnShip,
+    drawShipTrail,
   };
 };
