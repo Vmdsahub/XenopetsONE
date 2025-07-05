@@ -297,6 +297,13 @@ const SpaceMapComponent: React.FC = () => {
     return ((coord % WORLD_SIZE) + WORLD_SIZE) % WORLD_SIZE;
   }, []);
 
+  // Initialize NPC Ship
+  const npcShip = useNPCShip({
+    planets: planetsRef.current,
+    getWrappedDistance,
+    normalizeCoord,
+  });
+
   // Função de tiro que pode ser reutilizada
   const shootProjectile = useCallback(() => {
     const currentTime = Date.now();
@@ -2865,7 +2872,7 @@ const SpaceMapComponent: React.FC = () => {
           {/* Rotation Control */}
           <div className="mb-3">
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Rotação:{" "}
+              Rotaç��o:{" "}
               {Math.round(
                 ((planetsRef.current.find((p) => p.id === selectedWorldId)
                   ?.rotation || 0) *
