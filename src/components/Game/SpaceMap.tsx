@@ -1433,7 +1433,7 @@ const SpaceMapComponent: React.FC = () => {
               setIsDragging(false);
               setDragOffset({ x: 0, y: 0 });
             } else if (selectedWorldId === planet.id && !isDragging) {
-              // Se já est�������� selecionado mas não dragging, inicie o drag
+              // Se já est������� selecionado mas não dragging, inicie o drag
               setIsDragging(true);
               setDragOffset({ x: dx, y: dy });
             } else {
@@ -2044,7 +2044,7 @@ const SpaceMapComponent: React.FC = () => {
       }
 
       // Create rich deep space background with multiple color layers
-      // Base deep space gradient - richer colors with more depth
+      // Base deep space gradient - much darker for better depth
       const gradient = ctx.createRadialGradient(
         canvas.width * 0.3,
         canvas.height * 0.2,
@@ -2053,11 +2053,11 @@ const SpaceMapComponent: React.FC = () => {
         canvas.height * 0.8,
         Math.max(canvas.width, canvas.height) * 1.5,
       );
-      gradient.addColorStop(0, "#0a0a2e"); // Deep blue-purple center
-      gradient.addColorStop(0.2, "#16213e"); // Rich navy
-      gradient.addColorStop(0.4, "#0f1626"); // Dark blue
-      gradient.addColorStop(0.6, "#0e1020"); // Very dark blue
-      gradient.addColorStop(0.8, "#050a18"); // Almost black blue
+      gradient.addColorStop(0, "#050510"); // Very dark blue-purple center
+      gradient.addColorStop(0.2, "#0a0f1e"); // Dark navy
+      gradient.addColorStop(0.4, "#070a15"); // Darker blue
+      gradient.addColorStop(0.6, "#050810"); // Nearly black blue
+      gradient.addColorStop(0.8, "#020508"); // Almost pure black
       gradient.addColorStop(1, "#000000"); // Pure black edges
 
       ctx.fillStyle = gradient;
