@@ -2470,9 +2470,11 @@ const SpaceMapComponent: React.FC = () => {
         );
       });
 
+      // Continue at maximum possible FPS (uncapped)
       gameLoopRef.current = requestAnimationFrame(gameLoop);
     };
 
+    // Start game loop at maximum FPS (uncapped)
     gameLoopRef.current = requestAnimationFrame(gameLoop);
 
     return () => {
