@@ -1889,6 +1889,30 @@ const SpaceMapComponent: React.FC = () => {
         star.pulse += star.speed * 0.5; // Reduced from 0.8
       }
 
+      // Update planet floating positions
+      const planets = planetsRef.current;
+      const planetTime = currentTime * 0.001; // Slower movement for planets
+
+      planets.forEach((planet) => {
+        if (
+          planet.baseX !== undefined &&
+          planet.baseY !== undefined &&
+          planet.floatAmplitude &&
+          planet.floatPhase &&
+          planet.floatSpeed
+        ) {
+          const floatTime = planetTime * planet.floatSpeed;
+          const floatX =
+            Math.sin(floatTime + planet.floatPhase.x) * planet.floatAmplitude.x;
+          const floatY =
+            Math.cos(floatTime * 0.8 + planet.floatPhase.y) *
+            planet.floatAmplitude.y;
+
+          planet.x = planet.baseX + floatX;
+          planet.y = planet.baseY + floatY;
+        }
+      });
+
       // Update projectiles with uncapped delta time for unlimited FPS
       const currentFrameTime = performance.now();
       const projectileDeltaTime =
