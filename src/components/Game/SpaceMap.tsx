@@ -1518,7 +1518,7 @@ const SpaceMapComponent: React.FC = () => {
       updateWorldPosition,
       setSelectedPlanet,
       setShowLandingModal,
-      npcShip,
+      npcShip.isClickOnShip,
     ],
   );
 
