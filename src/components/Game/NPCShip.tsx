@@ -251,13 +251,21 @@ export const useNPCShip = ({
 
         case "exploring":
         default:
-          // Random exploration within barrier
-          if (Math.abs(ship.vx) < 0.1 && Math.abs(ship.vy) < 0.1) {
-            const randomAngle = Math.random() * Math.PI * 2;
-            ship.vx = Math.cos(randomAngle) * NPC_SPEED;
-            ship.vy = Math.sin(randomAngle) * NPC_SPEED;
-            ship.angle = randomAngle;
+          // Smooth wandering with gradual direction changes
+          if (shouldChangeDirection) {
+            // Add slight random variation to wander angle for natural movement
+            ship.wanderAngle += (Math.random() - 0.5) * 0.8;
+            ship.lastDirectionChange = currentTime;
           }
+
+          // Smoothly interpolate towards wander direction
+          const targetVx = Math.cos(ship.wanderAngle) * NPC_SPEED;
+          const targetVy = Math.sin(ship.wanderAngle) * NPC_SPEED;
+
+          ship.vx += (targetVx - ship.vx) * 0.02 * deltaTime;
+          ship.vy += (targetVy - ship.vy) * 0.02 * deltaTime;
+
+          ship.angle = Math.atan2(ship.vy, ship.vx);
           break;
       }
 
