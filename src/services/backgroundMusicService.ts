@@ -174,11 +174,35 @@ class BackgroundMusicService {
    */
   private setupSyntheticMusic(): void {
     this.isUsingSynthetic = true;
-    this.tracks = [
-      { id: "synthetic-1", name: "Nebula Drift", path: "synthetic" },
-      { id: "synthetic-2", name: "Cosmic Winds", path: "synthetic" },
-      { id: "synthetic-3", name: "Deep Void", path: "synthetic" },
-    ];
+
+    // Setup synthetic tracks by screen
+    this.tracksByScreen = {
+      world: [
+        { id: "synthetic-world-1", name: "Galactic Drift", path: "synthetic" },
+        {
+          id: "synthetic-world-2",
+          name: "Cosmic Exploration",
+          path: "synthetic",
+        },
+      ],
+      planet: [
+        {
+          id: "synthetic-planet-1",
+          name: "Planetary Ambience",
+          path: "synthetic",
+        },
+        { id: "synthetic-planet-2", name: "Surface Winds", path: "synthetic" },
+      ],
+      pet: [
+        { id: "synthetic-pet-1", name: "Gentle Companion", path: "synthetic" },
+      ],
+    };
+
+    // Update current tracks based on current screen
+    this.tracks =
+      this.tracksByScreen[this.currentScreen] ||
+      this.tracksByScreen.world ||
+      [];
 
     try {
       this.syntheticAudioContext = new (window.AudioContext ||
