@@ -302,6 +302,7 @@ const SpaceMapComponent: React.FC = () => {
     planets: planetsRef.current,
     getWrappedDistance,
     normalizeCoord,
+    isPaused: showNPCModal,
   });
 
   // Função de tiro que pode ser reutilizada
