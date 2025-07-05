@@ -24,7 +24,8 @@ const navigationItems = [
 ];
 
 export const BottomNavigation: React.FC = () => {
-  const { currentScreen, setCurrentScreen, user } = useGameStore();
+  const { currentScreen, setCurrentScreen, user, currentPlanet } =
+    useGameStore();
   const [showMusicModal, setShowMusicModal] = useState(false);
 
   // Add admin navigation for admin users
