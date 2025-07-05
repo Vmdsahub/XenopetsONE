@@ -479,6 +479,8 @@ export const PlanetScreen: React.FC = () => {
                   const updates: UpdateInteractivePointData = {
                     title: selectedPoint.title,
                     description: selectedPoint.description,
+                    width_percent: selectedPoint.width_percent,
+                    height_percent: selectedPoint.height_percent,
                   };
 
                   const updated =
