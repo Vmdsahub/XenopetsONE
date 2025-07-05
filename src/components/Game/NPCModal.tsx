@@ -13,7 +13,6 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Typewriter effect
