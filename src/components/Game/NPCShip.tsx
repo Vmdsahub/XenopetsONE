@@ -264,8 +264,8 @@ export const useNPCShip = ({
       const centerX = canvasWidth / 2;
       const centerY = canvasHeight / 2;
 
-      const wrappedDeltaX = getWrappedDistance(ship.x, cameraX);
-      const wrappedDeltaY = getWrappedDistance(ship.y, cameraY);
+      const wrappedDeltaX = getWrappedDistanceRef.current(ship.x, cameraX);
+      const wrappedDeltaY = getWrappedDistanceRef.current(ship.y, cameraY);
       const shipScreenX = centerX + wrappedDeltaX;
       const shipScreenY = centerY + wrappedDeltaY;
 
@@ -275,7 +275,7 @@ export const useNPCShip = ({
 
       return distance <= NPC_SIZE;
     },
-    [getWrappedDistance],
+    [],
   );
 
   // Render ship on canvas
