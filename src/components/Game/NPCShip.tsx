@@ -233,10 +233,10 @@ export const useNPCShip = ({
       }
 
       // Normalize coordinates
-      ship.x = normalizeCoord(ship.x);
-      ship.y = normalizeCoord(ship.y);
+      ship.x = normalizeCoordRef.current(ship.x);
+      ship.y = normalizeCoordRef.current(ship.y);
     },
-    [findNearestPlanet, isInsideBarrier, normalizeCoord],
+    [findNearestPlanet, isInsideBarrier],
   );
 
   // Get ship data for rendering
