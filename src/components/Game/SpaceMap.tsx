@@ -2779,16 +2779,6 @@ const SpaceMapComponent: React.FC = () => {
         onCancel={handleLandingCancel}
       />
 
-      <NPCShip
-        canvas={canvasRef.current}
-        cameraX={gameState.camera.x}
-        cameraY={gameState.camera.y}
-        planets={planetsRef.current}
-        onShipClick={() => setShowNPCModal(true)}
-        getWrappedDistance={getWrappedDistance}
-        normalizeCoord={normalizeCoord}
-      />
-
       <NPCModal isOpen={showNPCModal} onClose={() => setShowNPCModal(false)} />
       <canvas
         ref={canvasRef}
