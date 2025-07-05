@@ -184,26 +184,19 @@ export const useNPCShip = ({
       const ship = shipStateRef.current;
       const currentTime = Date.now();
 
-      // Change behavior every 8-15 seconds
+      // Change behavior every 10-20 seconds
       const timeSinceLastChange = currentTime - ship.lastModeChange;
       const shouldChangeBehavior =
-        timeSinceLastChange > 8000 + Math.random() * 7000;
+        timeSinceLastChange > 10000 + Math.random() * 10000;
 
-      // Ensure ship keeps moving in exploring mode
-      if (
-        ship.mode === "exploring" &&
-        Math.abs(ship.vx) < 0.1 &&
-        Math.abs(ship.vy) < 0.1
-      ) {
-        const randomAngle = Math.random() * Math.PI * 2;
-        ship.vx = Math.cos(randomAngle) * NPC_SPEED;
-        ship.vy = Math.sin(randomAngle) * NPC_SPEED;
-        ship.angle = randomAngle;
-      }
+      // Change direction more frequently in exploring mode for natural movement
+      const timeSinceDirectionChange = currentTime - ship.lastDirectionChange;
+      const shouldChangeDirection =
+        timeSinceDirectionChange > 2000 + Math.random() * 3000;
 
       if (shouldChangeBehavior || !ship.targetPlanet) {
         const nearestPlanet = findNearestPlanet(ship.x, ship.y);
-        if (nearestPlanet) {
+        if (nearestPlanet && Math.random() > 0.5) {
           ship.targetPlanet = nearestPlanet;
           ship.mode = Math.random() > 0.3 ? "circling" : "moving_to_planet";
           ship.circleRadius = 100 + Math.random() * 100;
@@ -211,6 +204,7 @@ export const useNPCShip = ({
         } else {
           ship.mode = "exploring";
           ship.lastModeChange = currentTime;
+          ship.wanderAngle = Math.random() * Math.PI * 2;
         }
       }
 
