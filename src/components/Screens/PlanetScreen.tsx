@@ -77,10 +77,12 @@ export const PlanetScreen: React.FC = () => {
       world_id: currentPlanet!.id,
       x_percent: Math.round(xPercent * 100) / 100,
       y_percent: Math.round(yPercent * 100) / 100,
-      title: `Ponto ${interactivePoints.length + 1}`,
-      description: "Descrição do ponto",
+      width_percent: 10,
+      height_percent: 10,
+      title: `Quadrado ${interactivePoints.length + 1}`,
+      description: "Área interativa",
       action_type: "dialog",
-      action_data: { message: "Olá! Este é um ponto interativo." },
+      action_data: { message: "Olá! Esta é uma área interativa." },
     };
 
     const newPoint =
