@@ -165,17 +165,8 @@ class BackgroundMusicService {
     this.setCurrentScreen("world"); // Start with world music
     this.checkForRealMusic();
 
-    // Try to auto-start music after initialization
-    setTimeout(() => {
-      if (!this.isPlaying) {
-        console.log("🎵 Tentando iniciar música automaticamente...");
-        this.play().catch(() => {
-          console.log(
-            "⚠️ Música automática falhou - aguardando interação do usuário",
-          );
-        });
-      }
-    }, 1000);
+    // Auto-start removed to avoid conflicts with manual controls
+    // Music will be started by the App component when user authenticates
   }
 
   // Track the last music context to avoid restarting music unnecessarily
