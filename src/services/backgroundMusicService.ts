@@ -165,6 +165,9 @@ class BackgroundMusicService {
     this.checkForRealMusic();
   }
 
+  // Track the last music context to avoid restarting music unnecessarily
+  private lastMusicContext: string = "";
+
   /**
    * Changes music based on current screen/world
    */
@@ -190,20 +193,41 @@ class BackgroundMusicService {
       );
     }
 
+    // Create a unique context identifier for this music selection
+    const currentMusicContext = `${musicKey}`;
+
     // Get tracks for the new screen, fallback to world tracks
-    this.tracks =
+    const newTracks =
       this.tracksByScreen[musicKey] || this.tracksByScreen.world || [];
 
     console.log(
-      `🎵 Mudando para tela: ${screen}${planetId ? ` (planeta: ${planetId})` : ""}, ${this.tracks.length} faixas disponíveis`,
+      `🎵 Mudando para tela: ${screen}${planetId ? ` (planeta: ${planetId})` : ""}, ${newTracks.length} faixas disponíveis`,
     );
     console.log(
-      `🎼 Faixas disponíveis: ${this.tracks.map((t) => t.name).join(", ")}`,
+      `🎼 Faixas disponíveis: ${newTracks.map((t) => t.name).join(", ")}`,
     );
 
-    // If music is playing and we switched screens, change to new music
-    if (this.isPlaying && previousScreen !== screen && this.tracks.length > 0) {
-      console.log(`🔄 Trocando música: ${previousScreen} → ${screen}`);
+    // Check if we're returning to the same music context (same playlist)
+    const isSameMusicContext = this.lastMusicContext === currentMusicContext;
+
+    if (isSameMusicContext && this.isPlaying) {
+      console.log(
+        `🎵 Retornando ao mesmo contexto musical (${currentMusicContext}): continuando música atual`,
+      );
+      // Don't restart music - just update tracks reference but keep playing current track
+      this.tracks = newTracks;
+      return;
+    }
+
+    // Update tracks
+    this.tracks = newTracks;
+    this.lastMusicContext = currentMusicContext;
+
+    // If music is playing and we switched to a DIFFERENT music context, change to new music
+    if (this.isPlaying && !isSameMusicContext && this.tracks.length > 0) {
+      console.log(
+        `🔄 Contexto musical mudou: ${this.lastMusicContext} → ${currentMusicContext}`,
+      );
       console.log(
         `🎵 Música anterior: ${this.currentTrack ? "tocando" : "nenhuma"}`,
       );
