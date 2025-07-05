@@ -99,17 +99,8 @@ function App() {
     authUser?.daysPlayed,
   ]);
 
-  // Auto-start music when user is authenticated (only once)
-  useEffect(() => {
-    if (isAuthenticated && !hasAutoStarted) {
-      console.log("🎵 Iniciando música automaticamente após autenticação");
-      setHasAutoStarted(true);
-      playMusic().catch((error) => {
-        console.warn("Falha ao iniciar música automaticamente:", error);
-        // Se falhar, tentará novamente na próxima interação do usuário
-      });
-    }
-  }, [isAuthenticated, hasAutoStarted, playMusic]);
+  // Auto-start music when user accesses world for the first time (removed from auth)
+  // Music will now only start when the user navigates to the world screen
 
   // Cleanup subscriptions on unmount
   useEffect(() => {
