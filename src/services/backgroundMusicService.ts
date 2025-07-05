@@ -18,16 +18,22 @@ class BackgroundMusicService {
         id: "galaxy-1",
         name: "Silent Starscape",
         path: "/sounds/galaxy-music-1.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
       },
       {
         id: "galaxy-2",
         name: "Cosmic Journey",
         path: "/sounds/galaxy-music-2.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
       },
       {
         id: "galaxy-3",
         name: "Whispers of the Stars",
         path: "/sounds/galaxy-music-3.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
       },
     ],
     // Generic planet fallback
@@ -229,7 +235,7 @@ class BackgroundMusicService {
       });
 
       if (canLoad) {
-        console.log("🎵 Usando arquivos de m��sica reais");
+        console.log("🎵 Usando arquivos de música reais");
         this.isUsingSynthetic = false;
       } else {
         this.setupSyntheticMusic();
