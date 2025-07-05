@@ -105,7 +105,7 @@ export const useNPCShip = ({
       setIsImageLoaded(true); // Still render as fallback
     };
     img.src =
-      "https://cdn.builder.io/api/v1/image/assets%2Ff3204b51264f46c7b764e817db763ddb%2F0a9ef7e7db754c66a80705f93b134f77?format=webp&width=800";
+      "https://cdn.builder.io/api/v1/image/assets%2Ff93cc7cc605f420aa4fbb47a6557dbb5%2Fba62973afdca4d84ba54dad060a3e993?format=webp&width=800";
   }, []);
 
   // Create trail point function
