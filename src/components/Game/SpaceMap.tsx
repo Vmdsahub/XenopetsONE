@@ -925,8 +925,8 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
-    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador - Reduzido de 3000 para 1800
-    for (let i = 0; i < 1800; i++) {
+    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador - Aumentado para mais estrelas
+    for (let i = 0; i < 3000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
