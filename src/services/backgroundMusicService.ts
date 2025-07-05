@@ -162,11 +162,10 @@ class BackgroundMusicService {
       JSON.stringify(this.tracksByScreen),
     );
     this.lastMusicContext = "world"; // Initialize with world context
-    this.setCurrentScreen("world"); // Start with world music
+    this.setCurrentScreen("world", undefined, false); // Start with world music but don't auto-play
     this.checkForRealMusic();
 
-    // Auto-start removed to avoid conflicts with manual controls
-    // Music will be started by the App component when user authenticates
+    // Music will be started manually when user first accesses the world
   }
 
   // Track the last music context to avoid restarting music unnecessarily
