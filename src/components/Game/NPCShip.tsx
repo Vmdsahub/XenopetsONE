@@ -178,7 +178,7 @@ export const useNPCShip = ({
         case "exploring":
         default:
           // Random exploration within barrier
-          if (!ship.vx && !ship.vy) {
+          if (Math.abs(ship.vx) < 0.1 && Math.abs(ship.vy) < 0.1) {
             const randomAngle = Math.random() * Math.PI * 2;
             ship.vx = Math.cos(randomAngle) * NPC_SPEED;
             ship.vy = Math.sin(randomAngle) * NPC_SPEED;
