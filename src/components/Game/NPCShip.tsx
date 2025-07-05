@@ -105,7 +105,7 @@ export const useNPCShip = ({
       let nearestPlanet = null;
       let nearestDistance = Infinity;
 
-      planets.forEach((planet) => {
+      planetsRef.current.forEach((planet) => {
         if (isInsideBarrier(planet.x, planet.y)) {
           const distance = Math.sqrt(
             Math.pow(x - planet.x, 2) + Math.pow(y - planet.y, 2),
@@ -119,7 +119,7 @@ export const useNPCShip = ({
 
       return nearestPlanet;
     },
-    [planets, isInsideBarrier],
+    [isInsideBarrier],
   );
 
   // Update ship behavior
