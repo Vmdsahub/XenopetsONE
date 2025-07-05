@@ -2073,9 +2073,9 @@ const SpaceMapComponent: React.FC = () => {
         canvas.height * 0.2,
         canvas.width * 0.6,
       );
-      nebulaGradient1.addColorStop(0, "rgba(120, 60, 150, 0.12)");
-      nebulaGradient1.addColorStop(0.3, "rgba(80, 40, 120, 0.08)");
-      nebulaGradient1.addColorStop(0.6, "rgba(60, 30, 90, 0.04)");
+      nebulaGradient1.addColorStop(0, "rgba(120, 60, 150, 0.06)");
+      nebulaGradient1.addColorStop(0.3, "rgba(80, 40, 120, 0.04)");
+      nebulaGradient1.addColorStop(0.6, "rgba(60, 30, 90, 0.02)");
       nebulaGradient1.addColorStop(1, "rgba(120, 60, 150, 0)");
 
       ctx.fillStyle = nebulaGradient1;
