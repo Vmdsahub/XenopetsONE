@@ -1466,7 +1466,22 @@ const SpaceMapComponent: React.FC = () => {
         return;
       }
 
-      // Check if click was on a planet first
+      // Check if click was on NPC ship first
+      const clickedOnNPCShip = npcShip.isClickOnShip(
+        clickX,
+        clickY,
+        gameState.camera.x,
+        gameState.camera.y,
+        canvas.width,
+        canvas.height,
+      );
+
+      if (clickedOnNPCShip) {
+        setShowNPCModal(true);
+        return;
+      }
+
+      // Check if click was on a planet
       let clickedOnPlanet = false;
 
       planetsRef.current.forEach((planet) => {
