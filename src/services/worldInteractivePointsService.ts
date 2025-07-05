@@ -42,10 +42,8 @@ class WorldInteractivePointsService {
       const { data, error } = await supabase
         .from("world_interactive_points")
         .select("*")
-        .match({
-          world_id: worldId,
-          is_active: true,
-        })
+        .eq("world_id", worldId)
+        .eq("is_active", true)
         .order("created_at", { ascending: true });
 
       if (error) throw error;
