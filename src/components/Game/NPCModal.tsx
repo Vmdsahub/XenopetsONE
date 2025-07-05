@@ -21,7 +21,6 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
       setDisplayedText("");
       setCurrentIndex(0);
       setIsTypingComplete(false);
-      setInputValue("");
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
