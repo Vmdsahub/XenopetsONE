@@ -103,12 +103,12 @@ function App() {
     };
   }, [isAuthenticated]);
 
-  // Show auth screen if not authenticated
-  if (!isAuthenticated) {
-    return <AuthScreen />;
-  }
-
   const renderScreen = useMemo(() => {
+    if (!isAuthenticated) {
+      return <AuthScreen />;
+    }
+
+    switch (currentScreen) {
     switch (currentScreen) {
       case "pet":
         return <PetScreen />;
