@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, memo, useState } from "react";
+import React, { useEffect, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthScreen } from "./components/Auth/AuthScreen";
 
