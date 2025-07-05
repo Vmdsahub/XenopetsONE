@@ -124,14 +124,23 @@ class BackgroundMusicService {
 
     // If music is playing and we switched screens, change to new music
     if (this.isPlaying && previousScreen !== screen && this.tracks.length > 0) {
-      console.log("🔄 Trocando música automaticamente para nova tela");
+      console.log(`🔄 Trocando música: ${previousScreen} → ${screen}`);
+      console.log(
+        `🎵 Música anterior: ${this.currentTrack ? "tocando" : "nenhuma"}`,
+      );
 
       // Stop current music first
       this.stopCurrentTrack();
+      console.log("⏹️ Música anterior parada");
 
       // Start new music for the new screen
       this.currentTrackIndex = 0; // Start from first track of new screen
+      console.log(`▶️ Iniciando nova música: ${this.tracks[0]?.name}`);
       this.playTrack(0).catch(console.warn);
+    } else if (!this.isPlaying && previousScreen !== screen) {
+      console.log(
+        `📱 Tela mudou (${previousScreen} → ${screen}) mas música não está tocando`,
+      );
     }
   }
 
@@ -303,7 +312,7 @@ class BackgroundMusicService {
 
       if (errorMessage.includes("user didn't interact")) {
         console.warn(
-          "⚠️ Música bloqueada: precisa de interaç��o do usuário primeiro",
+          "⚠️ Música bloqueada: precisa de interação do usuário primeiro",
         );
         return;
       }
