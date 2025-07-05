@@ -262,8 +262,10 @@ export const useNPCShip = ({
           const targetVx = Math.cos(ship.wanderAngle) * NPC_SPEED;
           const targetVy = Math.sin(ship.wanderAngle) * NPC_SPEED;
 
-          ship.vx += (targetVx - ship.vx) * 0.02 * deltaTime;
-          ship.vy += (targetVy - ship.vy) * 0.02 * deltaTime;
+          // Use adaptive interpolation based on deltaTime for consistent movement
+          const lerpFactor = Math.min(0.03 * deltaTime, 0.1);
+          ship.vx += (targetVx - ship.vx) * lerpFactor;
+          ship.vy += (targetVy - ship.vy) * lerpFactor;
 
           ship.angle = Math.atan2(ship.vy, ship.vx);
           break;
