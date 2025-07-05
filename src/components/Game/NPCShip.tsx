@@ -179,6 +179,11 @@ export const useNPCShip = ({
   // Update ship behavior
   const updateShip = useCallback(
     (deltaTime: number) => {
+      // Skip all updates if ship is paused
+      if (isPaused) {
+        return;
+      }
+
       const ship = shipStateRef.current;
       const currentTime = Date.now();
 
