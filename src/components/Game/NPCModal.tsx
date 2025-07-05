@@ -105,11 +105,11 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-amber-600 hover:text-amber-800 transition-colors z-10"
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors z-10"
               aria-label="Fechar modal"
             >
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5 text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
