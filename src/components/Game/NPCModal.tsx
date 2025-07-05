@@ -120,7 +120,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             {/* NPC Image */}
             <div className="flex justify-center p-6 pb-4">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2Ff3204b51264f46c7b764e817db763ddb%2F23e86f6660a946409dcb3d1263f31bde?format=webp&width=800"
+                src="https://cdn.builder.io/api/v1/image/assets%2F542e75b77d74474ca612f291b2642c2c%2F9db05452f51a4f1e813928729ddf09b2?format=webp&width=800"
                 alt="Bahrun"
                 className="w-40 h-40 object-contain rounded-2xl bg-gray-50 p-3"
                 style={{ imageRendering: "crisp-edges" }}
