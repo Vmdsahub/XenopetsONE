@@ -864,8 +864,8 @@ const SpaceMapComponent: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 0.6 + Math.random() * 0.8,
-        opacity: 0.4 + Math.random() * 0.5,
+        size: 0.7 + Math.random() * 1.0,
+        opacity: 0.5 + Math.random() * 0.6,
         speed: Math.random() * 0.015 + 0.005,
         parallax: 0.3, // Camada mais distante
         twinkle: Math.random() * 100,
