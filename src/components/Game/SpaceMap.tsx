@@ -1142,16 +1142,31 @@ const SpaceMapComponent: React.FC = () => {
     for (let i = 0; i < 6; i++) {
       const angle = (i / 6) * Math.PI * 2;
       const radius = 250;
+      const planetX = CENTER_X + Math.cos(angle) * radius;
+      const planetY = CENTER_Y + Math.sin(angle) * radius;
+
       planets.push({
         id: `planet-${i}`,
-        x: CENTER_X + Math.cos(angle) * radius,
-        y: CENTER_Y + Math.sin(angle) * radius,
+        x: planetX,
+        y: planetY,
         size: 60,
         rotation: 0,
         color: colors[i],
         name: planetNames[i],
         interactionRadius: 90,
         imageUrl: planetImages[i],
+        // Add floating animation properties
+        baseX: planetX,
+        baseY: planetY,
+        floatAmplitude: {
+          x: Math.random() * 3 + 1, // 1-4 pixels
+          y: Math.random() * 3 + 1, // 1-4 pixels
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+        floatSpeed: Math.random() * 0.8 + 0.4, // 0.4-1.2 speed multiplier
       });
     }
 
