@@ -22,7 +22,7 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
 }) => {
   const { currentScreen } = useGameStore();
   const { isPlaying, currentTrack, volume, play, pause, setVolume } =
-    useBackgroundMusic();
+    useMusicContext();
 
   const handlePlayPause = async () => {
     try {
