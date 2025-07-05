@@ -539,6 +539,13 @@ class BackgroundMusicService {
   getIsPaused(): boolean {
     return this.isPaused;
   }
+
+  /**
+   * Obtém a tela atual
+   */
+  getCurrentScreen(): string {
+    return this.currentScreen;
+  }
 }
 
 // Instância singleton
