@@ -174,7 +174,11 @@ class BackgroundMusicService {
   /**
    * Changes music based on current screen/world
    */
-  setCurrentScreen(screen: string, planetId?: string): void {
+  setCurrentScreen(
+    screen: string,
+    planetId?: string,
+    shouldAutoPlay: boolean = true,
+  ): void {
     const previousScreen = this.currentScreen;
     this.currentScreen = screen;
 
