@@ -220,11 +220,23 @@ export const useNPCShip = ({
 
       // Check barrier collision
       if (!isInsideBarrier(newX, newY)) {
-        // Bounce off barrier
+        // Calculate direction towards center with some variation to avoid getting stuck
         const angleToCenter = Math.atan2(CENTER_Y - ship.y, CENTER_X - ship.x);
-        ship.vx = Math.cos(angleToCenter) * NPC_SPEED;
-        ship.vy = Math.sin(angleToCenter) * NPC_SPEED;
-        ship.angle = angleToCenter;
+
+        // Add some random variation to prevent getting stuck in loops
+        const randomVariation = (Math.random() - 0.5) * 1.5;
+        const newDirection = angleToCenter + randomVariation;
+
+        // Set new direction and update wander angle to continue smoothly
+        ship.vx = Math.cos(newDirection) * NPC_SPEED;
+        ship.vy = Math.sin(newDirection) * NPC_SPEED;
+        ship.angle = newDirection;
+        ship.wanderAngle = newDirection;
+
+        // Move ship slightly away from barrier to prevent immediate re-collision
+        const moveBackDistance = 10;
+        ship.x = ship.x + Math.cos(newDirection) * moveBackDistance;
+        ship.y = ship.y + Math.sin(newDirection) * moveBackDistance;
       } else {
         ship.x = newX;
         ship.y = newY;
