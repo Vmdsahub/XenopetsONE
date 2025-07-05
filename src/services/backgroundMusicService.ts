@@ -106,6 +106,8 @@ class BackgroundMusicService {
         id: "galaxy-1",
         name: "Gentle Companion",
         path: "/sounds/galaxy-music-1.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/3487734/pexels-photo-3487734.jpeg",
       },
     ],
     store: [
@@ -113,6 +115,8 @@ class BackgroundMusicService {
         id: "galaxy-2",
         name: "Commerce Hub",
         path: "/sounds/galaxy-music-2.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/13768940/pexels-photo-13768940.jpeg",
       },
     ],
     inventory: [
@@ -120,6 +124,8 @@ class BackgroundMusicService {
         id: "galaxy-3",
         name: "Inventory Theme",
         path: "/sounds/galaxy-music-3.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
       },
     ],
     profile: [
@@ -127,6 +133,8 @@ class BackgroundMusicService {
         id: "galaxy-1",
         name: "Personal Space",
         path: "/sounds/galaxy-music-1.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
       },
     ],
   };
@@ -664,7 +672,7 @@ class BackgroundMusicService {
           console.log("✅ Volume sintético ajustado para:", this.volume);
         }
       } catch (error) {
-        console.warn("�� Erro ao ajustar volume sintético:", error);
+        console.warn("❌ Erro ao ajustar volume sintético:", error);
       }
     } else if (this.currentTrack) {
       // Para arquivos reais, ajusta volume diretamente
