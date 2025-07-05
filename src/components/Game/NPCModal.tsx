@@ -52,7 +52,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
         setShowingAlien(false);
         setDisplayedText((prev) => prev + DIALOGUE_TEXT[currentIndex]);
         setCurrentIndex((prev) => prev + 1);
-      }, 100); // Show alien char for 100ms
+      }, 20); // Show alien char for 20ms
     } else {
       setIsTypingComplete(true);
       setShowingAlien(false);
@@ -67,18 +67,6 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
       }
     };
   }, [isOpen, currentIndex]);
-
-  // Skip typewriter effect on click
-  const handleSkipTyping = () => {
-    if (!isTypingComplete) {
-      setDisplayedText(DIALOGUE_TEXT);
-      setCurrentIndex(DIALOGUE_TEXT.length);
-      setIsTypingComplete(true);
-      if (intervalRef.current) {
-        clearTimeout(intervalRef.current);
-      }
-    }
-  };
 
   // Handle ESC key
   useEffect(() => {
@@ -157,28 +145,19 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Dialogue box */}
-              <div
-                className="bg-gray-50 border border-gray-200 rounded-xl p-4 cursor-pointer min-h-[140px] relative"
-                onClick={handleSkipTyping}
-              >
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 min-h-[140px] relative">
                 <div className="text-gray-700 leading-relaxed text-base">
                   {displayedText}
                   {showingAlien && (
                     <motion.span
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="text-purple-500 font-bold"
+                      className="text-gray-900 font-bold"
                     >
                       {currentAlienChar}
                     </motion.span>
                   )}
                 </div>
-
-                {!isTypingComplete && (
-                  <div className="absolute bottom-2 right-2 text-xs text-gray-500 opacity-70">
-                    Clique para pular
-                  </div>
-                )}
               </div>
 
               {/* Blank field for future implementation */}
