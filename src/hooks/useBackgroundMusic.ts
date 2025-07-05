@@ -88,18 +88,20 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
   // Monitor screen changes and switch music automatically
   useEffect(() => {
     const currentServiceScreen = backgroundMusicService.getCurrentScreen();
+    const planetId = currentPlanet?.id;
+
     console.log(
-      `🎮 Hook detectou mudança: tela atual = ${currentScreen}, serviço = ${currentServiceScreen}`,
+      `🎮 Hook detectou mudança: tela = ${currentScreen}, planeta = ${planetId}, serviço = ${currentServiceScreen}`,
     );
 
     if (currentScreen && currentScreen !== currentServiceScreen) {
       console.log(
-        `🎵 Hook: Tela mudou de ${currentServiceScreen} para ${currentScreen}`,
+        `🎵 Hook: Tela mudou de ${currentServiceScreen} para ${currentScreen}${planetId ? ` (planeta: ${planetId})` : ""}`,
       );
-      backgroundMusicService.setCurrentScreen(currentScreen);
+      backgroundMusicService.setCurrentScreen(currentScreen, planetId);
       updateState();
     }
-  }, [currentScreen]);
+  }, [currentScreen, currentPlanet?.id]);
 
   // Cleanup quando componente desmonta
   useEffect(() => {
