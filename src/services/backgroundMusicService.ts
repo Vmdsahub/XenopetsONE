@@ -214,11 +214,11 @@ class BackgroundMusicService {
     // Check if we're returning to the same music context (same playlist)
     const isSameMusicContext = this.lastMusicContext === currentMusicContext;
 
-    if (isSameMusicContext && this.isPlaying) {
+    if (isSameMusicContext && (this.isPlaying || this.isPaused)) {
       console.log(
-        `🎵 Retornando ao mesmo contexto musical (${currentMusicContext}): continuando música atual`,
+        `🎵 Retornando ao mesmo contexto musical (${currentMusicContext}): mantendo estado atual (${this.isPaused ? "pausado" : "tocando"})`,
       );
-      // Don't restart music - just update tracks reference but keep playing current track
+      // Don't restart music - just update tracks reference but preserve current state (playing or paused)
       this.tracks = newTracks;
       return;
     }
