@@ -55,16 +55,6 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  // Handle input submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputValue.trim()) {
-      // You can add logic here to handle the player's response
-      console.log("Player response:", inputValue);
-      setInputValue("");
-    }
-  };
-
   // Handle ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
