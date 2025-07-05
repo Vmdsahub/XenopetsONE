@@ -109,13 +109,71 @@ export const PlanetScreen: React.FC = () => {
           alert(
             point.action_data?.message ||
               point.description ||
-              "Ponto interativo",
+              "Área interativa",
           );
           break;
         default:
           console.log("Action not implemented yet:", point.action_type);
       }
     }
+  };
+
+  const handleMouseDown = (
+    point: WorldInteractivePoint,
+    e: React.MouseEvent,
+  ) => {
+    if (!user?.isAdmin || !isAdminMode) return;
+
+    e.stopPropagation();
+    const rect = imageRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    setActivePoint(point.id);
+    setIsDragging(true);
+
+    const pointX = (point.x_percent / 100) * rect.width;
+    const pointY = (point.y_percent / 100) * rect.height;
+
+    setDragOffset({
+      x: e.clientX - rect.left - pointX,
+      y: e.clientY - rect.top - pointY,
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !activePoint || !imageRef.current) return;
+
+    const rect = imageRef.current.getBoundingClientRect();
+    const newX = e.clientX - rect.left - dragOffset.x;
+    const newY = e.clientY - rect.top - dragOffset.y;
+
+    const xPercent = Math.max(0, Math.min(100, (newX / rect.width) * 100));
+    const yPercent = Math.max(0, Math.min(100, (newY / rect.height) * 100));
+
+    setInteractivePoints((prev) =>
+      prev.map((p) =>
+        p.id === activePoint
+          ? { ...p, x_percent: xPercent, y_percent: yPercent }
+          : p,
+      ),
+    );
+  };
+
+  const handleMouseUp = async () => {
+    if (isDragging && activePoint) {
+      const point = interactivePoints.find((p) => p.id === activePoint);
+      if (point) {
+        await worldInteractivePointsService.updatePoint(activePoint, {
+          x_percent: point.x_percent,
+          y_percent: point.y_percent,
+        });
+      }
+    }
+
+    setIsDragging(false);
+    setIsResizing(false);
+    setActivePoint(null);
+    setDragOffset({ x: 0, y: 0 });
   };
 
   const handleDeletePoint = async (pointId: string) => {
