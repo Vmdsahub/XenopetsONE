@@ -883,7 +883,7 @@ export const ProfileScreen: React.FC = () => {
   // Show redeem code page
   if (activeSection === "redeem") {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto pb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Resgatar Código</h2>
           <motion.button
