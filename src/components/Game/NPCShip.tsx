@@ -196,68 +196,23 @@ export const useNPCShip = ({
         ship.lastModeChange = currentTime;
       }
 
-      switch (ship.mode) {
-        case "circling":
-          if (ship.targetPlanet) {
-            // Circle around planet
-            ship.circleAngle += NPC_CIRCLE_SPEED * deltaTime;
-            const targetX =
-              ship.targetPlanet.x +
-              Math.cos(ship.circleAngle) * ship.circleRadius;
-            const targetY =
-              ship.targetPlanet.y +
-              Math.sin(ship.circleAngle) * ship.circleRadius;
-
-            if (isInsideBarrier(targetX, targetY)) {
-              ship.x = targetX;
-              ship.y = targetY;
-              ship.angle = ship.circleAngle + Math.PI / 2;
-            } else {
-              ship.mode = "exploring";
-            }
-          }
-          break;
-
-        case "moving_to_planet":
-          if (ship.targetPlanet) {
-            const dx = ship.targetPlanet.x - ship.x;
-            const dy = ship.targetPlanet.y - ship.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance > ship.targetPlanet.interactionRadius + 50) {
-              // Move towards planet
-              ship.vx = (dx / distance) * NPC_SPEED;
-              ship.vy = (dy / distance) * NPC_SPEED;
-              ship.angle = Math.atan2(dy, dx);
-            } else {
-              // Start circling when close enough
-              ship.mode = "circling";
-              ship.circleAngle = Math.atan2(dy, dx);
-            }
-          }
-          break;
-
-        case "exploring":
-        default:
-          // Smooth wandering with gradual direction changes
-          if (shouldChangeDirection) {
-            // Add slight random variation to wander angle for natural movement
-            ship.wanderAngle += (Math.random() - 0.5) * 0.8;
-            ship.lastDirectionChange = currentTime;
-          }
-
-          // Smoothly interpolate towards wander direction
-          const targetVx = Math.cos(ship.wanderAngle) * NPC_SPEED;
-          const targetVy = Math.sin(ship.wanderAngle) * NPC_SPEED;
-
-          // Use adaptive interpolation based on deltaTime for consistent movement
-          const lerpFactor = Math.min(0.03 * deltaTime, 0.1);
-          ship.vx += (targetVx - ship.vx) * lerpFactor;
-          ship.vy += (targetVy - ship.vy) * lerpFactor;
-
-          ship.angle = Math.atan2(ship.vy, ship.vx);
-          break;
+      // Smooth wandering with gradual direction changes
+      if (shouldChangeDirection) {
+        // Add slight random variation to wander angle for natural movement
+        ship.wanderAngle += (Math.random() - 0.5) * 0.8;
+        ship.lastDirectionChange = currentTime;
       }
+
+      // Smoothly interpolate towards wander direction
+      const targetVx = Math.cos(ship.wanderAngle) * NPC_SPEED;
+      const targetVy = Math.sin(ship.wanderAngle) * NPC_SPEED;
+
+      // Use adaptive interpolation based on deltaTime for consistent movement
+      const lerpFactor = Math.min(0.03 * deltaTime, 0.1);
+      ship.vx += (targetVx - ship.vx) * lerpFactor;
+      ship.vy += (targetVy - ship.vy) * lerpFactor;
+
+      ship.angle = Math.atan2(ship.vy, ship.vx);
 
       // Apply movement for exploring and moving_to_planet modes
       if (ship.mode !== "circling") {
