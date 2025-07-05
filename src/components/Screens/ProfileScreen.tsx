@@ -988,7 +988,7 @@ export const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto space-y-6">
+    <div className="max-w-md mx-auto space-y-6 pb-12">
       {/* Profile Header */}
       <motion.div
         className="bg-white rounded-3xl shadow-xl p-6 border border-gray-100"
