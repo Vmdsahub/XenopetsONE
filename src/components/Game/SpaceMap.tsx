@@ -9,6 +9,8 @@ import React, {
 import { useGameStore } from "../../store/gameStore";
 import { useShipStatePersistence } from "../../hooks/useShipStatePersistence";
 import { PlanetLandingModal } from "./PlanetLandingModal";
+import { NPCShip } from "./NPCShip";
+import { NPCModal } from "./NPCModal";
 import { gameService } from "../../services/gameService";
 import {
   playLaserShootSound,
@@ -2882,7 +2884,7 @@ const SpaceMapComponent: React.FC = () => {
                 clearTimeout((window as any).worldRotationTimeout);
                 (window as any).worldRotationTimeout = setTimeout(() => {
                   if (selectedWorldId) {
-                    console.log("�� Saving world rotation:", {
+                    console.log("��� Saving world rotation:", {
                       selectedWorldId,
                       newRotation,
                     });
