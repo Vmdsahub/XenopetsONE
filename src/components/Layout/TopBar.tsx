@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Bell, X, Check, Trash2, Calendar } from "lucide-react";
+import { Bell, X, Check, Trash2, Calendar, Music } from "lucide-react";
 import { useGameStore } from "../../store/gameStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { MonthlyCalendar } from "../CheckIn/MonthlyCalendar";
+import { MusicPlayer } from "../Audio/MusicPlayer";
 
 export const TopBar: React.FC = () => {
   const {
@@ -23,6 +24,7 @@ export const TopBar: React.FC = () => {
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
+  const [showMusicPlayer, setShowMusicPlayer] = useState(false);
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const handleNotificationClick = (notificationId: string) => {
@@ -133,6 +135,19 @@ export const TopBar: React.FC = () => {
               </span>
             </motion.div>
 
+            {/* Music Player */}
+            <div className="relative">
+              <motion.button
+                onClick={() => setShowMusicPlayer(!showMusicPlayer)}
+                className="p-2.5 hover:bg-gray-100 rounded-full transition-colors relative"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                title="Trilha Sonora"
+              >
+                <Music className="w-5 h-5 text-gray-600" />
+              </motion.button>
+            </div>
+
             {/* Daily Check-in */}
             <div className="relative">
               <motion.button
@@ -185,6 +200,12 @@ export const TopBar: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Music Player */}
+      <MusicPlayer
+        isOpen={showMusicPlayer}
+        onClose={() => setShowMusicPlayer(false)}
+      />
 
       {/* Monthly Calendar Check-in */}
       <AnimatePresence>

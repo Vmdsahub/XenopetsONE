@@ -855,8 +855,8 @@ const SpaceMapComponent: React.FC = () => {
       "#f8f8ff", // Purples
     ];
 
-    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador - Reduzido de 4000 para 2500
-    for (let i = 0; i < 2500; i++) {
+    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador - Aumentado para mais estrelas
+    for (let i = 0; i < 4000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -864,13 +864,13 @@ const SpaceMapComponent: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 0.6 + Math.random() * 0.8,
-        opacity: 0.4 + Math.random() * 0.5,
+        size: 0.7 + Math.random() * 1.0,
+        opacity: 0.5 + Math.random() * 0.6,
         speed: Math.random() * 0.015 + 0.005,
         parallax: 0.3, // Camada mais distante
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.9
+          Math.random() < 0.8
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: "normal",
@@ -890,8 +890,8 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
-    // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador - Reduzido de 3500 para 2000
-    for (let i = 0; i < 2000; i++) {
+    // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador - Aumentado para mais estrelas
+    for (let i = 0; i < 3500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -899,13 +899,13 @@ const SpaceMapComponent: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 0.8 + Math.random() * 1.0,
-        opacity: 0.5 + Math.random() * 0.4,
+        size: 0.9 + Math.random() * 1.2,
+        opacity: 0.6 + Math.random() * 0.5,
         speed: Math.random() * 0.018 + 0.007,
         parallax: 0.6, // Paralaxe distinta
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.9
+          Math.random() < 0.8
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: Math.random() < 0.1 ? "bright" : "normal",
@@ -925,8 +925,8 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
-    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador - Reduzido de 3000 para 1800
-    for (let i = 0; i < 1800; i++) {
+    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador - Aumentado para mais estrelas
+    for (let i = 0; i < 3000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -934,13 +934,13 @@ const SpaceMapComponent: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 1.0 + Math.random() * 1.4,
-        opacity: 0.6 + Math.random() * 0.3,
+        size: 1.1 + Math.random() * 1.6,
+        opacity: 0.7 + Math.random() * 0.4,
         speed: Math.random() * 0.022 + 0.009,
         parallax: 1.0, // Paralaxe distinta
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.9
+          Math.random() < 0.8
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: Math.random() < 0.15 ? "bright" : "normal",
@@ -960,8 +960,8 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
-    // Layer 4: Close background (parallax 1.4) - ABAIXO do jogador - Reduzido de 2500 para 1500
-    for (let i = 0; i < 1500; i++) {
+    // Layer 4: Close background (parallax 1.4) - ABAIXO do jogador - Aumentado para mais estrelas
+    for (let i = 0; i < 2500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -969,13 +969,13 @@ const SpaceMapComponent: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 1.2 + Math.random() * 1.6,
-        opacity: 0.6 + Math.random() * 0.3,
+        size: 1.3 + Math.random() * 1.8,
+        opacity: 0.7 + Math.random() * 0.4,
         speed: Math.random() * 0.025 + 0.012,
         parallax: 1.4, // Paralaxe distinta
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.9
+          Math.random() < 0.8
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: Math.random() < 0.2 ? "bright" : "normal",
@@ -995,8 +995,8 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
-    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador - Reduzido de 2000 para 1200
-    for (let i = 0; i < 1200; i++) {
+    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador - Aumentado para mais poeira cósmica
+    for (let i = 0; i < 2000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -1010,7 +1010,7 @@ const SpaceMapComponent: React.FC = () => {
         parallax: 1.8, // Paralaxe de primeiro plano
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.9
+          Math.random() < 0.8
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: Math.random() < 0.15 ? "bright" : "normal", // Menos estrelas giant
@@ -1030,8 +1030,8 @@ const SpaceMapComponent: React.FC = () => {
       });
     }
 
-    // Layer 6: Close cosmic dust (parallax 2.2) - ACIMA do jogador - Reduzido de 1500 para 800
-    for (let i = 0; i < 800; i++) {
+    // Layer 6: Close cosmic dust (parallax 2.2) - ACIMA do jogador - Aumentado para mais densidade
+    for (let i = 0; i < 1500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -1045,7 +1045,7 @@ const SpaceMapComponent: React.FC = () => {
         parallax: 2.2, // Máximo paralaxe
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.9
+          Math.random() < 0.8
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: Math.random() < 0.1 ? "bright" : "normal", // Principalmente normais
@@ -1057,6 +1057,81 @@ const SpaceMapComponent: React.FC = () => {
         floatAmplitude: {
           x: Math.random() * 4 + 1, // Movimento sutil mas visível
           y: Math.random() * 4 + 1,
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+      });
+    }
+
+    // Layer 7: Micro stars (parallax 0.8) - Additional density layer
+    for (let i = 0; i < 2500; i++) {
+      const baseX = Math.random() * WORLD_SIZE;
+      const baseY = Math.random() * WORLD_SIZE;
+      stars.push({
+        x: baseX,
+        y: baseY,
+        baseX,
+        baseY,
+        size: 0.3 + Math.random() * 0.5, // Very small stars
+        opacity: 0.3 + Math.random() * 0.4,
+        speed: Math.random() * 0.012 + 0.004,
+        parallax: 0.8, // Between layers 1 and 2
+        twinkle: Math.random() * 100,
+        color:
+          Math.random() < 0.8
+            ? "#ffffff"
+            : starColors[Math.floor(Math.random() * starColors.length)],
+        type: "normal",
+        drift: {
+          x: 0,
+          y: 0,
+        },
+        pulse: Math.random() * 100,
+        floatAmplitude: {
+          x: Math.random() * 6 + 2,
+          y: Math.random() * 6 + 2,
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+      });
+    }
+
+    // Layer 8: Bright accent stars (parallax 1.2) - Brighter stars for contrast
+    for (let i = 0; i < 800; i++) {
+      const baseX = Math.random() * WORLD_SIZE;
+      const baseY = Math.random() * WORLD_SIZE;
+      stars.push({
+        x: baseX,
+        y: baseY,
+        baseX,
+        baseY,
+        size: 1.5 + Math.random() * 2.0, // Larger bright stars
+        opacity: 0.7 + Math.random() * 0.3,
+        speed: Math.random() * 0.02 + 0.01,
+        parallax: 1.2,
+        twinkle: Math.random() * 100,
+        color:
+          Math.random() < 0.7
+            ? "#ffffff"
+            : starColors[Math.floor(Math.random() * starColors.length)],
+        type:
+          Math.random() < 0.4
+            ? "bright"
+            : Math.random() < 0.8
+              ? "normal"
+              : "giant",
+        drift: {
+          x: 0,
+          y: 0,
+        },
+        pulse: Math.random() * 100,
+        floatAmplitude: {
+          x: Math.random() * 7 + 2.5,
+          y: Math.random() * 7 + 2.5,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -1968,54 +2043,93 @@ const SpaceMapComponent: React.FC = () => {
         }
       }
 
-      // Create very dark space background with deep blue tones
-      // Base deep space gradient - almost black with subtle blue
+      // Create rich deep space background with multiple color layers
+      // Base deep space gradient - much darker for better depth
       const gradient = ctx.createRadialGradient(
         canvas.width * 0.3,
         canvas.height * 0.2,
         0,
         canvas.width * 0.7,
         canvas.height * 0.8,
-        Math.max(canvas.width, canvas.height) * 1.2,
+        Math.max(canvas.width, canvas.height) * 1.5,
       );
-      gradient.addColorStop(0, "#020307");
-      gradient.addColorStop(0.3, "#040610");
-      gradient.addColorStop(0.6, "#030915");
-      gradient.addColorStop(0.8, "#02060c");
-      gradient.addColorStop(1, "#000000");
+      gradient.addColorStop(0, "#050510"); // Very dark blue-purple center
+      gradient.addColorStop(0.2, "#0a0f1e"); // Dark navy
+      gradient.addColorStop(0.4, "#070a15"); // Darker blue
+      gradient.addColorStop(0.6, "#050810"); // Nearly black blue
+      gradient.addColorStop(0.8, "#020508"); // Almost pure black
+      gradient.addColorStop(1, "#000000"); // Pure black edges
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Add very subtle blue nebula effect overlays
+      // Add multiple nebula layers for depth
+      // Purple-pink nebula (distant)
       const nebulaGradient1 = ctx.createRadialGradient(
-        canvas.width * 0.7,
-        canvas.height * 0.3,
+        canvas.width * 0.8,
+        canvas.height * 0.2,
         0,
-        canvas.width * 0.7,
-        canvas.height * 0.3,
-        canvas.width * 0.4,
+        canvas.width * 0.8,
+        canvas.height * 0.2,
+        canvas.width * 0.6,
       );
-      nebulaGradient1.addColorStop(0, "rgba(30, 60, 120, 0.04)");
-      nebulaGradient1.addColorStop(0.5, "rgba(20, 40, 80, 0.02)");
-      nebulaGradient1.addColorStop(1, "rgba(30, 60, 120, 0)");
+      nebulaGradient1.addColorStop(0, "rgba(120, 60, 150, 0.06)");
+      nebulaGradient1.addColorStop(0.3, "rgba(80, 40, 120, 0.04)");
+      nebulaGradient1.addColorStop(0.6, "rgba(60, 30, 90, 0.02)");
+      nebulaGradient1.addColorStop(1, "rgba(120, 60, 150, 0)");
 
       ctx.fillStyle = nebulaGradient1;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Blue-cyan nebula (mid distance)
       const nebulaGradient2 = ctx.createRadialGradient(
-        canvas.width * 0.2,
-        canvas.height * 0.8,
+        canvas.width * 0.15,
+        canvas.height * 0.7,
         0,
-        canvas.width * 0.2,
-        canvas.height * 0.8,
-        canvas.width * 0.35,
+        canvas.width * 0.15,
+        canvas.height * 0.7,
+        canvas.width * 0.5,
       );
-      nebulaGradient2.addColorStop(0, "rgba(15, 40, 90, 0.03)");
-      nebulaGradient2.addColorStop(0.5, "rgba(10, 30, 60, 0.015)");
-      nebulaGradient2.addColorStop(1, "rgba(15, 40, 90, 0)");
+      nebulaGradient2.addColorStop(0, "rgba(60, 120, 180, 0.05)");
+      nebulaGradient2.addColorStop(0.4, "rgba(40, 90, 140, 0.03)");
+      nebulaGradient2.addColorStop(0.7, "rgba(20, 60, 100, 0.015)");
+      nebulaGradient2.addColorStop(1, "rgba(60, 120, 180, 0)");
 
       ctx.fillStyle = nebulaGradient2;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Green-teal nebula (closer)
+      const nebulaGradient3 = ctx.createRadialGradient(
+        canvas.width * 0.6,
+        canvas.height * 0.8,
+        0,
+        canvas.width * 0.6,
+        canvas.height * 0.8,
+        canvas.width * 0.4,
+      );
+      nebulaGradient3.addColorStop(0, "rgba(60, 150, 120, 0.04)");
+      nebulaGradient3.addColorStop(0.3, "rgba(40, 120, 90, 0.025)");
+      nebulaGradient3.addColorStop(0.6, "rgba(20, 80, 60, 0.012)");
+      nebulaGradient3.addColorStop(1, "rgba(60, 150, 120, 0)");
+
+      ctx.fillStyle = nebulaGradient3;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Warm orange nebula (accent)
+      const nebulaGradient4 = ctx.createRadialGradient(
+        canvas.width * 0.4,
+        canvas.height * 0.1,
+        0,
+        canvas.width * 0.4,
+        canvas.height * 0.1,
+        canvas.width * 0.3,
+      );
+      nebulaGradient4.addColorStop(0, "rgba(200, 120, 60, 0.03)");
+      nebulaGradient4.addColorStop(0.4, "rgba(160, 90, 40, 0.02)");
+      nebulaGradient4.addColorStop(0.7, "rgba(120, 60, 20, 0.01)");
+      nebulaGradient4.addColorStop(1, "rgba(200, 120, 60, 0)");
+
+      ctx.fillStyle = nebulaGradient4;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Render stars with optimized viewport culling

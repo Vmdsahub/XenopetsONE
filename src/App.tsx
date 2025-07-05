@@ -103,18 +103,17 @@ function App() {
     };
   }, [isAuthenticated]);
 
-  // Show auth screen if not authenticated
-  if (!isAuthenticated) {
-    return <AuthScreen />;
-  }
-
   const renderScreen = useMemo(() => {
+    if (!isAuthenticated) {
+      return <AuthScreen />;
+    }
+
     switch (currentScreen) {
       case "pet":
         return <PetScreen />;
       case "world":
         return (
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-3xl shadow-xl p-4 min-h-[80vh]">
               <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">
                 Mapa Galáctico
@@ -144,7 +143,7 @@ function App() {
       default:
         return <PetScreen />;
     }
-  }, [currentScreen, gameUser?.isAdmin]);
+  }, [isAuthenticated, currentScreen, gameUser?.isAdmin]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -157,6 +156,11 @@ function App() {
     ease: "anticipate",
     duration: 0.4,
   };
+
+  // If not authenticated, just return the auth screen directly
+  if (!isAuthenticated) {
+    return renderScreen;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 gpu-accelerated force-gpu-layer">
