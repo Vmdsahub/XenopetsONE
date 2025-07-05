@@ -280,16 +280,26 @@ class BackgroundMusicService {
     // Setup synthetic tracks by screen
     this.tracksByScreen = {
       world: [
-        { id: "synthetic-world-1", name: "Galactic Drift", path: "synthetic" },
+        {
+          id: "synthetic-world-1",
+          name: "Galactic Drift",
+          path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
+        },
         {
           id: "synthetic-world-2",
           name: "Cosmic Exploration",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
         },
         {
           id: "synthetic-world-3",
           name: "Stellar Navigation",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
         },
       ],
       planet: [
