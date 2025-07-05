@@ -387,6 +387,46 @@ export const PlanetScreen: React.FC = () => {
                 </p>
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Dimensões
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs text-gray-600">Largura (%)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={selectedPoint.width_percent || 10}
+                      onChange={(e) =>
+                        setSelectedPoint({
+                          ...selectedPoint,
+                          width_percent: Number(e.target.value),
+                        })
+                      }
+                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-600">Altura (%)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={selectedPoint.height_percent || 10}
+                      onChange={(e) =>
+                        setSelectedPoint({
+                          ...selectedPoint,
+                          height_percent: Number(e.target.value),
+                        })
+                      }
+                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-2">
                 <button
                   onClick={() =>
