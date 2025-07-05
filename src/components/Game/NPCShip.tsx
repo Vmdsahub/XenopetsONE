@@ -294,8 +294,8 @@ export const useNPCShip = ({
       const centerY = canvasHeight / 2;
 
       // Calculate screen position
-      const wrappedDeltaX = getWrappedDistance(ship.x, cameraX);
-      const wrappedDeltaY = getWrappedDistance(ship.y, cameraY);
+      const wrappedDeltaX = getWrappedDistanceRef.current(ship.x, cameraX);
+      const wrappedDeltaY = getWrappedDistanceRef.current(ship.y, cameraY);
       const screenX = centerX + wrappedDeltaX;
       const screenY = centerY + wrappedDeltaY;
 
