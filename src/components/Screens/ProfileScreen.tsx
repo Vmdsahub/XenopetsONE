@@ -883,7 +883,7 @@ export const ProfileScreen: React.FC = () => {
   // Show redeem code page
   if (activeSection === "redeem") {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto pb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Resgatar Código</h2>
           <motion.button
@@ -904,7 +904,7 @@ export const ProfileScreen: React.FC = () => {
   // Show achievements page
   if (activeSection === "achievements") {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto pb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Conquistas</h2>
           <motion.button
@@ -925,7 +925,7 @@ export const ProfileScreen: React.FC = () => {
   // Show collectibles page
   if (activeSection === "collectibles") {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto pb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Colecionáveis</h2>
           <motion.button
@@ -946,7 +946,7 @@ export const ProfileScreen: React.FC = () => {
   // Show player profile view
   if (viewingProfile) {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto pb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
             Perfil do Jogador
@@ -969,7 +969,7 @@ export const ProfileScreen: React.FC = () => {
   // Show search interface
   if (activeSection === "search") {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto pb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Buscar Jogadores</h2>
           <motion.button
@@ -988,7 +988,7 @@ export const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto space-y-6">
+    <div className="max-w-md mx-auto space-y-6 pb-12">
       {/* Profile Header */}
       <motion.div
         className="bg-white rounded-3xl shadow-xl p-6 border border-gray-100"

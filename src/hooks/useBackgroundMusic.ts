@@ -28,6 +28,9 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
   const [isPaused, setIsPaused] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
   const [volume, setVolumeState] = useState(0.3);
+  const [hasStartedMusicOnce, setHasStartedMusicOnce] = useState(() => {
+    return localStorage.getItem("xenopets_music_started") === "true";
+  });
 
   // Atualiza o estado baseado no serviço
   const updateState = useCallback(() => {
@@ -94,6 +97,27 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
       `🎮 Hook detectou mudança: tela = ${currentScreen}, planeta = ${planetId}, serviço = ${currentServiceScreen}`,
     );
 
+    // Check if this is the first time accessing world/planet screens
+    const isWorldRelatedScreen =
+      currentScreen === "world" || currentScreen === "planet";
+
+    if (isWorldRelatedScreen && !hasStartedMusicOnce) {
+      console.log("🎵 Primeira vez acessando o mundo - iniciando música!");
+      setHasStartedMusicOnce(true);
+      localStorage.setItem("xenopets_music_started", "true");
+
+      // Start music for the first time
+      backgroundMusicService.setCurrentScreen(currentScreen, planetId);
+      backgroundMusicService.play().catch((error) => {
+        console.warn(
+          "Falha ao iniciar música no primeiro acesso ao mundo:",
+          error,
+        );
+      });
+      updateState();
+      return;
+    }
+
     if (currentScreen && currentScreen !== currentServiceScreen) {
       console.log(
         `🎵 Hook: Tela mudou de ${currentServiceScreen} para ${currentScreen}${planetId ? ` (planeta: ${planetId})` : ""}`,
@@ -101,7 +125,7 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
       backgroundMusicService.setCurrentScreen(currentScreen, planetId);
       updateState();
     }
-  }, [currentScreen, currentPlanet?.id]);
+  }, [currentScreen, currentPlanet?.id, hasStartedMusicOnce, updateState]);
 
   // Cleanup quando componente desmonta
   useEffect(() => {

@@ -153,6 +153,8 @@ const SpaceMapComponent: React.FC = () => {
   const lastTrailTime = useRef<number>(0);
   const lastShootingStarTime = useRef(0);
   const lastShootTime = useRef(0);
+  const lastStarUpdateTime = useRef(0);
+  const STAR_UPDATE_INTERVAL = 200; // 5 FPS = 200ms interval
   const lastRadarCheckRef = useRef<Set<string>>(new Set());
   const shootingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastFrameTimeRef = useRef(performance.now());
@@ -490,7 +492,7 @@ const SpaceMapComponent: React.FC = () => {
     const newPulse: RadarPulse = {
       planetId: planet.id,
       radius: 8, // Raio inicial original
-      maxRadius: 40, // Expansão menor
+      maxRadius: 40, // Expans��o menor
       life: 160, // Vida mais longa para compensar expansão lenta
       maxLife: 160,
       opacity: 1.2, // Opacidade muito alta para verde ser mais visível
@@ -880,8 +882,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 12 + 4, // Movimento visível para camada distante
-          y: Math.random() * 12 + 4,
+          x: Math.random() * 3 + 1, // Movimento mais sutil para camada distante
+          y: Math.random() * 3 + 1,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2, // Fase inicial aleatória
@@ -915,8 +917,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 10 + 3,
-          y: Math.random() * 10 + 3,
+          x: Math.random() * 2.5 + 0.8,
+          y: Math.random() * 2.5 + 0.8,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -950,8 +952,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 8 + 2.5,
-          y: Math.random() * 8 + 2.5,
+          x: Math.random() * 2 + 0.6,
+          y: Math.random() * 2 + 0.6,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -985,8 +987,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 6 + 2,
-          y: Math.random() * 6 + 2,
+          x: Math.random() * 1.8 + 0.5,
+          y: Math.random() * 1.8 + 0.5,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -1020,8 +1022,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 5 + 1.5, // Movimento visível para poeira cósmica
-          y: Math.random() * 5 + 1.5,
+          x: Math.random() * 1.5 + 0.4, // Movimento mais sutil para poeira cósmica
+          y: Math.random() * 1.5 + 0.4,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -1055,8 +1057,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 4 + 1, // Movimento sutil mas visível
-          y: Math.random() * 4 + 1,
+          x: Math.random() * 1.3 + 0.3, // Movimento muito sutil
+          y: Math.random() * 1.3 + 0.3,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -1090,8 +1092,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 6 + 2,
-          y: Math.random() * 6 + 2,
+          x: Math.random() * 1.2 + 0.3,
+          y: Math.random() * 1.2 + 0.3,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -1130,8 +1132,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 7 + 2.5,
-          y: Math.random() * 7 + 2.5,
+          x: Math.random() * 2.2 + 0.8,
+          y: Math.random() * 2.2 + 0.8,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
@@ -1941,33 +1943,52 @@ const SpaceMapComponent: React.FC = () => {
         }))
         .filter((pulse) => pulse.life > 0 && pulse.radius <= pulse.maxRadius);
 
-      // Update stars with floating motion - optimized with batching
-      const stars = starsRef.current;
-      const time = currentTime * 0.002;
-      const starsLength = stars.length;
+      // Update stars with smooth floating motion - limited to 10 FPS
+      if (currentTime - lastStarUpdateTime.current >= STAR_UPDATE_INTERVAL) {
+        const stars = starsRef.current;
+        const time = currentTime * 0.0008; // Slower, more natural timing
+        const starsLength = stars.length;
 
-      // Update only a portion of stars each frame to spread CPU load
-      const frameSkip = Math.max(1, Math.floor(starsLength / 2000)); // Update in batches
-      const batchSize = Math.floor(starsLength / frameSkip);
-      const startIndex =
-        (Math.floor(currentTime / 16.67) % frameSkip) * batchSize;
-      const endIndex = Math.min(startIndex + batchSize, starsLength);
+        for (let i = 0; i < starsLength; i++) {
+          const star = stars[i];
 
-      for (let i = startIndex; i < endIndex; i++) {
-        const star = stars[i];
+          // Natural floating motion with multiple sine waves for organic movement
+          const baseSpeed = 0.8 + star.speed * 0.4; // More consistent speed range
+          const primaryTime = time * baseSpeed;
+          const secondaryTime = time * baseSpeed * 1.618; // Golden ratio for natural variation
 
-        // Simplified floating motion - reduce calculations
-        const floatTime = time * (0.5 + star.speed * 3); // Reduced complexity
-        const floatX =
-          Math.sin(floatTime + star.floatPhase.x) * star.floatAmplitude.x;
-        const floatY =
-          Math.cos(floatTime * 0.7 + star.floatPhase.y) * star.floatAmplitude.y;
+          // Layer multiple sine waves for more organic movement
+          const floatX =
+            Math.sin(primaryTime + star.floatPhase.x) *
+              star.floatAmplitude.x *
+              0.6 +
+            Math.sin(secondaryTime * 0.7 + star.floatPhase.x * 1.3) *
+              star.floatAmplitude.x *
+              0.3 +
+            Math.sin(primaryTime * 0.3 + star.floatPhase.x * 0.8) *
+              star.floatAmplitude.x *
+              0.1;
 
-        star.x = normalizeCoord(star.baseX + floatX);
-        star.y = normalizeCoord(star.baseY + floatY);
+          const floatY =
+            Math.cos(primaryTime * 0.8 + star.floatPhase.y) *
+              star.floatAmplitude.y *
+              0.6 +
+            Math.cos(secondaryTime * 0.6 + star.floatPhase.y * 1.2) *
+              star.floatAmplitude.y *
+              0.3 +
+            Math.cos(primaryTime * 0.4 + star.floatPhase.y * 0.9) *
+              star.floatAmplitude.y *
+              0.1;
 
-        star.twinkle += star.speed * 0.6; // Reduced from 1.0
-        star.pulse += star.speed * 0.5; // Reduced from 0.8
+          star.x = normalizeCoord(star.baseX + floatX);
+          star.y = normalizeCoord(star.baseY + floatY);
+
+          // Smoother twinkle and pulse updates
+          star.twinkle += star.speed * 0.4;
+          star.pulse += star.speed * 0.3;
+        }
+
+        lastStarUpdateTime.current = currentTime;
       }
 
       // Update planet floating positions

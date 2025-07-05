@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "../../store/gameStore";
-import { useBackgroundMusic } from "../../hooks/useBackgroundMusic";
+import { useMusicContext } from "../../contexts/MusicContext";
 
 interface MusicMiniModalProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
 }) => {
   const { currentScreen } = useGameStore();
   const { isPlaying, currentTrack, volume, play, pause, setVolume } =
-    useBackgroundMusic();
+    useMusicContext();
 
   const handlePlayPause = async () => {
     try {

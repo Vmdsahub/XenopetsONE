@@ -162,11 +162,10 @@ class BackgroundMusicService {
       JSON.stringify(this.tracksByScreen),
     );
     this.lastMusicContext = "world"; // Initialize with world context
-    this.setCurrentScreen("world"); // Start with world music
+    this.setCurrentScreen("world", undefined, false); // Start with world music but don't auto-play
     this.checkForRealMusic();
 
-    // Auto-start removed to avoid conflicts with manual controls
-    // Music will be started by the App component when user authenticates
+    // Music will be started manually when user first accesses the world
   }
 
   // Track the last music context to avoid restarting music unnecessarily
@@ -175,7 +174,11 @@ class BackgroundMusicService {
   /**
    * Changes music based on current screen/world
    */
-  setCurrentScreen(screen: string, planetId?: string): void {
+  setCurrentScreen(
+    screen: string,
+    planetId?: string,
+    shouldAutoPlay: boolean = true,
+  ): void {
     const previousScreen = this.currentScreen;
     this.currentScreen = screen;
 
@@ -225,10 +228,14 @@ class BackgroundMusicService {
 
     // Update tracks
     this.tracks = newTracks;
-    this.lastMusicContext = currentMusicContext;
 
     // If music is playing (not paused) and we switched to a DIFFERENT music context, change to new music
-    if (this.getIsPlaying() && !isSameMusicContext && this.tracks.length > 0) {
+    if (
+      this.getIsPlaying() &&
+      !isSameMusicContext &&
+      this.tracks.length > 0 &&
+      shouldAutoPlay
+    ) {
       console.log(
         `🔄 Contexto musical mudou: ${this.lastMusicContext} → ${currentMusicContext}`,
       );
@@ -249,6 +256,9 @@ class BackgroundMusicService {
         `📱 Tela mudou (${previousScreen} → ${screen}) mas música não está tocando`,
       );
     }
+
+    // Update last music context after all logic
+    this.lastMusicContext = currentMusicContext;
   }
 
   /**
@@ -571,12 +581,17 @@ class BackgroundMusicService {
     if (this.isUsingSynthetic) {
       this.stopSyntheticTrack();
     } else {
-      if (this.currentTrack && this.trackEndHandler) {
+      if (this.currentTrack) {
         this.currentTrack.pause();
         this.currentTrack.currentTime = 0;
-        this.currentTrack.removeEventListener("ended", this.trackEndHandler);
+        if (this.trackEndHandler) {
+          this.currentTrack.removeEventListener("ended", this.trackEndHandler);
+          this.trackEndHandler = null;
+        }
+        // Force cleanup by setting src to empty to release the audio resource
+        this.currentTrack.src = "";
+        this.currentTrack.load();
         this.currentTrack = null;
-        this.trackEndHandler = null;
       }
     }
   }

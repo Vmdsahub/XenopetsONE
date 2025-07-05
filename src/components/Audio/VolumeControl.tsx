@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Volume2, VolumeX, Play } from "lucide-react";
-import { useBackgroundMusic } from "../../hooks/useBackgroundMusic";
+import { useMusicContext } from "../../contexts/MusicContext";
 
 interface VolumeControlProps {
   className?: string;
@@ -9,7 +9,7 @@ interface VolumeControlProps {
 export const VolumeControl: React.FC<VolumeControlProps> = ({
   className = "",
 }) => {
-  const { volume, setVolume, isPlaying, play } = useBackgroundMusic();
+  const { volume, setVolume, isPlaying, play, isPaused } = useMusicContext();
   const [showPlayButton, setShowPlayButton] = useState(false);
 
   // Mostra botão de play se música não estiver tocando

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, memo, useState } from "react";
+import React, { useEffect, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthScreen } from "./components/Auth/AuthScreen";
 
@@ -19,6 +19,7 @@ import { useAuthStore } from "./store/authStore";
 import { useGameStore } from "./store/gameStore";
 import { preloadAllSounds } from "./utils/soundManager";
 import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
+import { MusicProvider } from "./contexts/MusicContext";
 
 // Componente para pré-carregar recursos de áudio - memoizado para performance
 const AudioPreloader: React.FC = memo(() => {
@@ -47,8 +48,7 @@ function App() {
   } = useGameStore();
 
   // Initialize background music
-  const { play: playMusic, isPlaying } = useBackgroundMusic();
-  const [hasAutoStarted, setHasAutoStarted] = useState(false);
+  const musicState = useBackgroundMusic();
 
   // Initialize authentication on app start
   useEffect(() => {
@@ -99,17 +99,8 @@ function App() {
     authUser?.daysPlayed,
   ]);
 
-  // Auto-start music when user is authenticated (only once)
-  useEffect(() => {
-    if (isAuthenticated && !hasAutoStarted) {
-      console.log("🎵 Iniciando música automaticamente após autenticação");
-      setHasAutoStarted(true);
-      playMusic().catch((error) => {
-        console.warn("Falha ao iniciar música automaticamente:", error);
-        // Se falhar, tentará novamente na próxima interação do usuário
-      });
-    }
-  }, [isAuthenticated, hasAutoStarted, playMusic]);
+  // Auto-start music when user accesses world for the first time (removed from auth)
+  // Music will now only start when the user navigates to the world screen
 
   // Cleanup subscriptions on unmount
   useEffect(() => {
@@ -180,34 +171,36 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 gpu-accelerated force-gpu-layer">
-      {/* Componente de pré-carregamento de áudios */}
-      <AudioPreloader />
+    <MusicProvider musicState={musicState}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 gpu-accelerated force-gpu-layer">
+        {/* Componente de pré-carregamento de áudios */}
+        <AudioPreloader />
 
-      <TopBar />
+        <TopBar />
 
-      <main className="pt-20 pb-24 px-4 min-h-screen composite-layer force-gpu-layer">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentScreen}
-            initial="initial"
-            animate="in"
-            exit="out"
-            variants={pageVariants}
-            transition={pageTransition}
-            className="smooth-animation force-gpu-layer"
-            style={{
-              transform: "translate3d(0, 0, 0)",
-              willChange: "transform, opacity",
-            }}
-          >
-            {renderScreen}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+        <main className="pt-20 pb-32 px-4 min-h-screen composite-layer force-gpu-layer">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentScreen}
+              initial="initial"
+              animate="in"
+              exit="out"
+              variants={pageVariants}
+              transition={pageTransition}
+              className="smooth-animation force-gpu-layer"
+              style={{
+                transform: "translate3d(0, 0, 0)",
+                willChange: "transform, opacity",
+              }}
+            >
+              {renderScreen}
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
-      <BottomNavigation />
-    </div>
+        <BottomNavigation />
+      </div>
+    </MusicProvider>
   );
 }
 

@@ -9,7 +9,7 @@ import {
   VolumeX,
   Music,
 } from "lucide-react";
-import { useBackgroundMusic } from "../../hooks/useBackgroundMusic";
+import { useMusicContext } from "../../contexts/MusicContext";
 
 interface MusicControlsProps {
   className?: string;
@@ -32,7 +32,7 @@ export const MusicControls: React.FC<MusicControlsProps> = ({
     nextTrack,
     previousTrack,
     setVolume,
-  } = useBackgroundMusic();
+  } = useMusicContext();
 
   const iconSizes = {
     sm: 16,
