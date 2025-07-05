@@ -325,6 +325,8 @@ class BackgroundMusicService {
           id: "synthetic-planet-2",
           name: "Ocean World Waves",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/47480/pexels-photo-47480.jpeg",
         },
       ],
       "planet-3": [
@@ -332,6 +334,8 @@ class BackgroundMusicService {
           id: "synthetic-planet-3",
           name: "Crystal World Resonance",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/13300951/pexels-photo-13300951.jpeg",
         },
       ],
       "planet-4": [
@@ -339,6 +343,8 @@ class BackgroundMusicService {
           id: "synthetic-planet-4",
           name: "Forest World Whispers",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/32840777/pexels-photo-32840777.jpeg",
         },
       ],
       "planet-5": [
@@ -346,6 +352,8 @@ class BackgroundMusicService {
           id: "synthetic-planet-5",
           name: "Ice World Winds",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/32861718/pexels-photo-32861718.jpeg",
         },
       ],
       "planet-6": [
@@ -353,6 +361,8 @@ class BackgroundMusicService {
           id: "synthetic-planet-6",
           name: "Volcanic World Rumbles",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/12391921/pexels-photo-12391921.jpeg",
         },
       ],
       pet: [
