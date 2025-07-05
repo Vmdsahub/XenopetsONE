@@ -899,8 +899,8 @@ const SpaceMapComponent: React.FC = () => {
         y: baseY,
         baseX,
         baseY,
-        size: 0.8 + Math.random() * 1.0,
-        opacity: 0.5 + Math.random() * 0.4,
+        size: 0.9 + Math.random() * 1.2,
+        opacity: 0.6 + Math.random() * 0.5,
         speed: Math.random() * 0.018 + 0.007,
         parallax: 0.6, // Paralaxe distinta
         twinkle: Math.random() * 100,
@@ -1433,7 +1433,7 @@ const SpaceMapComponent: React.FC = () => {
               setIsDragging(false);
               setDragOffset({ x: 0, y: 0 });
             } else if (selectedWorldId === planet.id && !isDragging) {
-              // Se já est������� selecionado mas não dragging, inicie o drag
+              // Se já est�������� selecionado mas não dragging, inicie o drag
               setIsDragging(true);
               setDragOffset({ x: dx, y: dy });
             } else {
