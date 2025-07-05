@@ -870,7 +870,7 @@ const SpaceMapComponent: React.FC = () => {
         parallax: 0.3, // Camada mais distante
         twinkle: Math.random() * 100,
         color:
-          Math.random() < 0.9
+          Math.random() < 0.8
             ? "#ffffff"
             : starColors[Math.floor(Math.random() * starColors.length)],
         type: "normal",
@@ -2242,7 +2242,7 @@ const SpaceMapComponent: React.FC = () => {
         ctx.lineWidth = 2;
       }
 
-      // Rotaç���o lenta baseada no tempo
+      // Rotaç��o lenta baseada no tempo
       const rotationTime = currentTime * 0.0005; // Muito lenta
       const dashOffset = (rotationTime * 50) % 20; // Offset dos tra��os para simular rotação
 
