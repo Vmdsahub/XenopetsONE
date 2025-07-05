@@ -177,7 +177,7 @@ class BackgroundMusicService {
       });
 
       if (canLoad) {
-        console.log("���� Usando arquivos de música reais");
+        console.log("🎵 Usando arquivos de música reais");
         this.isUsingSynthetic = false;
       } else {
         this.setupSyntheticMusic();
@@ -389,9 +389,10 @@ class BackgroundMusicService {
     audio.loop = false;
 
     // Configura evento para próxima faixa
-    audio.addEventListener("ended", () => {
+    this.trackEndHandler = () => {
       this.nextTrack();
-    });
+    };
+    audio.addEventListener("ended", this.trackEndHandler);
 
     try {
       await audio.play();
