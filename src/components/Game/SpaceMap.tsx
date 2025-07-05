@@ -2546,7 +2546,7 @@ const SpaceMapComponent: React.FC = () => {
 
       {/* Simple Admin Button for World Editing */}
       {user?.isAdmin && (
-        <div className="absolute top-2 right-2 space-y-2">
+        <div className="absolute top-2 right-2 space-y-2 gpu-ui-overlay">
           <button
             onClick={() => {
               setWorldEditMode(!isWorldEditMode);
@@ -2776,7 +2776,7 @@ const SpaceMapComponent: React.FC = () => {
         </div>
       )}
 
-      <div className="absolute top-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded">
+      <div className="absolute top-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded gpu-ui-overlay optimized-text">
         <div>X: {Math.round(gameState.ship.x)}</div>
         <div>Y: {Math.round(gameState.ship.y)}</div>
         <div>
@@ -2798,7 +2798,7 @@ const SpaceMapComponent: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded">
+      <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded gpu-ui-overlay optimized-text">
         {user?.isAdmin && isWorldEditMode ? (
           <>
             <div className="text-yellow-400 font-bold mb-1">
