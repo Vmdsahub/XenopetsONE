@@ -1686,10 +1686,12 @@ const SpaceMapComponent: React.FC = () => {
         updateContinuousMovementSound(currentShipVelocity, SHIP_MAX_SPEED);
       }
 
-      // Create trail points if ship is moving (threshold muito baixo para sempre mostrar rastro)
+      // Create trail points sempre que a nave se move (sem threshold de velocidade)
       if (
-        currentShipVelocity > 0.01 &&
-        currentTime - lastTrailTime.current > 20
+        (currentShipVelocity > 0.005 ||
+          Math.abs(gameState.ship.vx) > 0.01 ||
+          Math.abs(gameState.ship.vy) > 0.01) &&
+        currentTime - lastTrailTime.current > 16 // Aproximadamente 60 FPS
       ) {
         // Calculate trail position at the back of the ship
         const trailOffset = 12; // Distance from ship center to back
