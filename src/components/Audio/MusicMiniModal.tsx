@@ -62,9 +62,10 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
     }
   };
 
-  // Default cover image for all tracks
-  const defaultCoverImage =
-    "https://cdn.builder.io/api/v1/image/assets%2Ff481900009a94cda953c032479392a30%2F3e6c6cb85c6a4d2ba05acb245bfbc214?format=webp&width=400";
+  // Get cover image from current track or use default
+  const coverImage =
+    currentTrack?.coverImage ||
+    "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg";
 
   if (!isOpen) return null;
 
