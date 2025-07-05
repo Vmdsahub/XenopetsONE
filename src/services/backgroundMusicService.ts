@@ -139,16 +139,29 @@ class BackgroundMusicService {
   /**
    * Changes music based on current screen/world
    */
-  setCurrentScreen(screen: string): void {
+  setCurrentScreen(screen: string, planetId?: string): void {
     const previousScreen = this.currentScreen;
     this.currentScreen = screen;
 
+    // Determine the music key to use
+    let musicKey = screen;
+    if (screen === "planet" && planetId) {
+      // Try to use planet-specific music first, then fallback to generic planet
+      musicKey = this.tracksByScreen[planetId] ? planetId : "planet";
+      console.log(
+        `🪐 Planeta específico: ${planetId}, usando música: ${musicKey}`,
+      );
+    }
+
     // Get tracks for the new screen, fallback to world tracks
     this.tracks =
-      this.tracksByScreen[screen] || this.tracksByScreen.world || [];
+      this.tracksByScreen[musicKey] || this.tracksByScreen.world || [];
 
     console.log(
-      `🎵 Mudando para tela: ${screen}, ${this.tracks.length} faixas disponíveis`,
+      `🎵 Mudando para tela: ${screen}${planetId ? ` (planeta: ${planetId})` : ""}, ${this.tracks.length} faixas disponíveis`,
+    );
+    console.log(
+      `🎼 Faixas disponíveis: ${this.tracks.map((t) => t.name).join(", ")}`,
     );
 
     // If music is playing and we switched screens, change to new music
@@ -463,7 +476,7 @@ class BackgroundMusicService {
     // Frequências base para cada faixa (acordes diferentes)
     const chordConfigs = [
       [220, 261.63, 329.63], // Am chord - Lá menor
-      [174.61, 220, 261.63], // Fm chord - Fá menor
+      [174.61, 220, 261.63], // Fm chord - F�� menor
       [146.83, 185, 233.08], // Dm chord - Ré menor
     ];
 
