@@ -431,6 +431,18 @@ const getAudioContext = (): AudioContext => {
       initializeAudio();
       audioInitialized = true;
     }
+
+    // Try to start context immediately
+    if (sharedAudioContext.state === "suspended") {
+      sharedAudioContext
+        .resume()
+        .then(() => console.log("🔊 Audio context started automatically"))
+        .catch(() =>
+          console.log(
+            "⚠️ Audio context start failed - will retry on interaction",
+          ),
+        );
+    }
   }
 
   // Resume context if suspended
