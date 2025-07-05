@@ -1853,12 +1853,10 @@ const SpaceMapComponent: React.FC = () => {
         star.pulse += star.speed * 0.5; // Reduced from 0.8
       }
 
-      // Update projectiles with simplified delta time calculation
+      // Update projectiles with uncapped delta time for unlimited FPS
       const currentFrameTime = performance.now();
-      const projectileDeltaTime = Math.min(
-        (currentFrameTime - lastFrameTimeRef.current) / 1000,
-        0.033, // Cap at 30 FPS to prevent large jumps
-      );
+      const projectileDeltaTime =
+        (currentFrameTime - lastFrameTimeRef.current) / 1000;
       lastFrameTimeRef.current = currentFrameTime;
 
       // Use for loop for better performance than map/filter
