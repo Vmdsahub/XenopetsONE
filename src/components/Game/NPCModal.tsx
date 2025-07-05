@@ -134,13 +134,13 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6">
+            <div className="px-6 pb-6 space-y-6">
               {/* Character name */}
               <div className="text-center">
-                <h2 className="text-2xl font-bold text-amber-800 mb-2">
-                  🌟 Explorador Errante 🌟
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Explorador Errante
                 </h2>
-                <div className="w-32 h-1 bg-amber-300 mx-auto rounded-full"></div>
+                <div className="w-32 h-0.5 bg-gray-200 mx-auto rounded-full"></div>
               </div>
 
               {/* Dialogue box */}
