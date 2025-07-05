@@ -24,6 +24,7 @@ export const TopBar: React.FC = () => {
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
+  const [showMusicPlayer, setShowMusicPlayer] = useState(false);
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const handleNotificationClick = (notificationId: string) => {
