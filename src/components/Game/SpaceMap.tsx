@@ -1080,14 +1080,14 @@ const SpaceMapComponent: React.FC = () => {
         baseX: position.x,
         baseY: position.y,
         floatAmplitude: {
-          x: Math.random() * 3 + 1, // 1-4 pixels
-          y: Math.random() * 3 + 1, // 1-4 pixels
+          x: Math.random() * 1 + 0.5, // 0.5-1.5 pixels (reduzido)
+          y: Math.random() * 1 + 0.5, // 0.5-1.5 pixels (reduzido)
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
           y: Math.random() * Math.PI * 2,
         },
-        floatSpeed: Math.random() * 0.8 + 0.4, // 0.4-1.2 speed multiplier
+        floatSpeed: Math.random() * 0.5 + 0.3, // 0.3-0.8 speed multiplier (mais lento)
       }));
 
       // Preload planet images
@@ -1159,14 +1159,14 @@ const SpaceMapComponent: React.FC = () => {
         baseX: planetX,
         baseY: planetY,
         floatAmplitude: {
-          x: Math.random() * 3 + 1, // 1-4 pixels
-          y: Math.random() * 3 + 1, // 1-4 pixels
+          x: Math.random() * 1 + 0.5, // 0.5-1.5 pixels (reduzido)
+          y: Math.random() * 1 + 0.5, // 0.5-1.5 pixels (reduzido)
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
           y: Math.random() * Math.PI * 2,
         },
-        floatSpeed: Math.random() * 0.8 + 0.4, // 0.4-1.2 speed multiplier
+        floatSpeed: Math.random() * 0.5 + 0.3, // 0.3-0.8 speed multiplier (mais lento)
       });
     }
 
