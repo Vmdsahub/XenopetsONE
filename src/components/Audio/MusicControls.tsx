@@ -32,7 +32,7 @@ export const MusicControls: React.FC<MusicControlsProps> = ({
     nextTrack,
     previousTrack,
     setVolume,
-  } = useBackgroundMusic();
+  } = useMusicContext();
 
   const iconSizes = {
     sm: 16,
