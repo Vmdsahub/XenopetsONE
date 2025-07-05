@@ -46,6 +46,9 @@ function App() {
     unsubscribeFromRealtimeUpdates,
   } = useGameStore();
 
+  // Initialize background music
+  const { play: playMusic, isPlaying } = useBackgroundMusic();
+
   // Initialize authentication on app start
   useEffect(() => {
     const init = async () => {
