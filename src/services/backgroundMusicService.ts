@@ -42,6 +42,8 @@ class BackgroundMusicService {
         id: "galaxy-4",
         name: "Planetary Exploration",
         path: "/sounds/galaxy-music-4.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
       },
     ],
     // Specific planets with unique music
@@ -50,6 +52,8 @@ class BackgroundMusicService {
         id: "galaxy-4",
         name: "Desert World",
         path: "/sounds/galaxy-music-4.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/3694341/pexels-photo-3694341.jpeg",
       },
     ],
     "planet-2": [
@@ -57,6 +61,8 @@ class BackgroundMusicService {
         id: "galaxy-5",
         name: "Ocean World",
         path: "/sounds/galaxy-music-5.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/47480/pexels-photo-47480.jpeg",
       },
     ],
     "planet-3": [
@@ -64,6 +70,8 @@ class BackgroundMusicService {
         id: "galaxy-6",
         name: "Crystal World",
         path: "/sounds/galaxy-music-6.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/13300951/pexels-photo-13300951.jpeg",
       },
     ],
     "planet-4": [
@@ -71,6 +79,8 @@ class BackgroundMusicService {
         id: "galaxy-7",
         name: "Forest World",
         path: "/sounds/galaxy-music-7.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/32840777/pexels-photo-32840777.jpeg",
       },
     ],
     "planet-5": [
@@ -78,6 +88,8 @@ class BackgroundMusicService {
         id: "galaxy-8",
         name: "Ice World",
         path: "/sounds/galaxy-music-8.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/32861718/pexels-photo-32861718.jpeg",
       },
     ],
     "planet-6": [
@@ -85,6 +97,8 @@ class BackgroundMusicService {
         id: "galaxy-9",
         name: "Volcanic World",
         path: "/sounds/galaxy-music-9.mp3",
+        coverImage:
+          "https://images.pexels.com/photos/12391921/pexels-photo-12391921.jpeg",
       },
     ],
     pet: [
@@ -650,7 +664,7 @@ class BackgroundMusicService {
           console.log("✅ Volume sintético ajustado para:", this.volume);
         }
       } catch (error) {
-        console.warn("❌ Erro ao ajustar volume sintético:", error);
+        console.warn("�� Erro ao ajustar volume sintético:", error);
       }
     } else if (this.currentTrack) {
       // Para arquivos reais, ajusta volume diretamente
