@@ -69,7 +69,7 @@ export const PetScreen: React.FC = () => {
   if (!activePet && pets.length > 0) {
     return (
       <motion.div
-        className="max-w-md mx-auto"
+        className="max-w-md mx-auto pb-12"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
