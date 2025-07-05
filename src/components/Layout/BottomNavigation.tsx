@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Heart, Globe, Package, User, Shield, Music } from "lucide-react";
 import { useGameStore } from "../../store/gameStore";
 import { motion } from "framer-motion";
