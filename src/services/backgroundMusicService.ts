@@ -295,7 +295,7 @@ class BackgroundMusicService {
       }
 
       this.isPlaying = true;
-      console.log("✅ Música iniciada com sucesso");
+      console.log("✅ M��sica iniciada com sucesso");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -348,6 +348,23 @@ class BackgroundMusicService {
       if (this.currentTrack) {
         this.currentTrack.pause();
         this.currentTrack.currentTime = 0;
+        this.currentTrack = null;
+      }
+    }
+  }
+
+  /**
+   * Para apenas a faixa atual sem resetar o estado de playing
+   * Usado para trocar de música entre telas
+   */
+  private stopCurrentTrack(): void {
+    if (this.isUsingSynthetic) {
+      this.stopSyntheticTrack();
+    } else {
+      if (this.currentTrack) {
+        this.currentTrack.pause();
+        this.currentTrack.currentTime = 0;
+        this.currentTrack.removeEventListener("ended", this.handleTrackEnd);
         this.currentTrack = null;
       }
     }
