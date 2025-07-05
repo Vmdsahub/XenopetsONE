@@ -2512,7 +2512,7 @@ const SpaceMapComponent: React.FC = () => {
   ]);
 
   return (
-    <div className="w-full h-full relative bg-gradient-to-br from-slate-950 via-blue-950 to-black rounded-lg overflow-hidden shadow-2xl border border-blue-900/10 game-container gpu-accelerated">
+    <div className="w-full h-full relative bg-gradient-to-br from-slate-950 via-blue-950 to-black rounded-lg overflow-hidden shadow-2xl border border-blue-900/10 game-container gpu-accelerated force-gpu-layer">
       <PlanetLandingModal
         isOpen={showLandingModal}
         planet={selectedPlanet}
@@ -2521,7 +2521,7 @@ const SpaceMapComponent: React.FC = () => {
       />
       <canvas
         ref={canvasRef}
-        className="w-full h-full game-canvas gpu-accelerated"
+        className="w-full h-full game-canvas gpu-accelerated hardware-canvas force-gpu-layer"
         style={{
           cursor:
             user?.isAdmin && isWorldEditMode
@@ -2530,6 +2530,8 @@ const SpaceMapComponent: React.FC = () => {
                 : "grab"
               : `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3' fill='%230080ff' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E") 8 8, auto`,
           imageRendering: "optimizeSpeed",
+          transform: "translate3d(0, 0, 0) scale3d(1, 1, 1)",
+          willChange: "transform, contents",
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={(e) => {
