@@ -214,25 +214,20 @@ export const useNPCShip = ({
 
       ship.angle = Math.atan2(ship.vy, ship.vx);
 
-      // Apply movement for exploring and moving_to_planet modes
-      if (ship.mode !== "circling") {
-        const newX = ship.x + ship.vx * deltaTime;
-        const newY = ship.y + ship.vy * deltaTime;
+      // Apply movement
+      const newX = ship.x + ship.vx * deltaTime;
+      const newY = ship.y + ship.vy * deltaTime;
 
-        // Check barrier collision
-        if (!isInsideBarrier(newX, newY)) {
-          // Bounce off barrier
-          const angleToCenter = Math.atan2(
-            CENTER_Y - ship.y,
-            CENTER_X - ship.x,
-          );
-          ship.vx = Math.cos(angleToCenter) * NPC_SPEED;
-          ship.vy = Math.sin(angleToCenter) * NPC_SPEED;
-          ship.angle = angleToCenter;
-        } else {
-          ship.x = newX;
-          ship.y = newY;
-        }
+      // Check barrier collision
+      if (!isInsideBarrier(newX, newY)) {
+        // Bounce off barrier
+        const angleToCenter = Math.atan2(CENTER_Y - ship.y, CENTER_X - ship.x);
+        ship.vx = Math.cos(angleToCenter) * NPC_SPEED;
+        ship.vy = Math.sin(angleToCenter) * NPC_SPEED;
+        ship.angle = angleToCenter;
+      } else {
+        ship.x = newX;
+        ship.y = newY;
       }
 
       // Normalize coordinates
