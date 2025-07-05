@@ -567,9 +567,9 @@ const SpaceMapComponent: React.FC = () => {
   const createTrailPoint = useCallback(
     (x: number, y: number, currentTime: number, shipVelocity: number) => {
       const intensity = Math.max(
-        0.3,
+        0.7,
         Math.min(shipVelocity / SHIP_MAX_SPEED, 1),
-      ); // Intensidade mínima de 0.3
+      ); // Intensidade mínima de 0.7 para garantir visibilidade
 
       trailPointsRef.current.push({
         x,
