@@ -23,7 +23,7 @@ export interface UseBackgroundMusicReturn {
  * Hook para controlar a música de fundo da navegação galáctica
  */
 export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
-  const { currentScreen } = useGameStore();
+  const { currentScreen, currentPlanet } = useGameStore();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
