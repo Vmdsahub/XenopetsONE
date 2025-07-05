@@ -2696,6 +2696,15 @@ const SpaceMapComponent: React.FC = () => {
         );
       });
 
+      // Render NPC ship
+      npcShip.renderShip(
+        ctx,
+        gameState.camera.x,
+        gameState.camera.y,
+        canvas.width,
+        canvas.height,
+      );
+
       // Continue at maximum possible FPS (uncapped)
       gameLoopRef.current = requestAnimationFrame(gameLoop);
     };
