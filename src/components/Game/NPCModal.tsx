@@ -133,7 +133,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
 
               {/* Dialogue box */}
               <div
-                className="bg-gray-50 border border-gray-200 rounded-xl p-4 cursor-pointer min-h-[120px] relative"
+                className="bg-gray-50 border border-gray-200 rounded-xl p-4 cursor-pointer min-h-[140px] relative"
                 onClick={handleSkipTyping}
               >
                 <div className="text-gray-700 leading-relaxed text-base">
@@ -158,6 +158,11 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
                     Clique para pular
                   </div>
                 )}
+              </div>
+
+              {/* Blank field for future implementation */}
+              <div className="bg-white border border-gray-200 rounded-xl p-4 min-h-[100px]">
+                {/* Empty space for future features */}
               </div>
 
               {/* Action buttons */}
