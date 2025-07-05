@@ -355,10 +355,10 @@ export const useNPCShip = ({
 
         ctx.save();
 
-        // Main trail with glow effect
-        ctx.shadowColor = "#00aaff";
+        // Main trail with orange glow effect
+        ctx.shadowColor = "#ff8800";
         ctx.shadowBlur = 8 * avgIntensity;
-        ctx.strokeStyle = `rgba(0, 170, 255, ${0.6 * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity})`;
+        ctx.strokeStyle = `rgba(255, 136, 0, ${0.6 * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity})`;
         ctx.lineWidth =
           TRAIL_WIDTH * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity;
         ctx.lineCap = "round";
@@ -368,9 +368,9 @@ export const useNPCShip = ({
         ctx.lineTo(nextScreenX, nextScreenY);
         ctx.stroke();
 
-        // Inner bright core
+        // Inner bright orange core
         ctx.shadowBlur = 0;
-        ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity})`;
+        ctx.strokeStyle = `rgba(255, 200, 100, ${0.8 * ((currentLifeRatio + nextLifeRatio) / 2) * avgIntensity})`;
         ctx.lineWidth =
           TRAIL_WIDTH *
           0.3 *
