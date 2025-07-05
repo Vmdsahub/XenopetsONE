@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Globe, Star } from "lucide-react";
+import { ArrowLeft, Plus, Edit3, Trash2, Eye, EyeOff } from "lucide-react";
 import { useGameStore } from "../../store/gameStore";
+import { useAuthStore } from "../../store/authStore";
+import {
+  worldInteractivePointsService,
+  WorldInteractivePoint,
+  CreateInteractivePointData,
+  UpdateInteractivePointData,
+} from "../../services/worldInteractivePointsService";
 
 interface Planet {
   id: string;
