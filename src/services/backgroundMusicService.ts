@@ -395,6 +395,8 @@ class BackgroundMusicService {
           id: "synthetic-inventory-1",
           name: "Quiet Organization",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
         },
       ],
       profile: [
@@ -402,6 +404,8 @@ class BackgroundMusicService {
           id: "synthetic-profile-1",
           name: "Personal Space",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/29231029/pexels-photo-29231029.jpeg",
         },
       ],
     };
