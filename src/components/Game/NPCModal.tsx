@@ -48,7 +48,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
         setIsShowingAlien(false);
         setDisplayedText((prev) => prev + DIALOGUE_TEXT[currentIndex]);
         setCurrentIndex((prev) => prev + 1);
-      }, 80); // Show alien char for 80ms, then continue quickly
+      }, 40); // Show alien char for 40ms, then continue quickly
     } else {
       setIsTypingComplete(true);
       setIsShowingAlien(false);
