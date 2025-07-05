@@ -93,7 +93,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative bg-white rounded-2xl shadow-2xl max-w-xl w-full mx-4 overflow-hidden"
+            className="relative bg-white rounded-2xl shadow-2xl max-w-xl w-full mx-4 max-h-[90vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
@@ -118,11 +118,11 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             </button>
 
             {/* NPC Image */}
-            <div className="flex justify-center p-6 pb-4">
+            <div className="flex justify-center p-4 sm:p-6 pb-4">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F542e75b77d74474ca612f291b2642c2c%2F9db05452f51a4f1e813928729ddf09b2?format=webp&width=800"
                 alt="Bahrun"
-                className="w-full h-64 object-cover rounded-3xl"
+                className="w-full h-48 sm:h-64 object-cover rounded-3xl"
                 style={{ imageRendering: "crisp-edges" }}
               />
             </div>
