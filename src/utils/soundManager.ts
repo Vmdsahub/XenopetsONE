@@ -443,7 +443,7 @@ const getAudioContext = (): AudioContext => {
   return sharedAudioContext;
 };
 
-// Initialize audio context on user interaction
+// Initialize audio context on user interaction or automatically
 const initializeAudio = () => {
   const enableAudio = () => {
     if (sharedAudioContext) {
@@ -460,7 +460,12 @@ const initializeAudio = () => {
     }
   };
 
-  // Listen for user interaction to enable audio
+  // Try to initialize immediately (works in some contexts)
+  if (sharedAudioContext && sharedAudioContext.state === "suspended") {
+    enableAudio();
+  }
+
+  // Listen for user interaction to enable audio (fallback)
   document.addEventListener("click", enableAudio, { once: true });
   document.addEventListener("keydown", enableAudio, { once: true });
   document.addEventListener("mousedown", enableAudio, { once: true });
