@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Volume2, VolumeX, Play } from "lucide-react";
-import { useBackgroundMusic } from "../../hooks/useBackgroundMusic";
+import { useMusicContext } from "../../contexts/MusicContext";
 
 interface VolumeControlProps {
   className?: string;
