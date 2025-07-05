@@ -20,7 +20,8 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
-  const [trailingAlienChars, setTrailingAlienChars] = useState<string[]>([]);
+  const [currentAlienChar, setCurrentAlienChar] = useState("");
+  const [isShowingAlien, setIsShowingAlien] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Typewriter effect with alien translation
@@ -29,29 +30,28 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
       setDisplayedText("");
       setCurrentIndex(0);
       setIsTypingComplete(false);
-      setTrailingAlienChars([]);
+      setCurrentAlienChar("");
+      setIsShowingAlien(false);
       if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+        clearTimeout(intervalRef.current);
       }
       return;
     }
 
     if (currentIndex < DIALOGUE_TEXT.length) {
+      // First show alien character
+      setIsShowingAlien(true);
+      setCurrentAlienChar(generateAlienChar());
+
+      // After showing alien char, replace with real character
       intervalRef.current = setTimeout(() => {
+        setIsShowingAlien(false);
         setDisplayedText((prev) => prev + DIALOGUE_TEXT[currentIndex]);
         setCurrentIndex((prev) => prev + 1);
-
-        // Update trailing alien characters (last 4 positions)
-        setTrailingAlienChars([
-          generateAlienChar(),
-          generateAlienChar(),
-          generateAlienChar(),
-          generateAlienChar(),
-        ]);
-      }, 30); // 30ms per character for fast typing
+      }, 80); // Show alien char for 80ms, then continue quickly
     } else {
       setIsTypingComplete(true);
-      setTrailingAlienChars([]);
+      setIsShowingAlien(false);
     }
 
     return () => {
@@ -141,17 +141,11 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 min-h-[140px] relative">
                 <div className="text-gray-700 leading-relaxed text-base">
                   {displayedText}
-                  {!isTypingComplete &&
-                    trailingAlienChars.map((char, index) => (
-                      <motion.span
-                        key={`alien-${currentIndex}-${index}`}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="text-gray-900 font-bold"
-                      >
-                        {char}
-                      </motion.span>
-                    ))}
+                  {isShowingAlien && (
+                    <span className="text-gray-900 font-bold">
+                      {currentAlienChar}
+                    </span>
+                  )}
                 </div>
               </div>
 
