@@ -28,6 +28,16 @@ export const BottomNavigation: React.FC = () => {
     useGameStore();
   const [showMusicModal, setShowMusicModal] = useState(false);
 
+  // Track the last world-related screen the user was on
+  const lastWorldScreenRef = useRef<string>("world");
+
+  // Update lastWorldScreen when user is on world or planet
+  useEffect(() => {
+    if (currentScreen === "world" || currentScreen === "planet") {
+      lastWorldScreenRef.current = currentScreen;
+    }
+  }, [currentScreen]);
+
   // Add admin navigation for admin users
   const items = user?.isAdmin
     ? [
