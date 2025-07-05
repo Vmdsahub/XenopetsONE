@@ -49,10 +49,15 @@ export const BottomNavigation: React.FC = () => {
   const handleItemClick = (id: string, isAction?: boolean) => {
     if (id === "music") {
       setShowMusicModal(!showMusicModal);
-    } else if (id === "world" && currentScreen === "planet" && currentPlanet) {
-      // Only redirect to planet if user was actually ON a planet screen
-      console.log(`🌍 Retornando ao planeta: ${currentPlanet.name}`);
-      setCurrentScreen("planet");
+    } else if (id === "world") {
+      // Use the last world screen the user was on
+      if (lastWorldScreenRef.current === "planet" && currentPlanet) {
+        console.log(`🌍 Retornando ao planeta: ${currentPlanet.name}`);
+        setCurrentScreen("planet");
+      } else {
+        console.log(`🌍 Retornando à navegação galáctica`);
+        setCurrentScreen("world");
+      }
     } else {
       setCurrentScreen(id);
     }
