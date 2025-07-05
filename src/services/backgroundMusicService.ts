@@ -581,12 +581,17 @@ class BackgroundMusicService {
     if (this.isUsingSynthetic) {
       this.stopSyntheticTrack();
     } else {
-      if (this.currentTrack && this.trackEndHandler) {
+      if (this.currentTrack) {
         this.currentTrack.pause();
         this.currentTrack.currentTime = 0;
-        this.currentTrack.removeEventListener("ended", this.trackEndHandler);
+        if (this.trackEndHandler) {
+          this.currentTrack.removeEventListener("ended", this.trackEndHandler);
+          this.trackEndHandler = null;
+        }
+        // Force cleanup by setting src to empty to release the audio resource
+        this.currentTrack.src = "";
+        this.currentTrack.load();
         this.currentTrack = null;
-        this.trackEndHandler = null;
       }
     }
   }
