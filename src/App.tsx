@@ -157,6 +157,11 @@ function App() {
     duration: 0.4,
   };
 
+  // If not authenticated, just return the auth screen directly
+  if (!isAuthenticated) {
+    return renderScreen;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 gpu-accelerated force-gpu-layer">
       {/* Componente de pré-carregamento de áudios */}
