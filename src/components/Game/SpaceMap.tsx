@@ -9,6 +9,8 @@ import React, {
 import { useGameStore } from "../../store/gameStore";
 import { useShipStatePersistence } from "../../hooks/useShipStatePersistence";
 import { PlanetLandingModal } from "./PlanetLandingModal";
+import { useNPCShip } from "./NPCShip";
+import { NPCModal } from "./NPCModal";
 import { gameService } from "../../services/gameService";
 import {
   playLaserShootSound,
@@ -33,7 +35,7 @@ interface Star {
   pulse: number;
   baseX: number; // Posição base para movimento oscilatório
   baseY: number; // Posição base para movimento oscilatório
-  floatAmplitude: { x: number; y: number }; // Amplitude do movimento de flutua��ão
+  floatAmplitude: { x: number; y: number }; // Amplitude do movimento de flutua���ão
   floatPhase: { x: number; y: number }; // Fase do movimento senoidal
 }
 
@@ -227,6 +229,7 @@ const SpaceMapComponent: React.FC = () => {
   // Modal state
   const [showLandingModal, setShowLandingModal] = useState(false);
   const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null);
+  const [showNPCModal, setShowNPCModal] = useState(false);
 
   // Landing animation state
   const [isLandingAnimationActive, setIsLandingAnimationActive] =
@@ -293,6 +296,13 @@ const SpaceMapComponent: React.FC = () => {
   const normalizeCoord = useCallback((coord: number) => {
     return ((coord % WORLD_SIZE) + WORLD_SIZE) % WORLD_SIZE;
   }, []);
+
+  // Initialize NPC Ship
+  const npcShip = useNPCShip({
+    planets: planetsRef.current,
+    getWrappedDistance,
+    normalizeCoord,
+  });
 
   // Função de tiro que pode ser reutilizada
   const shootProjectile = useCallback(() => {
@@ -1369,7 +1379,7 @@ const SpaceMapComponent: React.FC = () => {
         // Save to database with throttling
         clearTimeout((window as any).worldDragTimeout);
         (window as any).worldDragTimeout = setTimeout(() => {
-          console.log("���� Saving world drag position:", {
+          console.log("����� Saving world drag position:", {
             selectedWorldId,
             worldX,
             worldY,
@@ -1456,7 +1466,22 @@ const SpaceMapComponent: React.FC = () => {
         return;
       }
 
-      // Check if click was on a planet first
+      // Check if click was on NPC ship first
+      const clickedOnNPCShip = npcShip.isClickOnShip(
+        clickX,
+        clickY,
+        gameState.camera.x,
+        gameState.camera.y,
+        canvas.width,
+        canvas.height,
+      );
+
+      if (clickedOnNPCShip) {
+        setShowNPCModal(true);
+        return;
+      }
+
+      // Check if click was on a planet
       let clickedOnPlanet = false;
 
       planetsRef.current.forEach((planet) => {
@@ -1493,6 +1518,7 @@ const SpaceMapComponent: React.FC = () => {
       updateWorldPosition,
       setSelectedPlanet,
       setShowLandingModal,
+      npcShip.isClickOnShip,
     ],
   );
 
@@ -2033,6 +2059,9 @@ const SpaceMapComponent: React.FC = () => {
           projectiles.splice(i, 1);
         }
       }
+
+      // Update NPC ship
+      npcShip.updateShip(projectileDeltaTime * 1000); // Convert to milliseconds
 
       // Create shooting stars less frequently for better performance
       if (
@@ -2683,6 +2712,15 @@ const SpaceMapComponent: React.FC = () => {
         );
       });
 
+      // Render NPC ship
+      npcShip.renderShip(
+        ctx,
+        gameState.camera.x,
+        gameState.camera.y,
+        canvas.width,
+        canvas.height,
+      );
+
       // Continue at maximum possible FPS (uncapped)
       gameLoopRef.current = requestAnimationFrame(gameLoop);
     };
@@ -2741,6 +2779,8 @@ const SpaceMapComponent: React.FC = () => {
         onConfirm={handleLandingConfirm}
         onCancel={handleLandingCancel}
       />
+
+      <NPCModal isOpen={showNPCModal} onClose={() => setShowNPCModal(false)} />
       <canvas
         ref={canvasRef}
         className="w-full h-full game-canvas gpu-accelerated hardware-canvas force-gpu-layer"
@@ -2850,7 +2890,7 @@ const SpaceMapComponent: React.FC = () => {
           {/* Rotation Control */}
           <div className="mb-3">
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              Rotação:{" "}
+              Rotaç��o:{" "}
               {Math.round(
                 ((planetsRef.current.find((p) => p.id === selectedWorldId)
                   ?.rotation || 0) *
@@ -2882,7 +2922,7 @@ const SpaceMapComponent: React.FC = () => {
                 clearTimeout((window as any).worldRotationTimeout);
                 (window as any).worldRotationTimeout = setTimeout(() => {
                   if (selectedWorldId) {
-                    console.log("�� Saving world rotation:", {
+                    console.log("��� Saving world rotation:", {
                       selectedWorldId,
                       newRotation,
                     });
