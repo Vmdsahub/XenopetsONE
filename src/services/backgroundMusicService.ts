@@ -231,7 +231,12 @@ class BackgroundMusicService {
     this.lastMusicContext = currentMusicContext;
 
     // If music is playing (not paused) and we switched to a DIFFERENT music context, change to new music
-    if (this.getIsPlaying() && !isSameMusicContext && this.tracks.length > 0) {
+    if (
+      this.getIsPlaying() &&
+      !isSameMusicContext &&
+      this.tracks.length > 0 &&
+      shouldAutoPlay
+    ) {
       console.log(
         `🔄 Contexto musical mudou: ${this.lastMusicContext} → ${currentMusicContext}`,
       );
