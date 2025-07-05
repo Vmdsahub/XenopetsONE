@@ -114,6 +114,15 @@ const createMockClient = () => ({
     const mockQueryBuilder = {
       select: (columns?: string) => ({
         eq: (column: string, value: any) => ({
+          eq: (column2: string, value2: any) => ({
+            order: (column: string, options?: any) => ({
+              limit: (count: number) =>
+                Promise.resolve({
+                  data: [],
+                  error: null,
+                }),
+            }),
+          }),
           order: (column: string, options?: any) => ({
             limit: (count: number) =>
               Promise.resolve({
