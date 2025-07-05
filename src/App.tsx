@@ -109,7 +109,6 @@ function App() {
     }
 
     switch (currentScreen) {
-    switch (currentScreen) {
       case "pet":
         return <PetScreen />;
       case "world":
