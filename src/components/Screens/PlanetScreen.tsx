@@ -27,7 +27,6 @@ export const PlanetScreen: React.FC = () => {
   const [selectedPoint, setSelectedPoint] =
     useState<WorldInteractivePoint | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editingPoint, setEditingPoint] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
   // Load interactive points when planet changes
@@ -37,17 +36,27 @@ export const PlanetScreen: React.FC = () => {
     }
   }, [currentPlanet]);
 
+  // Reload points when admin mode changes
+  useEffect(() => {
+    loadInteractivePoints();
+  }, [isAdminMode]);
+
+  // Save all points when exiting admin mode
+  useEffect(() => {
+    if (!isAdminMode && user?.isAdmin) {
+      saveAllChanges();
+    }
+  }, [isAdminMode]);
+
   const loadInteractivePoints = async () => {
     if (!currentPlanet) return;
 
     if (user?.isAdmin && isAdminMode) {
-      // Load all points for admin in edit mode
       const points = await worldInteractivePointsService.getAllPointsForWorld(
         currentPlanet.id,
       );
       setInteractivePoints(points);
     } else {
-      // Load only active points for regular users
       const points = await worldInteractivePointsService.getPointsForWorld(
         currentPlanet.id,
       );
@@ -55,10 +64,20 @@ export const PlanetScreen: React.FC = () => {
     }
   };
 
-  // Reload points when admin mode changes
-  useEffect(() => {
-    loadInteractivePoints();
-  }, [isAdminMode]);
+  const saveAllChanges = async () => {
+    // Save any pending changes
+    for (const point of interactivePoints) {
+      await worldInteractivePointsService.updatePoint(point.id, {
+        x_percent: point.x_percent,
+        y_percent: point.y_percent,
+        width_percent: point.width_percent,
+        height_percent: point.height_percent,
+        title: point.title,
+        description: point.description,
+        is_active: point.is_active,
+      });
+    }
+  };
 
   const handleImageClick = async (e: React.MouseEvent<HTMLImageElement>) => {
     if (!user?.isAdmin || !isAdminMode || !isCreatingPoint || !imageRef.current)
@@ -93,10 +112,9 @@ export const PlanetScreen: React.FC = () => {
     e.stopPropagation();
 
     if (user?.isAdmin && isAdminMode) {
-      setSelectedPoint(point);
+      setSelectedPoint({ ...point });
       setShowEditModal(true);
     } else {
-      // Handle regular user interaction
       switch (point.action_type) {
         case "dialog":
           alert(
@@ -111,62 +129,13 @@ export const PlanetScreen: React.FC = () => {
     }
   };
 
-  const handleMouseDown = (
-    point: WorldInteractivePoint,
-    e: React.MouseEvent,
+  const updatePointInList = (
+    pointId: string,
+    updates: Partial<WorldInteractivePoint>,
   ) => {
-    if (!user?.isAdmin || !isAdminMode) return;
-
-    e.stopPropagation();
-    const rect = imageRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
-    setActivePoint(point.id);
-    setIsDragging(true);
-
-    const pointX = (point.x_percent / 100) * rect.width;
-    const pointY = (point.y_percent / 100) * rect.height;
-
-    setDragOffset({
-      x: e.clientX - rect.left - pointX,
-      y: e.clientY - rect.top - pointY,
-    });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !activePoint || !imageRef.current) return;
-
-    const rect = imageRef.current.getBoundingClientRect();
-    const newX = e.clientX - rect.left - dragOffset.x;
-    const newY = e.clientY - rect.top - dragOffset.y;
-
-    const xPercent = Math.max(0, Math.min(100, (newX / rect.width) * 100));
-    const yPercent = Math.max(0, Math.min(100, (newY / rect.height) * 100));
-
     setInteractivePoints((prev) =>
-      prev.map((p) =>
-        p.id === activePoint
-          ? { ...p, x_percent: xPercent, y_percent: yPercent }
-          : p,
-      ),
+      prev.map((p) => (p.id === pointId ? { ...p, ...updates } : p)),
     );
-  };
-
-  const handleMouseUp = async () => {
-    if (isDragging && activePoint) {
-      const point = interactivePoints.find((p) => p.id === activePoint);
-      if (point) {
-        await worldInteractivePointsService.updatePoint(activePoint, {
-          x_percent: point.x_percent,
-          y_percent: point.y_percent,
-        });
-      }
-    }
-
-    setIsDragging(false);
-    setIsResizing(false);
-    setActivePoint(null);
-    setDragOffset({ x: 0, y: 0 });
   };
 
   const handleDeletePoint = async (pointId: string) => {
@@ -180,26 +149,36 @@ export const PlanetScreen: React.FC = () => {
 
   const handleTogglePointActive = async (
     pointId: string,
-    isActive: boolean,
+    currentActive: boolean,
   ) => {
     const success = await worldInteractivePointsService.togglePointActive(
       pointId,
-      !isActive,
+      !currentActive,
     );
     if (success) {
-      setInteractivePoints((prev) =>
-        prev.map((p) =>
-          p.id === pointId ? { ...p, is_active: !isActive } : p,
-        ),
-      );
+      updatePointInList(pointId, { is_active: !currentActive });
+      if (selectedPoint && selectedPoint.id === pointId) {
+        setSelectedPoint({ ...selectedPoint, is_active: !currentActive });
+      }
     }
+  };
+
+  const handleDimensionChange = (
+    field: "x_percent" | "y_percent" | "width_percent" | "height_percent",
+    value: number,
+  ) => {
+    if (!selectedPoint) return;
+
+    const clampedValue = Math.max(0, Math.min(100, value));
+    const updated = { ...selectedPoint, [field]: clampedValue };
+    setSelectedPoint(updated);
+    updatePointInList(selectedPoint.id, { [field]: clampedValue });
   };
 
   if (!currentPlanet) {
     return null;
   }
 
-  // Gerar uma imagem placeholder baseada na cor do planeta
   const generatePlanetImage = (color: string) => {
     return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Cdefs%3E%3CradialGradient id='planet' cx='40%25' cy='40%25'%3E%3Cstop offset='0%25' stop-color='${encodeURIComponent(color)}' stop-opacity='1'/%3E%3Cstop offset='70%25' stop-color='${encodeURIComponent(color)}' stop-opacity='0.8'/%3E%3Cstop offset='100%25' stop-color='%23000' stop-opacity='0.6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='%23000011'/%3E%3Ccircle cx='400' cy='300' r='200' fill='url(%23planet)' /%3E%3Ccircle cx='350' cy='250' r='15' fill='%23ffffff' fill-opacity='0.3'/%3E%3Ccircle cx='420' cy='320' r='10' fill='%23ffffff' fill-opacity='0.2'/%3E%3Ccircle cx='450' cy='280' r='8' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E`;
   };
@@ -237,26 +216,21 @@ export const PlanetScreen: React.FC = () => {
                 }`}
               >
                 <Plus className="w-4 h-4 inline mr-1" />
-                {isCreatingPoint ? "Cancelar" : "Adicionar Ponto"}
+                {isCreatingPoint ? "Cancelar" : "Adicionar Área"}
               </button>
               <span className="text-sm text-gray-600 py-1">
-                Pontos: {interactivePoints.length}
+                Áreas: {interactivePoints.length}
               </span>
             </div>
             {isCreatingPoint && (
               <p className="text-sm text-gray-600 mt-2">
-                Clique na imagem para adicionar um ponto interativo
+                Clique na imagem para adicionar uma área interativa
               </p>
             )}
           </div>
         )}
 
-        <div
-          className="w-full h-[calc(100vh-280px)] sm:h-[calc(100vh-300px)] md:h-[calc(100vh-320px)] lg:h-[calc(100vh-340px)] relative rounded-2xl overflow-hidden"
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
+        <div className="w-full h-[calc(100vh-280px)] sm:h-[calc(100vh-300px)] md:h-[calc(100vh-320px)] lg:h-[calc(100vh-340px)] relative rounded-2xl overflow-hidden">
           <motion.img
             ref={imageRef}
             initial={{ opacity: 0, scale: 0.9 }}
@@ -271,49 +245,27 @@ export const PlanetScreen: React.FC = () => {
           {/* Render interactive rectangles */}
           {interactivePoints.map((point, index) => (
             <div
-              key={
-                point.id ||
-                `point-${index}-${point.x_percent}-${point.y_percent}`
-              }
+              key={point.id || `point-${index}`}
               className={`absolute ${
                 user?.isAdmin && isAdminMode
                   ? point.is_active
                     ? "bg-green-500 bg-opacity-60 border-2 border-green-600 hover:bg-opacity-80"
                     : "bg-red-500 bg-opacity-60 border-2 border-red-600 hover:bg-opacity-80"
                   : "bg-transparent hover:bg-blue-500 hover:bg-opacity-20"
-              } ${
-                user?.isAdmin && isAdminMode ? "cursor-move" : "cursor-pointer"
-              }`}
+              } cursor-pointer`}
               style={{
                 left: `${point.x_percent}%`,
                 top: `${point.y_percent}%`,
                 width: `${point.width_percent || 10}%`,
                 height: `${point.height_percent || 10}%`,
               }}
-              onMouseDown={(e) =>
-                user?.isAdmin && isAdminMode
-                  ? handleMouseDown(point, e)
-                  : handlePointClick(point, e)
-              }
-              onDoubleClick={(e) =>
-                user?.isAdmin && isAdminMode && handlePointClick(point, e)
-              }
+              onClick={(e) => handlePointClick(point, e)}
               title={
                 user?.isAdmin && isAdminMode
                   ? `${point.title} (${point.is_active ? "Ativo" : "Inativo"})`
                   : point.title
               }
-            >
-              {user?.isAdmin && isAdminMode && (
-                <>
-                  {/* Resize handles */}
-                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-white border border-gray-400 cursor-se-resize" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-white border border-gray-400 cursor-ne-resize" />
-                  <div className="absolute -top-1 -left-1 w-3 h-3 bg-white border border-gray-400 cursor-nw-resize" />
-                  <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white border border-gray-400 cursor-sw-resize" />
-                </>
-              )}
-            </div>
+            />
           ))}
         </div>
 
@@ -332,8 +284,8 @@ export const PlanetScreen: React.FC = () => {
       {/* Edit Point Modal */}
       {showEditModal && selectedPoint && user?.isAdmin && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-bold mb-4">Editar Ponto Interativo</h3>
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-bold mb-4">Editar Área Interativa</h3>
 
             <div className="space-y-4">
               <div>
@@ -343,12 +295,13 @@ export const PlanetScreen: React.FC = () => {
                 <input
                   type="text"
                   value={selectedPoint.title}
-                  onChange={(e) =>
-                    setSelectedPoint({
-                      ...selectedPoint,
+                  onChange={(e) => {
+                    const updated = { ...selectedPoint, title: e.target.value };
+                    setSelectedPoint(updated);
+                    updatePointInList(selectedPoint.id, {
                       title: e.target.value,
-                    })
-                  }
+                    });
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
@@ -359,64 +312,94 @@ export const PlanetScreen: React.FC = () => {
                 </label>
                 <textarea
                   value={selectedPoint.description || ""}
-                  onChange={(e) =>
-                    setSelectedPoint({
+                  onChange={(e) => {
+                    const updated = {
                       ...selectedPoint,
                       description: e.target.value,
-                    })
-                  }
+                    };
+                    setSelectedPoint(updated);
+                    updatePointInList(selectedPoint.id, {
+                      description: e.target.value,
+                    });
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   rows={3}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Posição
-                </label>
-                <p className="text-sm text-gray-500">
-                  X: {selectedPoint.x_percent.toFixed(2)}%, Y:{" "}
-                  {selectedPoint.y_percent.toFixed(2)}%
-                </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Posição X (%)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value={selectedPoint.x_percent.toFixed(1)}
+                    onChange={(e) =>
+                      handleDimensionChange("x_percent", Number(e.target.value))
+                    }
+                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Posição Y (%)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value={selectedPoint.y_percent.toFixed(1)}
+                    onChange={(e) =>
+                      handleDimensionChange("y_percent", Number(e.target.value))
+                    }
+                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Dimensões
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-xs text-gray-600">Largura (%)</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="100"
-                      value={selectedPoint.width_percent || 10}
-                      onChange={(e) =>
-                        setSelectedPoint({
-                          ...selectedPoint,
-                          width_percent: Number(e.target.value),
-                        })
-                      }
-                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-600">Altura (%)</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="100"
-                      value={selectedPoint.height_percent || 10}
-                      onChange={(e) =>
-                        setSelectedPoint({
-                          ...selectedPoint,
-                          height_percent: Number(e.target.value),
-                        })
-                      }
-                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-                    />
-                  </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Largura (%)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    step="0.1"
+                    value={(selectedPoint.width_percent || 10).toFixed(1)}
+                    onChange={(e) =>
+                      handleDimensionChange(
+                        "width_percent",
+                        Number(e.target.value),
+                      )
+                    }
+                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Altura (%)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    step="0.1"
+                    value={(selectedPoint.height_percent || 10).toFixed(1)}
+                    onChange={(e) =>
+                      handleDimensionChange(
+                        "height_percent",
+                        Number(e.target.value),
+                      )
+                    }
+                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
                 </div>
               </div>
 
@@ -465,36 +448,17 @@ export const PlanetScreen: React.FC = () => {
                 }}
                 className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded font-medium hover:bg-gray-400"
               >
-                Cancelar
+                Fechar
               </button>
               <button
                 onClick={async () => {
-                  const updates: UpdateInteractivePointData = {
-                    title: selectedPoint.title,
-                    description: selectedPoint.description,
-                    width_percent: selectedPoint.width_percent,
-                    height_percent: selectedPoint.height_percent,
-                  };
-
-                  const updated =
-                    await worldInteractivePointsService.updatePoint(
-                      selectedPoint.id,
-                      updates,
-                    );
-                  if (updated) {
-                    setInteractivePoints((prev) =>
-                      prev.map((p) =>
-                        p.id === selectedPoint.id ? updated : p,
-                      ),
-                    );
-                  }
-
+                  await saveAllChanges();
                   setShowEditModal(false);
                   setSelectedPoint(null);
                 }}
                 className="flex-1 px-4 py-2 bg-blue-500 text-white rounded font-medium hover:bg-blue-600"
               >
-                Salvar
+                Salvar Tudo
               </button>
             </div>
           </div>
