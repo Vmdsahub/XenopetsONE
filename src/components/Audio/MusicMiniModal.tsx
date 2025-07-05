@@ -105,7 +105,7 @@ export const MusicMiniModal: React.FC<MusicMiniModalProps> = ({
           <div className="flex items-center gap-4 mb-4">
             <div className="relative w-20 h-20 rounded-xl overflow-hidden shadow-md flex-shrink-0">
               <img
-                src={defaultCoverImage}
+                src={coverImage}
                 alt={currentTrack?.name || "Trilha Sonora"}
                 className="w-full h-full object-cover"
               />
