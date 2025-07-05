@@ -154,7 +154,7 @@ const SpaceMapComponent: React.FC = () => {
   const lastShootingStarTime = useRef(0);
   const lastShootTime = useRef(0);
   const lastStarUpdateTime = useRef(0);
-  const STAR_UPDATE_INTERVAL = 100; // 10 FPS = 100ms interval
+  const STAR_UPDATE_INTERVAL = 200; // 5 FPS = 200ms interval
   const lastRadarCheckRef = useRef<Set<string>>(new Set());
   const shootingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastFrameTimeRef = useRef(performance.now());
