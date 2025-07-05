@@ -145,10 +145,10 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
 
               {/* Dialogue box */}
               <div
-                className="bg-white border-2 border-amber-300 rounded-lg p-4 shadow-inner cursor-pointer min-h-[120px] relative"
+                className="bg-gray-50 border border-gray-200 rounded-xl p-4 cursor-pointer min-h-[120px] relative"
                 onClick={handleSkipTyping}
               >
-                <div className="text-amber-900 leading-relaxed text-lg">
+                <div className="text-gray-700 leading-relaxed text-base">
                   {displayedText}
                   {!isTypingComplete && (
                     <motion.span
@@ -158,7 +158,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
                         repeat: Infinity,
                         repeatType: "reverse",
                       }}
-                      className="text-amber-600 ml-1"
+                      className="text-gray-500 ml-1"
                     >
                       |
                     </motion.span>
@@ -166,7 +166,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 {!isTypingComplete && (
-                  <div className="absolute bottom-2 right-2 text-xs text-amber-600 opacity-70">
+                  <div className="absolute bottom-2 right-2 text-xs text-gray-500 opacity-70">
                     Clique para pular
                   </div>
                 )}
