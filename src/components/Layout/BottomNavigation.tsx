@@ -13,6 +13,7 @@ const navigationItems = [
     icon: Package,
     color: "text-orange-500",
   },
+  { id: "profile", label: "Perfil", icon: User, color: "text-purple-500" },
   {
     id: "music",
     label: "Música",
@@ -20,7 +21,6 @@ const navigationItems = [
     color: "text-blue-500",
     isAction: true,
   },
-  { id: "profile", label: "Perfil", icon: User, color: "text-purple-500" },
 ];
 
 export const BottomNavigation: React.FC = () => {
