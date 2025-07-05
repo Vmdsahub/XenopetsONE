@@ -1,6 +1,6 @@
 /*
   # Create World Interactive Points Table
-  
+
   This migration creates a table to store interactive points on planet images that are invisible to regular users
   but visible and editable by administrators.
 */
@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS world_interactive_points (
   world_id TEXT NOT NULL REFERENCES world_positions(id) ON DELETE CASCADE,
   x_percent REAL NOT NULL CHECK (x_percent >= 0 AND x_percent <= 100),
   y_percent REAL NOT NULL CHECK (y_percent >= 0 AND y_percent <= 100),
+  width_percent REAL NOT NULL DEFAULT 10 CHECK (width_percent > 0 AND width_percent <= 100),
+  height_percent REAL NOT NULL DEFAULT 10 CHECK (height_percent > 0 AND height_percent <= 100),
   title TEXT NOT NULL,
   description TEXT,
   action_type TEXT NOT NULL DEFAULT 'dialog' CHECK (action_type IN ('dialog', 'shop', 'minigame', 'quest', 'teleport')),
@@ -29,14 +31,14 @@ CREATE INDEX IF NOT EXISTS idx_world_interactive_points_active ON world_interact
 ALTER TABLE world_interactive_points ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Everyone can read active points, only admins can modify
-CREATE POLICY "Allow read access to active interactive points" ON world_interactive_points 
+CREATE POLICY "Allow read access to active interactive points" ON world_interactive_points
   FOR SELECT USING (is_active = true);
 
-CREATE POLICY "Allow admin full access to interactive points" ON world_interactive_points 
+CREATE POLICY "Allow admin full access to interactive points" ON world_interactive_points
   FOR ALL USING (
     EXISTS (
-      SELECT 1 FROM profiles 
-      WHERE profiles.id = auth.uid() 
+      SELECT 1 FROM profiles
+      WHERE profiles.id = auth.uid()
       AND profiles.is_admin = true
     )
   );
