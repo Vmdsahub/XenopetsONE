@@ -1020,8 +1020,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 5 + 1.5, // Movimento visível para poeira cósmica
-          y: Math.random() * 5 + 1.5,
+          x: Math.random() * 1.5 + 0.4, // Movimento mais sutil para poeira cósmica
+          y: Math.random() * 1.5 + 0.4,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
