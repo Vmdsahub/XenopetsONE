@@ -68,8 +68,6 @@ export const useNPCShip = ({
     vy: 0,
     targetPlanet: null,
     mode: "exploring",
-    circleAngle: 0,
-    circleRadius: 150,
     lastModeChange: Date.now(),
     lastDirectionChange: Date.now(),
     wanderAngle: Math.random() * Math.PI * 2,
