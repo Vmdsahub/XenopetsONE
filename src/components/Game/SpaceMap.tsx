@@ -1943,12 +1943,13 @@ const SpaceMapComponent: React.FC = () => {
         }))
         .filter((pulse) => pulse.life > 0 && pulse.radius <= pulse.maxRadius);
 
-      // Update stars with smooth floating motion - all stars updated for consistency
-      const stars = starsRef.current;
-      const time = currentTime * 0.0008; // Slower, more natural timing
-      const starsLength = stars.length;
+      // Update stars with smooth floating motion - limited to 10 FPS
+      if (currentTime - lastStarUpdateTime.current >= STAR_UPDATE_INTERVAL) {
+        const stars = starsRef.current;
+        const time = currentTime * 0.0008; // Slower, more natural timing
+        const starsLength = stars.length;
 
-      for (let i = 0; i < starsLength; i++) {
+        for (let i = 0; i < starsLength; i++) {
         const star = stars[i];
 
         // Natural floating motion with multiple sine waves for organic movement
