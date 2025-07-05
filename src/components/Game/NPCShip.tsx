@@ -112,6 +112,41 @@ export const useNPCShip = ({
       "https://cdn.builder.io/api/v1/image/assets%2Ff3204b51264f46c7b764e817db763ddb%2F0a9ef7e7db754c66a80705f93b134f77?format=webp&width=800";
   }, []);
 
+  // Create trail point function
+  const createTrailPoint = useCallback(
+    (x: number, y: number, currentTime: number, shipVelocity: number) => {
+      const intensity = Math.min(1, shipVelocity / NPC_SPEED);
+
+      trailPointsRef.current.push({
+        x,
+        y,
+        life: TRAIL_LIFETIME,
+        maxLife: TRAIL_LIFETIME,
+        intensity,
+      });
+
+      // Keep only the most recent trail points
+      if (trailPointsRef.current.length > TRAIL_MAX_POINTS) {
+        trailPointsRef.current.shift();
+      }
+    },
+    [],
+  );
+
+  // Update trail points function
+  const updateTrailPoints = useCallback((deltaTime: number) => {
+    const safeDeltaTime = Math.min(deltaTime, 33); // Cap at ~30 FPS equivalent
+
+    trailPointsRef.current.forEach((point) => {
+      point.life -= safeDeltaTime;
+    });
+
+    // Remove dead trail points
+    trailPointsRef.current = trailPointsRef.current.filter(
+      (point) => point.life > 0,
+    );
+  }, []);
+
   // Check if point is inside barrier
   const isInsideBarrier = useCallback((x: number, y: number) => {
     const distanceFromCenter = Math.sqrt(
