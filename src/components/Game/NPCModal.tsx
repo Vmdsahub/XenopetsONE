@@ -122,7 +122,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F542e75b77d74474ca612f291b2642c2c%2F9db05452f51a4f1e813928729ddf09b2?format=webp&width=800"
                 alt="Bahrun"
-                className="w-40 h-40 object-cover rounded-3xl"
+                className="w-60 h-32 object-cover rounded-3xl"
                 style={{ imageRendering: "crisp-edges" }}
               />
             </div>
