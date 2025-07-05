@@ -341,7 +341,7 @@ export const useNPCShip = ({
 
       ctx.restore();
     },
-    [isImageLoaded, getWrappedDistance],
+    [isImageLoaded],
   );
 
   return {
