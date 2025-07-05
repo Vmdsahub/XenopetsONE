@@ -172,54 +172,13 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
                 )}
               </div>
 
-              {/* Input field */}
-              <motion.form
-                initial={{ opacity: 0, y: 20 }}
-                animate={{
-                  opacity: isTypingComplete ? 1 : 0.5,
-                  y: isTypingComplete ? 0 : 20,
-                }}
-                transition={{ delay: isTypingComplete ? 0 : 0.5 }}
-                onSubmit={handleSubmit}
-                className="space-y-3"
-              >
-                <label className="block text-amber-800 font-medium">
-                  Sua resposta:
-                </label>
-                <div className="flex gap-3">
-                  <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder={
-                      isTypingComplete
-                        ? "Digite sua resposta..."
-                        : "Aguarde o diálogo terminar..."
-                    }
-                    disabled={!isTypingComplete}
-                    className="flex-1 px-4 py-3 border-2 border-amber-300 rounded-lg focus:border-amber-500 focus:outline-none bg-white text-amber-900 placeholder-amber-500 disabled:bg-amber-50 disabled:text-amber-400 transition-colors"
-                    maxLength={200}
-                  />
-                  <button
-                    type="submit"
-                    disabled={!isTypingComplete || !inputValue.trim()}
-                    className="px-6 py-3 bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:bg-amber-300 disabled:cursor-not-allowed transition-colors font-medium"
-                  >
-                    Enviar
-                  </button>
-                </div>
-                <div className="text-xs text-amber-600 text-right">
-                  {inputValue.length}/200 caracteres
-                </div>
-              </motion.form>
-
               {/* Action buttons */}
-              <div className="flex justify-center gap-4 pt-4 border-t border-amber-200">
+              <div className="flex justify-center gap-4 pt-4 border-t border-gray-200">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={onClose}
-                  className="px-6 py-2 bg-amber-200 text-amber-800 rounded-lg hover:bg-amber-300 transition-colors font-medium"
+                  className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
                 >
                   Despedir-se
                 </motion.button>
