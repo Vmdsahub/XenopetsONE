@@ -104,6 +104,7 @@ export const useBackgroundMusic = (): UseBackgroundMusicReturn => {
     if (isWorldRelatedScreen && !hasStartedMusicOnce) {
       console.log("🎵 Primeira vez acessando o mundo - iniciando música!");
       setHasStartedMusicOnce(true);
+      localStorage.setItem("xenopets_music_started", "true");
 
       // Start music for the first time
       backgroundMusicService.setCurrentScreen(currentScreen, planetId);
