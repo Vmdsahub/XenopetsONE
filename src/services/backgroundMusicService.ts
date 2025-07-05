@@ -266,13 +266,49 @@ class BackgroundMusicService {
       planet: [
         {
           id: "synthetic-planet-1",
-          name: "Planetary Ambience",
+          name: "Generic Planet",
           path: "synthetic",
         },
-        { id: "synthetic-planet-2", name: "Surface Winds", path: "synthetic" },
+      ],
+      "planet-1": [
+        {
+          id: "synthetic-planet-1",
+          name: "Desert World Ambience",
+          path: "synthetic",
+        },
+      ],
+      "planet-2": [
+        {
+          id: "synthetic-planet-2",
+          name: "Ocean World Waves",
+          path: "synthetic",
+        },
+      ],
+      "planet-3": [
         {
           id: "synthetic-planet-3",
-          name: "Underground Echoes",
+          name: "Crystal World Resonance",
+          path: "synthetic",
+        },
+      ],
+      "planet-4": [
+        {
+          id: "synthetic-planet-4",
+          name: "Forest World Whispers",
+          path: "synthetic",
+        },
+      ],
+      "planet-5": [
+        {
+          id: "synthetic-planet-5",
+          name: "Ice World Winds",
+          path: "synthetic",
+        },
+      ],
+      "planet-6": [
+        {
+          id: "synthetic-planet-6",
+          name: "Volcanic World Rumbles",
           path: "synthetic",
         },
       ],
