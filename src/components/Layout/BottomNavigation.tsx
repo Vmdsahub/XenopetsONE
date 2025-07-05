@@ -39,6 +39,10 @@ export const BottomNavigation: React.FC = () => {
   const handleItemClick = (id: string, isAction?: boolean) => {
     if (id === "music") {
       setShowMusicModal(!showMusicModal);
+    } else if (id === "world" && currentPlanet) {
+      // If user clicks world but was on a planet, go back to that planet
+      console.log(`🌍 Retornando ao planeta: ${currentPlanet.name}`);
+      setCurrentScreen("planet");
     } else {
       setCurrentScreen(id);
     }
