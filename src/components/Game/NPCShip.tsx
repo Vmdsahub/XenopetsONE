@@ -121,6 +121,18 @@ export const useNPCShip = ({
       const shouldChangeBehavior =
         timeSinceLastChange > 8000 + Math.random() * 7000;
 
+      // Ensure ship keeps moving in exploring mode
+      if (
+        ship.mode === "exploring" &&
+        Math.abs(ship.vx) < 0.1 &&
+        Math.abs(ship.vy) < 0.1
+      ) {
+        const randomAngle = Math.random() * Math.PI * 2;
+        ship.vx = Math.cos(randomAngle) * NPC_SPEED;
+        ship.vy = Math.sin(randomAngle) * NPC_SPEED;
+        ship.angle = randomAngle;
+      }
+
       if (shouldChangeBehavior || !ship.targetPlanet) {
         const nearestPlanet = findNearestPlanet(ship.x, ship.y);
         if (nearestPlanet) {
