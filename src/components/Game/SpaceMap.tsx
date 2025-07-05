@@ -46,6 +46,12 @@ interface Planet {
   name: string;
   interactionRadius: number;
   imageUrl: string;
+  // Floating animation properties
+  baseX?: number;
+  baseY?: number;
+  floatAmplitude?: { x: number; y: number };
+  floatPhase?: { x: number; y: number };
+  floatSpeed?: number;
 }
 
 interface Projectile {
@@ -1059,7 +1065,7 @@ const SpaceMapComponent: React.FC = () => {
   // Update planets when worldPositions change
   const updatePlanetsFromStore = useCallback(() => {
     if (worldPositions.length > 0) {
-      // Use store positions
+      // Use store positions with floating properties
       const planets: Planet[] = worldPositions.map((position) => ({
         id: position.id,
         x: position.x,
@@ -1070,6 +1076,18 @@ const SpaceMapComponent: React.FC = () => {
         name: position.name,
         interactionRadius: position.interactionRadius,
         imageUrl: position.imageUrl || "",
+        // Add floating animation properties
+        baseX: position.x,
+        baseY: position.y,
+        floatAmplitude: {
+          x: Math.random() * 3 + 1, // 1-4 pixels
+          y: Math.random() * 3 + 1, // 1-4 pixels
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+        floatSpeed: Math.random() * 0.8 + 0.4, // 0.4-1.2 speed multiplier
       }));
 
       // Preload planet images
