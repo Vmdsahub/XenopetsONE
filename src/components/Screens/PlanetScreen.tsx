@@ -65,25 +65,21 @@ export const PlanetScreen: React.FC = () => {
       return;
 
     const rect = imageRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const xPercent = (x / rect.width) * 100;
-    const yPercent = (y / rect.height) * 100;
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
 
-    const newPointData: CreateInteractivePointData = {
+    const newPoint = await worldInteractivePointsService.createPoint({
       world_id: currentPlanet!.id,
-      x_percent: Math.round(xPercent * 100) / 100,
-      y_percent: Math.round(yPercent * 100) / 100,
+      x_percent: Math.max(0, Math.min(90, xPercent)),
+      y_percent: Math.max(0, Math.min(90, yPercent)),
       width_percent: 10,
       height_percent: 10,
-      title: `Quadrado ${interactivePoints.length + 1}`,
+      title: `Área ${interactivePoints.length + 1}`,
       description: "Área interativa",
       action_type: "dialog",
-      action_data: { message: "Olá! Esta é uma área interativa." },
-    };
+      action_data: { message: "Área interativa" },
+    });
 
-    const newPoint =
-      await worldInteractivePointsService.createPoint(newPointData);
     if (newPoint) {
       setInteractivePoints((prev) => [...prev, newPoint]);
       setIsCreatingPoint(false);
