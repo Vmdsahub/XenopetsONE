@@ -1080,14 +1080,14 @@ const SpaceMapComponent: React.FC = () => {
         baseX: position.x,
         baseY: position.y,
         floatAmplitude: {
-          x: Math.random() * 8 + 5, // 5-13 pixels (bastante aumentado)
-          y: Math.random() * 8 + 5, // 5-13 pixels (bastante aumentado)
+          x: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
+          y: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
           y: Math.random() * Math.PI * 2,
         },
-        floatSpeed: Math.random() * 1.5 + 0.8, // 0.8-2.3 speed multiplier (bem mais rápido)
+        floatSpeed: Math.random() * 0.8 + 0.5, // 0.5-1.3 speed multiplier (moderado)
       }));
 
       // Preload planet images
@@ -1131,7 +1131,7 @@ const SpaceMapComponent: React.FC = () => {
     ];
 
     const planetNames = [
-      "Estaç��o Galáctica",
+      "Estaç��o Gal��ctica",
       "Base Orbital",
       "Mundo Alienígena",
       "Terra Verdejante",
@@ -1159,14 +1159,14 @@ const SpaceMapComponent: React.FC = () => {
         baseX: planetX,
         baseY: planetY,
         floatAmplitude: {
-          x: Math.random() * 8 + 5, // 5-13 pixels (bastante aumentado)
-          y: Math.random() * 8 + 5, // 5-13 pixels (bastante aumentado)
+          x: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
+          y: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
           y: Math.random() * Math.PI * 2,
         },
-        floatSpeed: Math.random() * 1.5 + 0.8, // 0.8-2.3 speed multiplier (bem mais rápido)
+        floatSpeed: Math.random() * 0.8 + 0.5, // 0.5-1.3 speed multiplier (moderado)
       });
     }
 
