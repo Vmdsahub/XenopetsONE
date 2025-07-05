@@ -316,6 +316,8 @@ class BackgroundMusicService {
           id: "synthetic-planet-1",
           name: "Desert World Ambience",
           path: "synthetic",
+          coverImage:
+            "https://images.pexels.com/photos/3694341/pexels-photo-3694341.jpeg",
         },
       ],
       "planet-2": [
@@ -553,7 +555,7 @@ class BackgroundMusicService {
     // Frequências base para cada faixa (acordes diferentes)
     const chordConfigs = [
       [220, 261.63, 329.63], // Am chord - Lá menor
-      [174.61, 220, 261.63], // Fm chord - F���� menor
+      [174.61, 220, 261.63], // Fm chord - F�� menor
       [146.83, 185, 233.08], // Dm chord - Ré menor
     ];
 
