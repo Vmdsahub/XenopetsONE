@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "../../store/gameStore";
-import { useBackgroundMusic } from "../../hooks/useBackgroundMusic";
+import { useMusicContext } from "../../contexts/MusicContext";
 
 interface MusicMiniModalProps {
   isOpen: boolean;
