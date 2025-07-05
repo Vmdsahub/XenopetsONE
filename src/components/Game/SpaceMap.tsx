@@ -2769,7 +2769,6 @@ const SpaceMapComponent: React.FC = () => {
     createTrailPoint,
     updateTrailPoints,
     drawShipTrail,
-    npcShip,
   ]);
 
   return (
