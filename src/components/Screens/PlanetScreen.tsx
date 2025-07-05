@@ -18,6 +18,125 @@ interface Planet {
 
 export const PlanetScreen: React.FC = () => {
   const { currentPlanet, setCurrentScreen } = useGameStore();
+  const { user } = useAuthStore();
+  const [interactivePoints, setInteractivePoints] = useState<
+    WorldInteractivePoint[]
+  >([]);
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isCreatingPoint, setIsCreatingPoint] = useState(false);
+  const [selectedPoint, setSelectedPoint] =
+    useState<WorldInteractivePoint | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // Load interactive points when planet changes
+  useEffect(() => {
+    if (currentPlanet) {
+      loadInteractivePoints();
+    }
+  }, [currentPlanet]);
+
+  const loadInteractivePoints = async () => {
+    if (!currentPlanet) return;
+
+    if (user?.isAdmin && isAdminMode) {
+      // Load all points for admin in edit mode
+      const points = await worldInteractivePointsService.getAllPointsForWorld(
+        currentPlanet.id,
+      );
+      setInteractivePoints(points);
+    } else {
+      // Load only active points for regular users
+      const points = await worldInteractivePointsService.getPointsForWorld(
+        currentPlanet.id,
+      );
+      setInteractivePoints(points);
+    }
+  };
+
+  // Reload points when admin mode changes
+  useEffect(() => {
+    loadInteractivePoints();
+  }, [isAdminMode]);
+
+  const handleImageClick = async (e: React.MouseEvent<HTMLImageElement>) => {
+    if (!user?.isAdmin || !isAdminMode || !isCreatingPoint || !imageRef.current)
+      return;
+
+    const rect = imageRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const xPercent = (x / rect.width) * 100;
+    const yPercent = (y / rect.height) * 100;
+
+    const newPointData: CreateInteractivePointData = {
+      world_id: currentPlanet!.id,
+      x_percent: Math.round(xPercent * 100) / 100,
+      y_percent: Math.round(yPercent * 100) / 100,
+      title: `Ponto ${interactivePoints.length + 1}`,
+      description: "Descrição do ponto",
+      action_type: "dialog",
+      action_data: { message: "Olá! Este é um ponto interativo." },
+    };
+
+    const newPoint =
+      await worldInteractivePointsService.createPoint(newPointData);
+    if (newPoint) {
+      setInteractivePoints((prev) => [...prev, newPoint]);
+      setIsCreatingPoint(false);
+    }
+  };
+
+  const handlePointClick = (
+    point: WorldInteractivePoint,
+    e: React.MouseEvent,
+  ) => {
+    e.stopPropagation();
+
+    if (user?.isAdmin && isAdminMode) {
+      setSelectedPoint(point);
+      setShowEditModal(true);
+    } else {
+      // Handle regular user interaction
+      switch (point.action_type) {
+        case "dialog":
+          alert(
+            point.action_data?.message ||
+              point.description ||
+              "Ponto interativo",
+          );
+          break;
+        default:
+          console.log("Action not implemented yet:", point.action_type);
+      }
+    }
+  };
+
+  const handleDeletePoint = async (pointId: string) => {
+    const success = await worldInteractivePointsService.deletePoint(pointId);
+    if (success) {
+      setInteractivePoints((prev) => prev.filter((p) => p.id !== pointId));
+      setShowEditModal(false);
+      setSelectedPoint(null);
+    }
+  };
+
+  const handleTogglePointActive = async (
+    pointId: string,
+    isActive: boolean,
+  ) => {
+    const success = await worldInteractivePointsService.togglePointActive(
+      pointId,
+      !isActive,
+    );
+    if (success) {
+      setInteractivePoints((prev) =>
+        prev.map((p) =>
+          p.id === pointId ? { ...p, is_active: !isActive } : p,
+        ),
+      );
+    }
+  };
 
   if (!currentPlanet) {
     return null;
