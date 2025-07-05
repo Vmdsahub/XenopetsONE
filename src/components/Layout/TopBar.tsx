@@ -135,6 +135,19 @@ export const TopBar: React.FC = () => {
               </span>
             </motion.div>
 
+            {/* Music Player */}
+            <div className="relative">
+              <motion.button
+                onClick={() => setShowMusicPlayer(!showMusicPlayer)}
+                className="p-2.5 hover:bg-gray-100 rounded-full transition-colors relative"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                title="Trilha Sonora"
+              >
+                <Music className="w-5 h-5 text-gray-600" />
+              </motion.button>
+            </div>
+
             {/* Daily Check-in */}
             <div className="relative">
               <motion.button
