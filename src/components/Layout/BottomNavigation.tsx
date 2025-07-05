@@ -1,7 +1,8 @@
-import React from "react";
-import { Heart, Globe, Package, User, Shield } from "lucide-react";
+import React, { useState } from "react";
+import { Heart, Globe, Package, User, Shield, Music } from "lucide-react";
 import { useGameStore } from "../../store/gameStore";
 import { motion } from "framer-motion";
+import { MusicMiniModal } from "../Audio/MusicMiniModal";
 
 const navigationItems = [
   { id: "pet", label: "Pet", icon: Heart, color: "text-pink-500" },
