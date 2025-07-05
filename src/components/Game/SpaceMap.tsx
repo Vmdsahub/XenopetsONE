@@ -490,7 +490,7 @@ const SpaceMapComponent: React.FC = () => {
     const newPulse: RadarPulse = {
       planetId: planet.id,
       radius: 8, // Raio inicial original
-      maxRadius: 40, // Expansão menor
+      maxRadius: 40, // Expans��o menor
       life: 160, // Vida mais longa para compensar expansão lenta
       maxLife: 160,
       opacity: 1.2, // Opacidade muito alta para verde ser mais visível
@@ -1055,8 +1055,8 @@ const SpaceMapComponent: React.FC = () => {
         },
         pulse: Math.random() * 100,
         floatAmplitude: {
-          x: Math.random() * 4 + 1, // Movimento sutil mas visível
-          y: Math.random() * 4 + 1,
+          x: Math.random() * 1.3 + 0.3, // Movimento muito sutil
+          y: Math.random() * 1.3 + 0.3,
         },
         floatPhase: {
           x: Math.random() * Math.PI * 2,
