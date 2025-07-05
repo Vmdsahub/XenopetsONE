@@ -10,55 +10,64 @@ export interface MusicTrack {
 }
 
 class BackgroundMusicService {
-  private tracks: MusicTrack[] = [
-    {
-      id: "galaxy-1",
-      name: "Silent Starscape",
-      path: "/sounds/galaxy-music-1.mp3",
-    },
-    {
-      id: "galaxy-2",
-      name: "Silent Starscape",
-      path: "/sounds/galaxy-music-2.mp3",
-    },
-    {
-      id: "galaxy-3",
-      name: "Whispers of the Stars",
-      path: "/sounds/galaxy-music-3.mp3",
-    },
-    {
-      id: "galaxy-4",
-      name: "Wanderers Among the Stars",
-      path: "/sounds/galaxy-music-4.mp3",
-    },
-    {
-      id: "galaxy-5",
-      name: "Across the Silent Stars",
-      path: "/sounds/galaxy-music-5.mp3",
-    },
-    {
-      id: "galaxy-6",
-      name: "Galactic Whisper",
-      path: "/sounds/galaxy-music-6.mp3",
-    },
-    {
-      id: "galaxy-7",
-      name: "Galactic Whisper",
-      path: "/sounds/galaxy-music-7.mp3",
-    },
-    {
-      id: "galaxy-8",
-      name: "Silent Horizons",
-      path: "/sounds/galaxy-music-8.mp3",
-    },
-    {
-      id: "galaxy-9",
-      name: "Echoes in the Void",
-      path: "/sounds/galaxy-music-9.mp3",
-    },
-  ];
+  // Music tracks organized by screen/world
+  private tracksByScreen: Record<string, MusicTrack[]> = {
+    world: [
+      {
+        id: "galaxy-1",
+        name: "Silent Starscape",
+        path: "/sounds/galaxy-music-1.mp3",
+      },
+      {
+        id: "galaxy-2",
+        name: "Cosmic Journey",
+        path: "/sounds/galaxy-music-2.mp3",
+      },
+      {
+        id: "galaxy-3",
+        name: "Whispers of the Stars",
+        path: "/sounds/galaxy-music-3.mp3",
+      },
+      {
+        id: "galaxy-4",
+        name: "Wanderers Among the Stars",
+        path: "/sounds/galaxy-music-4.mp3",
+      },
+      {
+        id: "galaxy-5",
+        name: "Across the Silent Stars",
+        path: "/sounds/galaxy-music-5.mp3",
+      },
+    ],
+    planet: [
+      {
+        id: "galaxy-6",
+        name: "Galactic Whisper",
+        path: "/sounds/galaxy-music-6.mp3",
+      },
+      {
+        id: "galaxy-7",
+        name: "Planetary Exploration",
+        path: "/sounds/galaxy-music-7.mp3",
+      },
+      {
+        id: "galaxy-8",
+        name: "Silent Horizons",
+        path: "/sounds/galaxy-music-8.mp3",
+      },
+    ],
+    pet: [
+      {
+        id: "galaxy-9",
+        name: "Echoes in the Void",
+        path: "/sounds/galaxy-music-9.mp3",
+      },
+    ],
+  };
 
-  private originalTracks: MusicTrack[];
+  private tracks: MusicTrack[] = [];
+  private originalTracksByScreen: Record<string, MusicTrack[]>;
+  private currentScreen: string = "world";
 
   private currentTrack: HTMLAudioElement | null = null;
   private currentTrackIndex: number = 0;
