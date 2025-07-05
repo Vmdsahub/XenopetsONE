@@ -196,84 +196,73 @@ export const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <motion.div
-        className="absolute inset-0 bg-black/50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-      />
-
-      {/* Calendar Modal */}
-      <motion.div
-        className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 max-h-[90vh] overflow-hidden"
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-              <Calendar className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold">Check-in Diário</h2>
-              <p className="text-white/80 text-sm">Recompensas mensais</p>
-            </div>
+    <motion.div
+      className="w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-[80vh] overflow-hidden"
+      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9, y: 20 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <Calendar className="w-5 h-5" />
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-xl transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div>
+            <h2 className="text-xl font-bold">Check-in Diário</h2>
+            <p className="text-white/80 text-sm">Recompensas mensais</p>
+          </div>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Month Header */}
+      <div className="text-center p-4 border-b border-gray-100">
+        <h3 className="text-lg font-bold text-gray-900">
+          {monthNames[currentMonth]} {currentYear}
+        </h3>
+      </div>
+
+      {/* Calendar */}
+      <div className="p-4">
+        {/* Week days header */}
+        <div className="grid grid-cols-7 gap-1 mb-2">
+          {weekDays.map((day) => (
+            <div
+              key={day}
+              className="text-center text-xs font-medium text-gray-500 py-2"
+            >
+              {day}
+            </div>
+          ))}
         </div>
 
-        {/* Month Header */}
-        <div className="text-center p-4 border-b border-gray-100">
-          <h3 className="text-lg font-bold text-gray-900">
-            {monthNames[currentMonth]} {currentYear}
-          </h3>
-        </div>
+        {/* Calendar grid */}
+        <div className="grid grid-cols-7 gap-1">
+          {calendarDays.map((day, index) => {
+            if (day === null) {
+              return <div key={`empty-${index}`} className="aspect-square" />;
+            }
 
-        {/* Calendar */}
-        <div className="p-4">
-          {/* Week days header */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {weekDays.map((day) => (
-              <div
+            const reward = generateDailyReward(day);
+            const isToday = isCurrentMonth && day === today;
+            const canClaim = isToday && canClaimDailyCheckin();
+            const isPast = isCurrentMonth && day < today;
+            const isFuture = !isCurrentMonth || day > today;
+            const isClaiming = claimingDay === day;
+
+            return (
+              <motion.button
                 key={day}
-                className="text-center text-xs font-medium text-gray-500 py-2"
-              >
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-1">
-            {calendarDays.map((day, index) => {
-              if (day === null) {
-                return <div key={`empty-${index}`} className="aspect-square" />;
-              }
-
-              const reward = generateDailyReward(day);
-              const isToday = isCurrentMonth && day === today;
-              const canClaim = isToday && canClaimDailyCheckin();
-              const isPast = isCurrentMonth && day < today;
-              const isFuture = !isCurrentMonth || day > today;
-              const isClaiming = claimingDay === day;
-
-              return (
-                <motion.button
-                  key={day}
-                  onClick={() => handleDayClick(day)}
-                  disabled={isFuture || isClaiming}
-                  className={`
+                onClick={() => handleDayClick(day)}
+                disabled={isFuture || isClaiming}
+                className={`
                     aspect-square relative flex flex-col items-center justify-center rounded-xl text-xs font-medium transition-all
                     ${
                       isClaiming
@@ -289,114 +278,113 @@ export const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
                                 : "bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50"
                     }
                   `}
-                  whileHover={!isFuture && !isClaiming ? { scale: 1.05 } : {}}
-                  whileTap={!isFuture && !isClaiming ? { scale: 0.95 } : {}}
+                whileHover={!isFuture && !isClaiming ? { scale: 1.05 } : {}}
+                whileTap={!isFuture && !isClaiming ? { scale: 0.95 } : {}}
+                animate={
+                  isClaiming
+                    ? {
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 10, -10, 0],
+                      }
+                    : {}
+                }
+              >
+                {/* Day number */}
+                <span className="text-xs font-bold mb-1">{day}</span>
+
+                {/* Reward icon */}
+                <motion.div
+                  className="w-5 h-5 flex items-center justify-center"
                   animate={
                     isClaiming
                       ? {
-                          scale: [1, 1.2, 1],
-                          rotate: [0, 10, -10, 0],
+                          scale: [1, 1.5, 1],
+                          rotate: [0, 360, 0],
                         }
                       : {}
                   }
+                  transition={{ duration: 0.8 }}
                 >
-                  {/* Day number */}
-                  <span className="text-xs font-bold mb-1">{day}</span>
+                  {reward.icon.startsWith("http") ? (
+                    <img
+                      src={reward.icon}
+                      alt={reward.type === "cash" ? "Xenocash" : "Xenocoins"}
+                      className="w-5 h-5"
+                    />
+                  ) : (
+                    <span className="text-lg">{reward.icon}</span>
+                  )}
+                </motion.div>
 
-                  {/* Reward icon */}
+                {/* Subtle reward amount indicator */}
+                {!reward.claimed && (
+                  <div className="absolute -bottom-0.5 -right-0.5 bg-black/30 text-white text-xs px-1 py-0.5 rounded font-medium shadow-sm">
+                    {reward.type === "cash"
+                      ? `$${reward.amount}`
+                      : reward.amount}
+                  </div>
+                )}
+                {/* Claimed check mark */}
+                {reward.claimed && (
                   <motion.div
-                    className="w-5 h-5 flex items-center justify-center"
-                    animate={
-                      isClaiming
-                        ? {
-                            scale: [1, 1.5, 1],
-                            rotate: [0, 360, 0],
-                          }
-                        : {}
-                    }
-                    transition={{ duration: 0.8 }}
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
                   >
-                    {reward.icon.startsWith("http") ? (
-                      <img
-                        src={reward.icon}
-                        alt={reward.type === "cash" ? "Xenocash" : "Xenocoins"}
-                        className="w-5 h-5"
-                      />
-                    ) : (
-                      <span className="text-lg">{reward.icon}</span>
-                    )}
+                    <span className="text-white text-xs">✓</span>
                   </motion.div>
+                )}
 
-                  {/* Subtle reward amount indicator */}
-                  {!reward.claimed && (
-                    <div className="absolute -bottom-0.5 -right-0.5 bg-black/30 text-white text-xs px-1 py-0.5 rounded font-medium shadow-sm">
-                      {reward.type === "cash"
-                        ? `$${reward.amount}`
-                        : reward.amount}
-                    </div>
-                  )}
-                  {/* Claimed check mark */}
-                  {reward.claimed && (
-                    <motion.div
-                      className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <span className="text-white text-xs">✓</span>
-                    </motion.div>
-                  )}
+                {/* Claiming animation */}
+                {isClaiming && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 opacity-50 rounded-xl"
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.5, 0.8, 0],
+                    }}
+                    transition={{ duration: 0.8 }}
+                  />
+                )}
 
-                  {/* Claiming animation */}
-                  {isClaiming && (
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 opacity-50 rounded-xl"
-                      animate={{
-                        scale: [1, 1.5, 1],
-                        opacity: [0.5, 0.8, 0],
-                      }}
-                      transition={{ duration: 0.8 }}
-                    />
-                  )}
-
-                  {/* Today indicator */}
-                  {isToday && !isClaiming && (
-                    <motion.div
-                      className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-yellow-400 rounded-full shadow-sm"
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [1, 0.7, 1],
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    />
-                  )}
-                </motion.button>
-              );
-            })}
-          </div>
+                {/* Today indicator */}
+                {isToday && !isClaiming && (
+                  <motion.div
+                    className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-yellow-400 rounded-full shadow-sm"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [1, 0.7, 1],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                    }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
         </div>
+      </div>
 
-        {/* Legend */}
-        <div className="px-4 pb-4">
-          <div className="grid grid-cols-2 gap-3 text-xs mb-3"></div>
+      {/* Legend */}
+      <div className="px-4 pb-4">
+        <div className="grid grid-cols-2 gap-3 text-xs mb-3"></div>
 
-          {isCurrentMonth && (
-            <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between">
-              <div className="text-xs text-gray-600">
-                Sequência atual:{" "}
-                <span className="font-bold text-blue-600">
-                  {getDailyCheckinStreak()} dias
-                </span>
-              </div>
-              <div className="text-xs text-gray-500" />
+        {isCurrentMonth && (
+          <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between">
+            <div className="text-xs text-gray-600">
+              Sequência atual:{" "}
+              <span className="font-bold text-blue-600">
+                {getDailyCheckinStreak()} dias
+              </span>
             </div>
-          )}
-        </div>
-      </motion.div>
-    </div>
+            <div className="text-xs text-gray-500" />
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
