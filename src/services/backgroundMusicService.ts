@@ -172,6 +172,14 @@ class BackgroundMusicService {
     const previousScreen = this.currentScreen;
     this.currentScreen = screen;
 
+    // Screens that should NOT change music (keep current music playing)
+    const nonMusicScreens = ["inventory", "pet", "profile", "store"];
+
+    if (nonMusicScreens.includes(screen)) {
+      console.log(`📱 Tela ${screen}: mantendo música atual tocando`);
+      return; // Don't change music for these screens
+    }
+
     // Determine the music key to use
     let musicKey = screen;
     if (screen === "planet" && planetId) {
