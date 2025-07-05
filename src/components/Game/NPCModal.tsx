@@ -124,14 +124,13 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             </button>
 
             {/* NPC Image */}
-            <div className="relative">
+            <div className="flex justify-center p-6 pb-4">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Ff3204b51264f46c7b764e817db763ddb%2F23e86f6660a946409dcb3d1263f31bde?format=webp&width=800"
                 alt="Explorador Errante"
-                className="w-full h-64 object-cover object-center"
+                className="w-32 h-32 object-contain rounded-2xl bg-gray-50 p-2"
                 style={{ imageRendering: "crisp-edges" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-amber-100 via-transparent to-transparent"></div>
             </div>
 
             {/* Content */}
