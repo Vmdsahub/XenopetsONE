@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 
 interface Planet {
   id: string;
@@ -6,16 +6,6 @@ interface Planet {
   y: number;
   size: number;
   interactionRadius: number;
-}
-
-interface NPCShipProps {
-  canvas: HTMLCanvasElement | null;
-  cameraX: number;
-  cameraY: number;
-  planets: Planet[];
-  onShipClick: () => void;
-  getWrappedDistance: (coord: number, cameraCoord: number) => number;
-  normalizeCoord: (coord: number) => number;
 }
 
 interface NPCShipState {
@@ -31,23 +21,32 @@ interface NPCShipState {
   lastModeChange: number;
 }
 
+export interface NPCShipData {
+  x: number;
+  y: number;
+  angle: number;
+  isVisible: boolean;
+}
+
+interface UseNPCShipProps {
+  planets: Planet[];
+  getWrappedDistance: (coord: number, cameraCoord: number) => number;
+  normalizeCoord: (coord: number) => number;
+}
+
 const WORLD_SIZE = 15000;
 const CENTER_X = WORLD_SIZE / 2;
 const CENTER_Y = WORLD_SIZE / 2;
 const BARRIER_RADIUS = 600;
 const NPC_SPEED = 0.8;
 const NPC_CIRCLE_SPEED = 0.02;
-const NPC_SIZE = 25;
+export const NPC_SIZE = 25;
 
-export const NPCShip: React.FC<NPCShipProps> = ({
-  canvas,
-  cameraX,
-  cameraY,
+export const useNPCShip = ({
   planets,
-  onShipClick,
   getWrappedDistance,
   normalizeCoord,
-}) => {
+}: UseNPCShipProps) => {
   const shipStateRef = useRef<NPCShipState>({
     x: CENTER_X + 200,
     y: CENTER_Y + 100,
@@ -61,7 +60,6 @@ export const NPCShip: React.FC<NPCShipProps> = ({
     lastModeChange: Date.now(),
   });
 
-  const gameLoopRef = useRef<number>();
   const shipImageRef = useRef<HTMLImageElement | null>(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -217,78 +215,30 @@ export const NPCShip: React.FC<NPCShipProps> = ({
     [findNearestPlanet, isInsideBarrier, normalizeCoord],
   );
 
-  // Render ship
-  const renderShip = useCallback(() => {
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
+  // Get ship data for rendering
+  const getShipData = useCallback((): NPCShipData => {
     const ship = shipStateRef.current;
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    return {
+      x: ship.x,
+      y: ship.y,
+      angle: ship.angle,
+      isVisible: isImageLoaded,
+    };
+  }, [isImageLoaded]);
 
-    // Calculate screen position
-    const wrappedDeltaX = getWrappedDistance(ship.x, cameraX);
-    const wrappedDeltaY = getWrappedDistance(ship.y, cameraY);
-    const screenX = centerX + wrappedDeltaX;
-    const screenY = centerY + wrappedDeltaY;
-
-    // Check if ship is visible on screen
-    const margin = 100;
-    if (
-      screenX < -margin ||
-      screenX > canvas.width + margin ||
-      screenY < -margin ||
-      screenY > canvas.height + margin
-    ) {
-      return;
-    }
-
-    ctx.save();
-
-    // Draw ship
-    if (shipImageRef.current && isImageLoaded) {
-      ctx.translate(screenX, screenY);
-      ctx.rotate(ship.angle);
-      ctx.drawImage(
-        shipImageRef.current,
-        -NPC_SIZE / 2,
-        -NPC_SIZE / 2,
-        NPC_SIZE,
-        NPC_SIZE,
-      );
-    } else {
-      // Fallback: draw simple ship shape
-      ctx.translate(screenX, screenY);
-      ctx.rotate(ship.angle);
-
-      ctx.fillStyle = "#8B4513";
-      ctx.beginPath();
-      ctx.ellipse(0, 0, NPC_SIZE / 2, NPC_SIZE / 3, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#DEB887";
-      ctx.beginPath();
-      ctx.ellipse(-5, 0, 8, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    ctx.restore();
-  }, [canvas, cameraX, cameraY, getWrappedDistance, isImageLoaded]);
-
-  // Handle click detection
-  const handleCanvasClick = useCallback(
-    (event: MouseEvent) => {
-      if (!canvas) return;
-
-      const rect = canvas.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const clickY = event.clientY - rect.top;
-
+  // Check if click is on ship
+  const isClickOnShip = useCallback(
+    (
+      clickX: number,
+      clickY: number,
+      cameraX: number,
+      cameraY: number,
+      canvasWidth: number,
+      canvasHeight: number,
+    ): boolean => {
       const ship = shipStateRef.current;
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
+      const centerX = canvasWidth / 2;
+      const centerY = canvasHeight / 2;
 
       const wrappedDeltaX = getWrappedDistance(ship.x, cameraX);
       const wrappedDeltaY = getWrappedDistance(ship.y, cameraY);
@@ -299,48 +249,81 @@ export const NPCShip: React.FC<NPCShipProps> = ({
         Math.pow(clickX - shipScreenX, 2) + Math.pow(clickY - shipScreenY, 2),
       );
 
-      if (distance <= NPC_SIZE) {
-        onShipClick();
-      }
+      return distance <= NPC_SIZE;
     },
-    [canvas, cameraX, cameraY, getWrappedDistance, onShipClick],
+    [getWrappedDistance],
   );
 
-  // Game loop
-  useEffect(() => {
-    let lastTime = performance.now();
+  // Render ship on canvas
+  const renderShip = useCallback(
+    (
+      ctx: CanvasRenderingContext2D,
+      cameraX: number,
+      cameraY: number,
+      canvasWidth: number,
+      canvasHeight: number,
+    ) => {
+      if (!isImageLoaded) return;
 
-    const gameLoop = (currentTime: number) => {
-      const deltaTime = Math.min(currentTime - lastTime, 50); // Cap at 50ms
-      lastTime = currentTime;
+      const ship = shipStateRef.current;
+      const centerX = canvasWidth / 2;
+      const centerY = canvasHeight / 2;
 
-      updateShip(deltaTime);
-      renderShip();
+      // Calculate screen position
+      const wrappedDeltaX = getWrappedDistance(ship.x, cameraX);
+      const wrappedDeltaY = getWrappedDistance(ship.y, cameraY);
+      const screenX = centerX + wrappedDeltaX;
+      const screenY = centerY + wrappedDeltaY;
 
-      gameLoopRef.current = requestAnimationFrame(gameLoop);
-    };
-
-    if (canvas && isImageLoaded) {
-      gameLoopRef.current = requestAnimationFrame(gameLoop);
-    }
-
-    return () => {
-      if (gameLoopRef.current) {
-        cancelAnimationFrame(gameLoopRef.current);
+      // Check if ship is visible on screen
+      const margin = 100;
+      if (
+        screenX < -margin ||
+        screenX > canvasWidth + margin ||
+        screenY < -margin ||
+        screenY > canvasHeight + margin
+      ) {
+        return;
       }
-    };
-  }, [canvas, updateShip, renderShip, isImageLoaded]);
 
-  // Add click listener
-  useEffect(() => {
-    if (!canvas) return;
+      ctx.save();
 
-    canvas.addEventListener("click", handleCanvasClick);
+      // Draw ship
+      if (shipImageRef.current) {
+        ctx.translate(screenX, screenY);
+        ctx.rotate(ship.angle);
+        ctx.drawImage(
+          shipImageRef.current,
+          -NPC_SIZE / 2,
+          -NPC_SIZE / 2,
+          NPC_SIZE,
+          NPC_SIZE,
+        );
+      } else {
+        // Fallback: draw simple ship shape
+        ctx.translate(screenX, screenY);
+        ctx.rotate(ship.angle);
 
-    return () => {
-      canvas.removeEventListener("click", handleCanvasClick);
-    };
-  }, [canvas, handleCanvasClick]);
+        ctx.fillStyle = "#8B4513";
+        ctx.beginPath();
+        ctx.ellipse(0, 0, NPC_SIZE / 2, NPC_SIZE / 3, 0, 0, Math.PI * 2);
+        ctx.fill();
 
-  return null; // This component renders directly to canvas
+        ctx.fillStyle = "#DEB887";
+        ctx.beginPath();
+        ctx.ellipse(-5, 0, 8, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    },
+    [isImageLoaded, getWrappedDistance],
+  );
+
+  return {
+    updateShip,
+    getShipData,
+    renderShip,
+    isClickOnShip,
+  };
 };
