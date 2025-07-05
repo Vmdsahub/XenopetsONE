@@ -325,7 +325,7 @@ export const StoreScreen: React.FC = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto pb-12">
       {/* Header */}
       <motion.div
         className="bg-white rounded-3xl shadow-xl p-6 border border-gray-100 mb-6"
