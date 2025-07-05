@@ -87,7 +87,7 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden"
+            className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
