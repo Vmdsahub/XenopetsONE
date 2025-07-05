@@ -27,10 +27,7 @@ export const PlanetScreen: React.FC = () => {
   const [selectedPoint, setSelectedPoint] =
     useState<WorldInteractivePoint | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [activePoint, setActivePoint] = useState<string | null>(null);
+  const [editingPoint, setEditingPoint] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
   // Load interactive points when planet changes
