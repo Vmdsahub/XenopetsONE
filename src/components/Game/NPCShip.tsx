@@ -48,9 +48,14 @@ const WORLD_SIZE = 15000;
 const CENTER_X = WORLD_SIZE / 2;
 const CENTER_Y = WORLD_SIZE / 2;
 const BARRIER_RADIUS = 600;
-const NPC_SPEED = 0.8;
-const NPC_CIRCLE_SPEED = 0.02;
+const NPC_SPEED = 0.3; // Reduced speed for more realistic movement
+const NPC_CIRCLE_SPEED = 0.01; // Reduced circling speed
 export const NPC_SIZE = 25;
+
+// Trail constants for NPC ships
+const TRAIL_MAX_POINTS = 15;
+const TRAIL_LIFETIME = 800; // milliseconds
+const TRAIL_WIDTH = 8;
 
 export const useNPCShip = ({
   planets,
