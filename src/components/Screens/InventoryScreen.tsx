@@ -195,7 +195,7 @@ export const InventoryScreen: React.FC = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto pb-12">
       {/* Search Bar */}
       <motion.div
         className="bg-white rounded-2xl shadow-lg mb-4 p-4 border border-gray-100"
