@@ -41,41 +41,59 @@ export const PlanetScreen: React.FC = () => {
     loadInteractivePoints();
   }, [isAdminMode]);
 
-  // Save all points when exiting admin mode
-  useEffect(() => {
-    if (!isAdminMode && user?.isAdmin) {
-      saveAllChanges();
-    }
-  }, [isAdminMode]);
-
   const loadInteractivePoints = async () => {
     if (!currentPlanet) return;
 
-    if (user?.isAdmin && isAdminMode) {
-      const points = await worldInteractivePointsService.getAllPointsForWorld(
-        currentPlanet.id,
-      );
-      setInteractivePoints(points);
-    } else {
-      const points = await worldInteractivePointsService.getPointsForWorld(
-        currentPlanet.id,
-      );
-      setInteractivePoints(points);
+    try {
+      if (user?.isAdmin && isAdminMode) {
+        const points = await worldInteractivePointsService.getAllPointsForWorld(
+          currentPlanet.id,
+        );
+        setInteractivePoints(points);
+      } else {
+        const points = await worldInteractivePointsService.getPointsForWorld(
+          currentPlanet.id,
+        );
+        setInteractivePoints(points);
+      }
+    } catch (error) {
+      console.error("Error loading points:", error);
     }
   };
 
   const saveAllChanges = async () => {
-    // Save any pending changes
-    for (const point of interactivePoints) {
-      await worldInteractivePointsService.updatePoint(point.id, {
-        x_percent: point.x_percent,
-        y_percent: point.y_percent,
-        width_percent: point.width_percent,
-        height_percent: point.height_percent,
-        title: point.title,
-        description: point.description,
-        is_active: point.is_active,
-      });
+    try {
+      // Save any pending changes
+      for (const point of interactivePoints) {
+        await worldInteractivePointsService.updatePoint(point.id, {
+          x_percent: point.x_percent,
+          y_percent: point.y_percent,
+          width_percent: point.width_percent,
+          height_percent: point.height_percent,
+          title: point.title,
+          description: point.description,
+          is_active: point.is_active,
+        });
+      }
+      console.log("All changes saved successfully");
+    } catch (error) {
+      console.error("Error saving changes:", error);
+    }
+  };
+
+  // Handle admin mode toggle with proper saving
+  const handleAdminModeToggle = async () => {
+    if (isAdminMode) {
+      // Exiting admin mode - save everything first
+      await saveAllChanges();
+      setIsAdminMode(false);
+      // Small delay to ensure save completes before reload
+      setTimeout(() => {
+        loadInteractivePoints();
+      }, 100);
+    } else {
+      // Entering admin mode
+      setIsAdminMode(true);
     }
   };
 
