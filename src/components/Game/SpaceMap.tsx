@@ -113,10 +113,10 @@ const PROJECTILE_LIFETIME = 4.0; // seconds
 // Pre-render buffer size
 const RENDER_BUFFER = 200;
 
-// Trail constants - adjusted for uncapped FPS
-const TRAIL_MAX_POINTS = 40; // Mais pontos para FPS alto
+// Trail constants
+const TRAIL_MAX_POINTS = 25;
 const TRAIL_POINT_DISTANCE = 6;
-const TRAIL_LIFETIME = 800; // milliseconds - reduzido para evitar acúmulo com FPS alto
+const TRAIL_LIFETIME = 1200; // milliseconds
 const TRAIL_WIDTH = 12;
 
 const SpaceMapComponent: React.FC = () => {
@@ -566,10 +566,7 @@ const SpaceMapComponent: React.FC = () => {
   // Create trail point function
   const createTrailPoint = useCallback(
     (x: number, y: number, currentTime: number, shipVelocity: number) => {
-      const intensity = Math.max(
-        0.7,
-        Math.min(shipVelocity / SHIP_MAX_SPEED, 1),
-      ); // Intensidade mínima de 0.7 para garantir visibilidade
+      const intensity = Math.min(shipVelocity / SHIP_MAX_SPEED, 1);
 
       trailPointsRef.current.push({
         x,
@@ -587,13 +584,13 @@ const SpaceMapComponent: React.FC = () => {
     [],
   );
 
-  // Update trail points function - fixed for uncapped FPS
+  // Update trail points function
   const updateTrailPoints = useCallback((deltaTime: number) => {
-    // Limit deltaTime to prevent trail points from dying too fast with high FPS
-    const cappedDeltaTime = Math.min(deltaTime, 50); // Cap at 50ms max per frame
+    // Limit deltaTime to prevent trail from disappearing with uncapped FPS
+    const safeDeltaTime = Math.min(deltaTime, 33); // Cap at ~30 FPS equivalent
 
     trailPointsRef.current.forEach((point) => {
-      point.life -= cappedDeltaTime;
+      point.life -= safeDeltaTime;
     });
 
     // Remove dead trail points
@@ -1689,13 +1686,10 @@ const SpaceMapComponent: React.FC = () => {
         updateContinuousMovementSound(currentShipVelocity, SHIP_MAX_SPEED);
       }
 
-      // Create trail points com frequência adaptativa para FPS desbloqueado
-      const trailCreateInterval = Math.max(8, 1000 / 120); // Máximo 120 pontos por segundo, mínimo a cada 8ms
+      // Only create trail points if ship is moving and enough time has passed
       if (
-        (currentShipVelocity > 0.005 ||
-          Math.abs(gameState.ship.vx) > 0.01 ||
-          Math.abs(gameState.ship.vy) > 0.01) &&
-        currentTime - lastTrailTime.current > trailCreateInterval
+        currentShipVelocity > 0.1 &&
+        currentTime - lastTrailTime.current > 35
       ) {
         // Calculate trail position at the back of the ship
         const trailOffset = 12; // Distance from ship center to back
@@ -2277,11 +2271,10 @@ const SpaceMapComponent: React.FC = () => {
         }
       }
 
-      // Create trail points during landing animation com frequência controlada
+      // Create trail points during landing animation (moved outside the progress check)
       if (isLandingAnimationActive && landingAnimationData) {
         const currentTime = performance.now();
-        const landingTrailInterval = Math.max(16, 1000 / 60); // Máximo 60 FPS durante landing
-        if (currentTime - lastTrailTime.current > landingTrailInterval) {
+        if (currentTime - lastTrailTime.current > 35) {
           const elapsed = currentTime - landingAnimationData.startTime;
           const progress = Math.min(elapsed / landingAnimationData.duration, 1);
 
