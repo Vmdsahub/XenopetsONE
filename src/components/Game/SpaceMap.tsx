@@ -16,6 +16,7 @@ import {
   startContinuousMovementSound,
   updateContinuousMovementSound,
   stopContinuousMovementSound,
+  playSonarPingSound,
 } from "../../utils/soundManager";
 
 interface Star {
@@ -496,6 +497,11 @@ const SpaceMapComponent: React.FC = () => {
     };
 
     radarPulsesRef.current.push(newPulse);
+
+    // Play modern sonar sound when radar pulse is created
+    playSonarPingSound().catch((error) => {
+      console.warn("Failed to play sonar sound:", error);
+    });
   }, []);
 
   // Helper function to draw directional radar pulse
@@ -1352,7 +1358,7 @@ const SpaceMapComponent: React.FC = () => {
               setIsDragging(false);
               setDragOffset({ x: 0, y: 0 });
             } else if (selectedWorldId === planet.id && !isDragging) {
-              // Se já est������ selecionado mas não dragging, inicie o drag
+              // Se já est������� selecionado mas não dragging, inicie o drag
               setIsDragging(true);
               setDragOffset({ x: dx, y: dy });
             } else {
