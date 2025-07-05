@@ -190,18 +190,10 @@ export const useNPCShip = ({
       const shouldChangeDirection =
         timeSinceDirectionChange > 2000 + Math.random() * 3000;
 
-      if (shouldChangeBehavior || !ship.targetPlanet) {
-        const nearestPlanet = findNearestPlanet(ship.x, ship.y);
-        if (nearestPlanet && Math.random() > 0.5) {
-          ship.targetPlanet = nearestPlanet;
-          ship.mode = Math.random() > 0.3 ? "circling" : "moving_to_planet";
-          ship.circleRadius = 100 + Math.random() * 100;
-          ship.lastModeChange = currentTime;
-        } else {
-          ship.mode = "exploring";
-          ship.lastModeChange = currentTime;
-          ship.wanderAngle = Math.random() * Math.PI * 2;
-        }
+      // Occasionally change direction for variety
+      if (shouldChangeBehavior) {
+        ship.wanderAngle = Math.random() * Math.PI * 2;
+        ship.lastModeChange = currentTime;
       }
 
       switch (ship.mode) {
