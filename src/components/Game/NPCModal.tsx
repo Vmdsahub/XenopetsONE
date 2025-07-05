@@ -93,17 +93,17 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden"
+            className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors z-10"
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors z-10"
               aria-label="Fechar modal"
             >
               <svg
-                className="w-5 h-5 text-gray-500"
+                className="w-6 h-6 text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -118,11 +118,11 @@ export const NPCModal: React.FC<NPCModalProps> = ({ isOpen, onClose }) => {
             </button>
 
             {/* NPC Image */}
-            <div className="flex justify-center p-6 pb-4">
+            <div className="flex justify-center p-8 pb-6">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F542e75b77d74474ca612f291b2642c2c%2F9db05452f51a4f1e813928729ddf09b2?format=webp&width=800"
                 alt="Bahrun"
-                className="w-96 h-48 object-cover rounded-3xl"
+                className="w-full max-w-2xl h-80 object-cover rounded-3xl"
                 style={{ imageRendering: "crisp-edges" }}
               />
             </div>
