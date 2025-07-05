@@ -425,6 +425,10 @@ export const useNPCShip = ({
 
       ctx.save();
 
+      // Enable antialiasing for smooth rendering
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
       // Draw ship
       if (shipImageRef.current) {
         ctx.translate(screenX, screenY);
