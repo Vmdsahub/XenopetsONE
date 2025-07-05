@@ -494,8 +494,23 @@ class BackgroundMusicService {
 
       if (errorMessage.includes("user didn't interact")) {
         console.warn(
-          "⚠️ Música bloqueada: precisa de interação do usuário primeiro",
+          "⚠️ Música bloqueada pelo navegador: tentando música sintética",
         );
+        // Tenta usar música sintética se arquivos reais forem bloqueados
+        if (!this.isUsingSynthetic) {
+          this.setupSyntheticMusic();
+          try {
+            await this.playTrack(this.currentTrackIndex);
+            this.isPlaying = true;
+            console.log("✅ Música sintética iniciada automaticamente");
+            return;
+          } catch (syntheticError) {
+            console.warn(
+              "❌ Falha na música sintética também:",
+              syntheticError,
+            );
+          }
+        }
         return;
       }
 
