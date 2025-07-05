@@ -303,7 +303,7 @@ class BackgroundMusicService {
 
       if (errorMessage.includes("user didn't interact")) {
         console.warn(
-          "⚠️ Música bloqueada: precisa de interação do usuário primeiro",
+          "⚠️ Música bloqueada: precisa de interaç��o do usuário primeiro",
         );
         return;
       }
@@ -362,11 +362,12 @@ class BackgroundMusicService {
     if (this.isUsingSynthetic) {
       this.stopSyntheticTrack();
     } else {
-      if (this.currentTrack) {
+      if (this.currentTrack && this.trackEndHandler) {
         this.currentTrack.pause();
         this.currentTrack.currentTime = 0;
-        this.currentTrack.removeEventListener("ended", this.handleTrackEnd);
+        this.currentTrack.removeEventListener("ended", this.trackEndHandler);
         this.currentTrack = null;
+        this.trackEndHandler = null;
       }
     }
   }
