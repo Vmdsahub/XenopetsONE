@@ -86,6 +86,8 @@ class WorldInteractivePointsService {
         .from("world_interactive_points")
         .insert({
           ...pointData,
+          width_percent: pointData.width_percent || 10,
+          height_percent: pointData.height_percent || 10,
           action_type: pointData.action_type || "dialog",
           action_data: pointData.action_data || {},
           is_active: pointData.is_active !== false,
