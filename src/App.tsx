@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthScreen } from "./components/Auth/AuthScreen";
 
@@ -19,8 +19,8 @@ import { useAuthStore } from "./store/authStore";
 import { useGameStore } from "./store/gameStore";
 import { preloadAllSounds } from "./utils/soundManager";
 
-// Componente para pré-carregar recursos de áudio
-const AudioPreloader: React.FC = () => {
+// Componente para pré-carregar recursos de áudio - memoizado para performance
+const AudioPreloader: React.FC = memo(() => {
   useEffect(() => {
     // Pré-carrega todos os sons do jogo usando o SoundManager
     preloadAllSounds()
@@ -31,7 +31,7 @@ const AudioPreloader: React.FC = () => {
   }, []);
 
   return null; // Componente não renderiza nada
-};
+});
 
 function App() {
   const { isAuthenticated, user: authUser, initializeAuth } = useAuthStore();
@@ -108,7 +108,7 @@ function App() {
     return <AuthScreen />;
   }
 
-  const renderScreen = () => {
+  const renderScreen = useMemo(() => {
     switch (currentScreen) {
       case "pet":
         return <PetScreen />;
@@ -144,7 +144,7 @@ function App() {
       default:
         return <PetScreen />;
     }
-  };
+  }, [currentScreen, gameUser?.isAdmin]);
 
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -159,13 +159,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 gpu-accelerated force-gpu-layer">
       {/* Componente de pré-carregamento de áudios */}
       <AudioPreloader />
 
       <TopBar />
 
-      <main className="pt-20 pb-24 px-4 min-h-screen">
+      <main className="pt-20 pb-24 px-4 min-h-screen composite-layer force-gpu-layer">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScreen}
@@ -174,8 +174,13 @@ function App() {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
+            className="smooth-animation force-gpu-layer"
+            style={{
+              transform: "translate3d(0, 0, 0)",
+              willChange: "transform, opacity",
+            }}
           >
-            {renderScreen()}
+            {renderScreen}
           </motion.div>
         </AnimatePresence>
       </main>

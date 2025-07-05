@@ -943,3 +943,88 @@ export const playLandingSound = (): Promise<void> => {
     console.warn("Landing sound failed:", error.message);
   });
 };
+
+/**
+ * Creates a clean, modern sonar ping sound using Web Audio API
+ */
+const createSonarPingSound = (): Promise<void> => {
+  return new Promise((resolve) => {
+    try {
+      const audioContext = getAudioContext();
+
+      const startTime = audioContext.currentTime;
+
+      // Create oscillators for a clean sonar ping
+      const osc1 = audioContext.createOscillator(); // Main ping tone
+      const osc2 = audioContext.createOscillator(); // Sub-harmonic for depth
+
+      const gain1 = audioContext.createGain();
+      const gain2 = audioContext.createGain();
+      const masterGain = audioContext.createGain();
+
+      // Add filtering for crisp, clean sonar sound
+      const filter = audioContext.createBiquadFilter();
+      const filter2 = audioContext.createBiquadFilter();
+
+      // Connect audio chain
+      osc1.connect(gain1);
+      osc2.connect(gain2);
+
+      gain1.connect(filter);
+      gain2.connect(filter);
+      filter.connect(filter2);
+      filter2.connect(masterGain);
+      masterGain.connect(audioContext.destination);
+
+      // Configure filters for clean, modern sonar sound
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(800, startTime);
+      filter.Q.setValueAtTime(3, startTime); // Sharp, focused sound
+
+      filter2.type = "highpass";
+      filter2.frequency.setValueAtTime(300, startTime);
+      filter2.Q.setValueAtTime(0.8, startTime);
+
+      // Configure oscillators for modern sonar ping
+      osc1.type = "sine"; // Clean main tone
+      osc2.type = "sine"; // Clean sub tone
+
+      // Modern sonar frequency - clean and precise
+      osc1.frequency.setValueAtTime(920, startTime); // High-tech ping frequency
+      osc1.frequency.exponentialRampToValueAtTime(820, startTime + 0.15); // Slight decay
+
+      osc2.frequency.setValueAtTime(460, startTime); // Octave below for depth
+      osc2.frequency.exponentialRampToValueAtTime(410, startTime + 0.15);
+
+      // Sharp, clean envelope like modern submarine sonar
+      gain1.gain.setValueAtTime(0, startTime);
+      gain1.gain.linearRampToValueAtTime(0.12, startTime + 0.01); // Sharp attack
+      gain1.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15); // Clean decay
+
+      gain2.gain.setValueAtTime(0, startTime);
+      gain2.gain.linearRampToValueAtTime(0.06, startTime + 0.01); // Sharp attack
+      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15); // Clean decay
+
+      // Master volume - crisp and precise
+      masterGain.gain.setValueAtTime(0.4, startTime);
+
+      // Start and stop oscillators
+      osc1.start(startTime);
+      osc1.stop(startTime + 0.15);
+
+      osc2.start(startTime);
+      osc2.stop(startTime + 0.15);
+
+      setTimeout(() => resolve(), 200);
+    } catch (error) {
+      console.warn("Sonar ping sound failed:", error);
+      resolve();
+    }
+  });
+};
+
+export const playSonarPingSound = (): Promise<void> => {
+  return createSonarPingSound().catch((error) => {
+    console.warn("Sonar ping sound failed:", error.message);
+  });
+};

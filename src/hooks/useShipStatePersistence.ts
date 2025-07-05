@@ -3,12 +3,12 @@ import { useGameStore } from "../store/gameStore";
 
 /**
  * Hook para persistir o estado da nave de forma otimizada
- * Evita salvar a cada frame usando throttling
+ * Evita salvar a cada frame usando throttling agressivo
  */
 export const useShipStatePersistence = () => {
   const { updateShipState } = useGameStore();
   const lastSaveTime = useRef(0);
-  const saveIntervalMs = 1000; // Salvar a cada 1 segundo
+  const saveIntervalMs = 2000; // Aumentado para 2 segundos para melhor performance
 
   const saveShipState = useCallback(
     (shipState: {

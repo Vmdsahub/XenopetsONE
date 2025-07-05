@@ -1,4 +1,11 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  memo,
+} from "react";
 import { useGameStore } from "../../store/gameStore";
 import { useShipStatePersistence } from "../../hooks/useShipStatePersistence";
 import { PlanetLandingModal } from "./PlanetLandingModal";
@@ -9,6 +16,7 @@ import {
   startContinuousMovementSound,
   updateContinuousMovementSound,
   stopContinuousMovementSound,
+  playSonarPingSound,
 } from "../../utils/soundManager";
 
 interface Star {
@@ -39,6 +47,12 @@ interface Planet {
   name: string;
   interactionRadius: number;
   imageUrl: string;
+  // Floating animation properties
+  baseX?: number;
+  baseY?: number;
+  floatAmplitude?: { x: number; y: number };
+  floatPhase?: { x: number; y: number };
+  floatSpeed?: number;
 }
 
 interface Projectile {
@@ -112,7 +126,7 @@ const TRAIL_POINT_DISTANCE = 6;
 const TRAIL_LIFETIME = 1200; // milliseconds
 const TRAIL_WIDTH = 12;
 
-export const SpaceMap: React.FC = () => {
+const SpaceMapComponent: React.FC = () => {
   const {
     getShipState,
     setCurrentScreen,
@@ -483,6 +497,11 @@ export const SpaceMap: React.FC = () => {
     };
 
     radarPulsesRef.current.push(newPulse);
+
+    // Play modern sonar sound when radar pulse is created
+    playSonarPingSound().catch((error) => {
+      console.warn("Failed to play sonar sound:", error);
+    });
   }, []);
 
   // Helper function to draw directional radar pulse
@@ -579,8 +598,11 @@ export const SpaceMap: React.FC = () => {
 
   // Update trail points function
   const updateTrailPoints = useCallback((deltaTime: number) => {
+    // Limit deltaTime to prevent trail from disappearing with uncapped FPS
+    const safeDeltaTime = Math.min(deltaTime, 33); // Cap at ~30 FPS equivalent
+
     trailPointsRef.current.forEach((point) => {
-      point.life -= deltaTime;
+      point.life -= safeDeltaTime;
     });
 
     // Remove dead trail points
@@ -807,7 +829,7 @@ export const SpaceMap: React.FC = () => {
     [],
   );
 
-  // Generate dense star field with multiple parallax layers
+  // Generate optimized star field with reduced star count for better performance
   const generateRichStarField = useCallback(() => {
     const stars: Star[] = [];
     const starColors = [
@@ -833,8 +855,8 @@ export const SpaceMap: React.FC = () => {
       "#f8f8ff", // Purples
     ];
 
-    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador
-    for (let i = 0; i < 4000; i++) {
+    // Layer 1: Deep background (parallax 0.3) - ABAIXO do jogador - Reduzido de 4000 para 2500
+    for (let i = 0; i < 2500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -868,8 +890,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador
-    for (let i = 0; i < 3500; i++) {
+    // Layer 2: Mid background (parallax 0.6) - ABAIXO do jogador - Reduzido de 3500 para 2000
+    for (let i = 0; i < 2000; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -903,8 +925,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador
-    for (let i = 0; i < 3000; i++) {
+    // Layer 3: Near background (parallax 1.0) - ABAIXO do jogador - Reduzido de 3000 para 1800
+    for (let i = 0; i < 1800; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -938,8 +960,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 4: Close background (parallax 1.4) - ABAIXO do jogador
-    for (let i = 0; i < 2500; i++) {
+    // Layer 4: Close background (parallax 1.4) - ABAIXO do jogador - Reduzido de 2500 para 1500
+    for (let i = 0; i < 1500; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -973,8 +995,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador
-    for (let i = 0; i < 2000; i++) {
+    // Layer 5: Cosmic dust foreground (parallax 1.8) - ACIMA do jogador - Reduzido de 2000 para 1200
+    for (let i = 0; i < 1200; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -1008,8 +1030,8 @@ export const SpaceMap: React.FC = () => {
       });
     }
 
-    // Layer 6: Close cosmic dust (parallax 2.2) - ACIMA do jogador
-    for (let i = 0; i < 1500; i++) {
+    // Layer 6: Close cosmic dust (parallax 2.2) - ACIMA do jogador - Reduzido de 1500 para 800
+    for (let i = 0; i < 800; i++) {
       const baseX = Math.random() * WORLD_SIZE;
       const baseY = Math.random() * WORLD_SIZE;
       stars.push({
@@ -1049,7 +1071,7 @@ export const SpaceMap: React.FC = () => {
   // Update planets when worldPositions change
   const updatePlanetsFromStore = useCallback(() => {
     if (worldPositions.length > 0) {
-      // Use store positions
+      // Use store positions with floating properties
       const planets: Planet[] = worldPositions.map((position) => ({
         id: position.id,
         x: position.x,
@@ -1060,6 +1082,18 @@ export const SpaceMap: React.FC = () => {
         name: position.name,
         interactionRadius: position.interactionRadius,
         imageUrl: position.imageUrl || "",
+        // Add floating animation properties
+        baseX: position.x,
+        baseY: position.y,
+        floatAmplitude: {
+          x: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
+          y: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+        floatSpeed: Math.random() * 0.8 + 0.5, // 0.5-1.3 speed multiplier (moderado)
       }));
 
       // Preload planet images
@@ -1103,7 +1137,7 @@ export const SpaceMap: React.FC = () => {
     ];
 
     const planetNames = [
-      "Estaç��o Galáctica",
+      "Estaç��o Gal��ctica",
       "Base Orbital",
       "Mundo Alienígena",
       "Terra Verdejante",
@@ -1114,16 +1148,31 @@ export const SpaceMap: React.FC = () => {
     for (let i = 0; i < 6; i++) {
       const angle = (i / 6) * Math.PI * 2;
       const radius = 250;
+      const planetX = CENTER_X + Math.cos(angle) * radius;
+      const planetY = CENTER_Y + Math.sin(angle) * radius;
+
       planets.push({
         id: `planet-${i}`,
-        x: CENTER_X + Math.cos(angle) * radius,
-        y: CENTER_Y + Math.sin(angle) * radius,
+        x: planetX,
+        y: planetY,
         size: 60,
         rotation: 0,
         color: colors[i],
         name: planetNames[i],
         interactionRadius: 90,
         imageUrl: planetImages[i],
+        // Add floating animation properties
+        baseX: planetX,
+        baseY: planetY,
+        floatAmplitude: {
+          x: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
+          y: Math.random() * 4 + 2, // 2-6 pixels (intermediário)
+        },
+        floatPhase: {
+          x: Math.random() * Math.PI * 2,
+          y: Math.random() * Math.PI * 2,
+        },
+        floatSpeed: Math.random() * 0.8 + 0.5, // 0.5-1.3 speed multiplier (moderado)
       });
     }
 
@@ -1309,7 +1358,7 @@ export const SpaceMap: React.FC = () => {
               setIsDragging(false);
               setDragOffset({ x: 0, y: 0 });
             } else if (selectedWorldId === planet.id && !isDragging) {
-              // Se já est���� selecionado mas não dragging, inicie o drag
+              // Se já est������� selecionado mas não dragging, inicie o drag
               setIsDragging(true);
               setDragOffset({ x: dx, y: dy });
             } else {
@@ -1481,13 +1530,22 @@ export const SpaceMap: React.FC = () => {
     }
   }, []);
 
-  // Optimized game loop with pre-rendering considerations
+  // Optimized game loop with maximum GPU acceleration
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    // Get 2D context with GPU-optimized settings
+    const ctx = canvas.getContext("2d", {
+      alpha: false, // Disable alpha channel for better performance
+      desynchronized: true, // Allow asynchronous rendering for better GPU usage
+      willReadFrequently: false, // Optimize for GPU rendering, not CPU reading
+    });
     if (!ctx) return;
+
+    // Set GPU-optimized context properties
+    ctx.imageSmoothingEnabled = false; // Disable smoothing for pixel-perfect rendering
+    ctx.globalCompositeOperation = "source-over"; // Default, most GPU-optimized blend mode
 
     let lastTime = 0;
 
@@ -1497,21 +1555,21 @@ export const SpaceMap: React.FC = () => {
         return;
       }
 
-      const deltaTime = Math.min(currentTime - lastTime, 16.67);
+      const deltaTime = currentTime - lastTime; // FPS desbloqueado - sem limitação
 
-      // Calculate FPS
+      // Calculate FPS less frequently for better performance
       if (fpsRef.current.lastTime > 0) {
         const frameTime = currentTime - fpsRef.current.lastTime;
         fpsRef.current.frameTimes.push(frameTime);
 
-        // Keep only last 60 frames for average
-        if (fpsRef.current.frameTimes.length > 60) {
+        // Keep only last 30 frames for average (reduced from 60)
+        if (fpsRef.current.frameTimes.length > 30) {
           fpsRef.current.frameTimes.shift();
         }
 
-        // Update FPS every 30 frames
+        // Update FPS every 60 frames (less frequent)
         fpsRef.current.frameCount++;
-        if (fpsRef.current.frameCount >= 30) {
+        if (fpsRef.current.frameCount >= 60) {
           const avgFrameTime =
             fpsRef.current.frameTimes.reduce((a, b) => a + b, 0) /
             fpsRef.current.frameTimes.length;
@@ -1808,14 +1866,23 @@ export const SpaceMap: React.FC = () => {
         }))
         .filter((pulse) => pulse.life > 0 && pulse.radius <= pulse.maxRadius);
 
-      // Update stars with floating motion
+      // Update stars with floating motion - optimized with batching
       const stars = starsRef.current;
-      const time = currentTime * 0.002; // Increased time for visible movement
-      for (let i = 0, len = stars.length; i < len; i++) {
+      const time = currentTime * 0.002;
+      const starsLength = stars.length;
+
+      // Update only a portion of stars each frame to spread CPU load
+      const frameSkip = Math.max(1, Math.floor(starsLength / 2000)); // Update in batches
+      const batchSize = Math.floor(starsLength / frameSkip);
+      const startIndex =
+        (Math.floor(currentTime / 16.67) % frameSkip) * batchSize;
+      const endIndex = Math.min(startIndex + batchSize, starsLength);
+
+      for (let i = startIndex; i < endIndex; i++) {
         const star = stars[i];
 
-        // Floating motion using sine/cosine waves for cosmic dust effect
-        const floatTime = time * (0.5 + star.speed * 5); // More visible speed variation
+        // Simplified floating motion - reduce calculations
+        const floatTime = time * (0.5 + star.speed * 3); // Reduced complexity
         const floatX =
           Math.sin(floatTime + star.floatPhase.x) * star.floatAmplitude.x;
         const floatY =
@@ -1824,51 +1891,82 @@ export const SpaceMap: React.FC = () => {
         star.x = normalizeCoord(star.baseX + floatX);
         star.y = normalizeCoord(star.baseY + floatY);
 
-        star.twinkle += star.speed;
-        star.pulse += star.speed * 0.8;
+        star.twinkle += star.speed * 0.6; // Reduced from 1.0
+        star.pulse += star.speed * 0.5; // Reduced from 0.8
       }
 
-      // Update projectiles with delta time
+      // Update planet floating positions
+      const planets = planetsRef.current;
+      const planetTime = currentTime * 0.001; // Slower movement for planets
+
+      planets.forEach((planet) => {
+        if (
+          planet.baseX !== undefined &&
+          planet.baseY !== undefined &&
+          planet.floatAmplitude &&
+          planet.floatPhase &&
+          planet.floatSpeed
+        ) {
+          const floatTime = planetTime * planet.floatSpeed;
+          const floatX =
+            Math.sin(floatTime + planet.floatPhase.x) * planet.floatAmplitude.x;
+          const floatY =
+            Math.cos(floatTime * 0.8 + planet.floatPhase.y) *
+            planet.floatAmplitude.y;
+
+          planet.x = planet.baseX + floatX;
+          planet.y = planet.baseY + floatY;
+        }
+      });
+
+      // Update projectiles with uncapped delta time for unlimited FPS
       const currentFrameTime = performance.now();
       const projectileDeltaTime =
-        (currentFrameTime - lastFrameTimeRef.current) / 1000; // Convert to seconds
+        (currentFrameTime - lastFrameTimeRef.current) / 1000;
       lastFrameTimeRef.current = currentFrameTime;
 
-      projectilesRef.current = projectilesRef.current
-        .map((proj) => ({
-          ...proj,
-          x: normalizeCoord(proj.x + proj.vx * projectileDeltaTime),
-          y: normalizeCoord(proj.y + proj.vy * projectileDeltaTime),
-          life: proj.life - projectileDeltaTime,
-        }))
-        .filter((proj) => proj.life > 0);
+      // Use for loop for better performance than map/filter
+      const projectiles = projectilesRef.current;
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const proj = projectiles[i];
+        proj.x = normalizeCoord(proj.x + proj.vx * projectileDeltaTime);
+        proj.y = normalizeCoord(proj.y + proj.vy * projectileDeltaTime);
+        proj.life -= projectileDeltaTime;
 
-      // Create shooting stars periodically
+        if (proj.life <= 0) {
+          projectiles.splice(i, 1);
+        }
+      }
+
+      // Create shooting stars less frequently for better performance
       if (
         currentTime - lastShootingStarTime.current >
-        8000 + Math.random() * 12000
+        15000 + Math.random() * 20000
       ) {
-        // Every 8-20 seconds
+        // Every 15-35 seconds - less frequent for better performance
         createShootingStar(canvas);
         lastShootingStarTime.current = currentTime;
       }
 
-      // Update shooting stars
-      shootingStarsRef.current = shootingStarsRef.current
-        .map((star) => ({
-          ...star,
-          x: star.x + star.vx,
-          y: star.y + star.vy,
-          life: star.life - 1,
-        }))
-        .filter(
-          (star) =>
-            star.life > 0 &&
-            star.x > -100 &&
-            star.x < canvas.width + 100 &&
-            star.y > -100 &&
-            star.y < canvas.height + 100,
-        );
+      // Update shooting stars with optimized loop
+      const shootingStars = shootingStarsRef.current;
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const star = shootingStars[i];
+        star.x += star.vx;
+        star.y += star.vy;
+        star.life -= 1;
+
+        // Remove if dead or outside extended viewport
+        if (
+          star.life <= 0 ||
+          star.x < -150 ||
+          star.x > canvas.width + 150 ||
+          star.y < -150 ||
+          star.y > canvas.height + 150
+        ) {
+          shootingStars.splice(i, 1);
+        }
+      }
 
       // Create very dark space background with deep blue tones
       // Base deep space gradient - almost black with subtle blue
@@ -1920,19 +2018,22 @@ export const SpaceMap: React.FC = () => {
       ctx.fillStyle = nebulaGradient2;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Render stars with extended viewport for smooth scrolling and batching
+      // Render stars with optimized viewport culling
+      const renderBuffer = Math.min(RENDER_BUFFER, 100); // Reduce buffer for better performance
       const renderViewport = {
-        left: -RENDER_BUFFER,
-        right: canvas.width + RENDER_BUFFER,
-        top: -RENDER_BUFFER,
-        bottom: canvas.height + RENDER_BUFFER,
+        left: -renderBuffer,
+        right: canvas.width + renderBuffer,
+        top: -renderBuffer,
+        bottom: canvas.height + renderBuffer,
       };
 
-      // Batch stars by type for optimized rendering
+      // Batch stars by type for optimized rendering - pre-calculate size for performance
       const starBatches = { normal: [], bright: [], giant: [] };
       const starArray = starsRef.current;
+      const arrayLength = starArray.length;
 
-      for (let i = 0, len = starArray.length; i < len; i++) {
+      // Use more aggressive culling and simplified calculations
+      for (let i = 0; i < arrayLength; i++) {
         const star = starArray[i];
         const wrappedDeltaX = getWrappedDistance(star.x, gameState.camera.x);
         const wrappedDeltaY = getWrappedDistance(star.y, gameState.camera.y);
@@ -1942,28 +2043,28 @@ export const SpaceMap: React.FC = () => {
         const screenX = centerX + parallaxX;
         const screenY = centerY + parallaxY;
 
-        // Extended viewport check for smooth rendering
+        // Tighter viewport check with early exit for performance
         if (
-          screenX > renderViewport.left &&
-          screenX < renderViewport.right &&
-          screenY > renderViewport.top &&
-          screenY < renderViewport.bottom
+          screenX >= renderViewport.left &&
+          screenX <= renderViewport.right &&
+          screenY >= renderViewport.top &&
+          screenY <= renderViewport.bottom
         ) {
-          // Enhanced twinkling based on star type
-          const twinkleAlpha = Math.sin(star.twinkle) * 0.4 + 0.6;
+          // Simplified twinkling - less CPU intensive
+          const twinkleAlpha = Math.sin(star.twinkle) * 0.3 + 0.7;
           const pulseSize =
-            star.type === "giant" ? Math.sin(star.pulse * 0.5) * 0.3 + 1 : 1;
+            star.type === "giant" ? Math.sin(star.pulse * 0.5) * 0.2 + 1 : 1;
 
           let finalAlpha = star.opacity * twinkleAlpha;
           let finalSize = star.size * pulseSize;
 
-          // Type-based enhancements
+          // Simplified type-based enhancements
           if (star.type === "bright") {
-            finalAlpha *= 1.4;
-            finalSize *= 1.2;
+            finalAlpha *= 1.3;
+            finalSize *= 1.1;
           } else if (star.type === "giant") {
-            finalAlpha *= 1.6;
-            finalSize *= 1.5;
+            finalAlpha *= 1.5;
+            finalSize *= 1.4;
           }
 
           starBatches[star.type].push({
@@ -2080,11 +2181,15 @@ export const SpaceMap: React.FC = () => {
             ctx.restore();
           }
 
-          // Render planet image with rotation
+          // Render planet image with rotation and antialiasing
           const img = planetImagesRef.current.get(planet.id);
           if (img && img.complete) {
             ctx.save();
             ctx.globalAlpha = 1;
+
+            // Enable image smoothing for antialiasing
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
 
             // Apply rotation if planet has rotation
             if (planet.rotation && planet.rotation !== 0) {
@@ -2097,11 +2202,14 @@ export const SpaceMap: React.FC = () => {
             const drawX = screenX - imageSize / 2;
             const drawY = screenY - imageSize / 2;
 
-            // Draw the planet image
+            // Draw the planet image with antialiasing (no glow)
             ctx.drawImage(img, drawX, drawY, imageSize, imageSize);
+
+            // Reset smoothing
+            ctx.imageSmoothingEnabled = false; // Reset for other elements
             ctx.restore();
           } else {
-            // Fallback to colored circle if image not loaded
+            // Fallback to colored circle (no glow)
             ctx.globalAlpha = 1;
             ctx.fillStyle = planet.color;
             ctx.beginPath();
@@ -2435,9 +2543,11 @@ export const SpaceMap: React.FC = () => {
         );
       });
 
+      // Continue at maximum possible FPS (uncapped)
       gameLoopRef.current = requestAnimationFrame(gameLoop);
     };
 
+    // Start game loop at maximum FPS (uncapped)
     gameLoopRef.current = requestAnimationFrame(gameLoop);
 
     return () => {
@@ -2484,7 +2594,7 @@ export const SpaceMap: React.FC = () => {
   ]);
 
   return (
-    <div className="w-full h-full relative bg-gradient-to-br from-slate-950 via-blue-950 to-black rounded-lg overflow-hidden shadow-2xl border border-blue-900/10">
+    <div className="w-full h-full relative bg-gradient-to-br from-slate-950 via-blue-950 to-black rounded-lg overflow-hidden shadow-2xl border border-blue-900/10 game-container gpu-accelerated force-gpu-layer">
       <PlanetLandingModal
         isOpen={showLandingModal}
         planet={selectedPlanet}
@@ -2493,7 +2603,7 @@ export const SpaceMap: React.FC = () => {
       />
       <canvas
         ref={canvasRef}
-        className="w-full h-full"
+        className="w-full h-full game-canvas gpu-accelerated hardware-canvas force-gpu-layer"
         style={{
           cursor:
             user?.isAdmin && isWorldEditMode
@@ -2501,6 +2611,9 @@ export const SpaceMap: React.FC = () => {
                 ? "grabbing"
                 : "grab"
               : `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3' fill='%230080ff' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E") 8 8, auto`,
+          imageRendering: "optimizeSpeed",
+          transform: "translate3d(0, 0, 0) scale3d(1, 1, 1)",
+          willChange: "transform, contents",
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={(e) => {
@@ -2515,7 +2628,7 @@ export const SpaceMap: React.FC = () => {
 
       {/* Simple Admin Button for World Editing */}
       {user?.isAdmin && (
-        <div className="absolute top-2 right-2 space-y-2">
+        <div className="absolute top-2 right-2 space-y-2 gpu-ui-overlay">
           <button
             onClick={() => {
               setWorldEditMode(!isWorldEditMode);
@@ -2745,7 +2858,7 @@ export const SpaceMap: React.FC = () => {
         </div>
       )}
 
-      <div className="absolute top-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded">
+      <div className="absolute top-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded gpu-ui-overlay optimized-text">
         <div>X: {Math.round(gameState.ship.x)}</div>
         <div>Y: {Math.round(gameState.ship.y)}</div>
         <div>
@@ -2767,7 +2880,7 @@ export const SpaceMap: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded">
+      <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-70 p-2 rounded gpu-ui-overlay optimized-text">
         {user?.isAdmin && isWorldEditMode ? (
           <>
             <div className="text-yellow-400 font-bold mb-1">
@@ -2790,3 +2903,6 @@ export const SpaceMap: React.FC = () => {
     </div>
   );
 };
+
+// Memoize component for performance optimization
+export const SpaceMap = memo(SpaceMapComponent);
