@@ -20,11 +20,38 @@ body {
   text-rendering: optimizeSpeed;
 }
 
-/* Canvas specific optimizations */
+/* Canvas specific optimizations - force GPU acceleration */
 canvas {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: optimize-contrast;
   image-rendering: optimizeSpeed;
+  image-rendering: crisp-edges;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Force GPU acceleration globally for better performance */
+* {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Optimize all animations to use GPU */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    will-change: auto;
+  }
+
+  .animate,
+  [class*="animate-"] {
+    will-change: transform, opacity;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
 }
 
 /* Galaxy map animations */
