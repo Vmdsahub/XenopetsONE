@@ -201,6 +201,12 @@ export const TopBar: React.FC = () => {
         </div>
       </div>
 
+      {/* Music Player */}
+      <MusicPlayer
+        isOpen={showMusicPlayer}
+        onClose={() => setShowMusicPlayer(false)}
+      />
+
       {/* Monthly Calendar Check-in */}
       <AnimatePresence>
         {showCheckin && (
