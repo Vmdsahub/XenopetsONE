@@ -1702,6 +1702,12 @@ const SpaceMapComponent: React.FC = () => {
 
         createTrailPoint(trailX, trailY, currentTime, currentShipVelocity);
         lastTrailTime.current = currentTime;
+        // Debug temporário - remover depois
+        if (trailPointsRef.current.length % 10 === 0) {
+          console.log(
+            `🚀 Trail points: ${trailPointsRef.current.length}, Velocity: ${currentShipVelocity.toFixed(3)}`,
+          );
+        }
       }
 
       // Update trail points
