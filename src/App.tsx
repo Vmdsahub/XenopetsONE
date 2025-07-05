@@ -48,7 +48,7 @@ function App() {
   } = useGameStore();
 
   // Initialize background music
-  useBackgroundMusic();
+  const musicState = useBackgroundMusic();
 
   // Initialize authentication on app start
   useEffect(() => {
